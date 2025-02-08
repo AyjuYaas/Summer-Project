@@ -1,0 +1,32 @@
+:root {
+  font-family: Inter, system-ui, Avenir, Helvetica, Arial, sans-serif;
+
+  --primary-bg: #fdfbf1;
+  --secondary-bg: #ebefeb;
+  --footer-bg: #303b36;
+
+  --text: #0e2517;
+  --highlight: #357960;
+
+  --button: #81f18e;
+  --button-border: #4a5a4d;
+
+  --gradient: #addfff;
+
+  font-synthesis: none;
+  text-rendering: optimizeLegibility;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+* {
+  margin: 0;
+  padding: 0;
+  border: none;
+  box-sizing: border-box;
+}
+
+body {
+  min-width: 215px;
+  min-height: 200vh;
+}
