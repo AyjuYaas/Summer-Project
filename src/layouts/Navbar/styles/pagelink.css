@@ -3,7 +3,7 @@
   list-style-type: none;
   gap: 1.5rem;
   text-transform: capitalize;
-  font-size: 1.3rem;
+  /* font-size: 1.3rem; */
   font-weight: 500;
   flex: 2;
   justify-content: center;

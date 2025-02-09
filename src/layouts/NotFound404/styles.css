@@ -1,0 +1,27 @@
+.not-found {
+  width: 100%;
+  height: 100vh;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 1rem;
+  background-color: var(--footer-bg);
+  color: aliceblue;
+}
+
+.not-found p {
+  font-size: 10vw;
+  font-weight: 700;
+}
+
+.not-found span {
+  font-size: 3vw;
+  font-weight: 500;
+}
+
+.not-found :nth-child(3) {
+  width: max-content;
+  padding: 15px;
+  font-weight: 600;
+}

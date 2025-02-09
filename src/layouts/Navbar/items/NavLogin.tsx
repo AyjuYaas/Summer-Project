@@ -1,9 +1,9 @@
 import React from "react";
 import { NavLink } from "react-router-dom";
-
 import { CgProfile } from "react-icons/cg";
 
 import "../styles/navlogin.css";
+import Button from "../../../components/Button";
 
 interface Prop {
   logStatus: boolean;
@@ -17,21 +17,14 @@ export default function NavLogin({ logStatus }: Prop): React.ReactElement {
           <NavLink to="/profile" className="profile-pic">
             <CgProfile />
           </NavLink>
-          <NavLink to="/logout" className="outline-btn nav-btn">
-            Logout
-          </NavLink>
+          <Button content="logout" type="outline" />
         </>
       ) : (
         <>
-          <NavLink to="/login" className="outline-btn nav-btn">
-            Login
-          </NavLink>
+          <Button to="/login" content="login" type="outline" />
         </>
       )}
-
-      <NavLink to="/start" className="filled-btn nav-btn">
-        Get Started
-      </NavLink>
+      <Button to="/find-therapist" content="get started" type="filled" />
     </div>
   );
 }

@@ -1,22 +1,23 @@
 .nav {
   position: sticky;
+  top: 0;
   font-size: 1.3rem;
   font-weight: 500;
   width: 100%;
   display: flex;
-  justify-content: space-around;
+  justify-content: space-evenly;
   align-items: center;
   min-width: 215px;
   background-color: var(--secondary-bg);
-  padding: 1.5rem 1rem;
+  padding: 1.5rem 2rem;
   z-index: 20;
 }
 
-.navbar-scroll {
+.nav-scroll {
   background: rgba(255, 255, 255, 0.6); /* Becomes solid */
   backdrop-filter: blur(10px); /* Adds blur effect */
   box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1);
-  padding: 0.5rem 0;
+  padding: 1.3rem;
 }
 
 .nav-inner {
@@ -34,6 +35,12 @@
   display: none;
   cursor: pointer;
   z-index: 21;
+}
+
+@media (min-width: 1700px) {
+  .nav {
+    font-size: 1.5vw;
+  }
 }
 
 @media (max-width: 1100px) {

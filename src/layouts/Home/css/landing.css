@@ -1,0 +1,99 @@
+.landing {
+  position: relative;
+  background-color: var(--footer-bg);
+  color: var(--white-text);
+  height: 90vh;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 2rem;
+  gap: 3rem;
+}
+
+.landing .non-img {
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-start;
+  align-items: flex-start;
+  gap: 1rem;
+}
+
+.landing .heading {
+  display: flex;
+  flex-direction: column;
+  font-size: 6vw;
+  font-weight: 700;
+}
+
+.landing .content {
+  display: flex;
+  flex-direction: column;
+  font-size: 1.5vw;
+  font-weight: 400;
+  height: 100%;
+  gap: 15px;
+}
+
+.landing .content :nth-child(2) {
+  width: max-content;
+  font-weight: 600;
+  color: var(--footer-bg);
+}
+
+.landing img {
+  height: auto;
+  width: 30vw;
+  border: none;
+  box-shadow: none;
+  -moz-box-shadow: none;
+  -o-box-shadow: none;
+  -webkit-box-shadow: none;
+  margin: auto;
+}
+
+.wavy {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  width: 100%;
+  overflow: hidden;
+  line-height: 0;
+  margin-bottom: -1px;
+}
+
+.wavy svg {
+  position: relative;
+  display: block;
+  width: calc(107% + 1.3px);
+  height: 77px;
+}
+
+.wavy .shape-fill {
+  fill: #fdfbf1;
+}
+
+@media (max-width: 1100px) {
+  .landing {
+    flex-wrap: wrap;
+  }
+  .landing .non-img {
+    flex-direction: column;
+    gap: 1rem;
+  }
+  .landing .heading {
+    font-size: 3rem;
+  }
+  .landing .content {
+    font-size: 1rem;
+  }
+
+  .landing img {
+    max-width: 300px;
+  }
+}
+
+@media (max-width: 700px) {
+  .landing img {
+    display: none;
+  }
+}

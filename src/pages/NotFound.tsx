@@ -1,15 +1,6 @@
 import React from "react";
-import { useNavigate } from "react-router-dom";
+import NotFound404 from "../layouts/NotFound404";
 
 export default function NotFound(): React.ReactElement {
-  const navigate = useNavigate();
-  return (
-    <div className="not-found">
-      <p>404</p>
-      <span>Error Page</span>
-      <button className="filled-btn" onClick={() => navigate("/")}>
-        Go to Home
-      </button>
-    </div>
-  );
+  return <NotFound404 />;
 }

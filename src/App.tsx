@@ -18,7 +18,7 @@ export default function App(): React.ReactElement {
         <Route path="/" element={<Home />} />
         <Route path="/about" element={<About />} />
         <Route path="/reviews" element={<Review />} />
-        <Route path="/therapists" element={<Therapist />} />
+        <Route path="/therapist-list" element={<Therapist />} />
         <Route path="/contact" element={<Contact />} />
         <Route path="/find-therapist" element={<FindTherapist />} />
         <Route path="/login" element={<Login />} />

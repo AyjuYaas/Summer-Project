@@ -1,7 +1,7 @@
 const pageLinks = [
   { name: "about", link: "/about" },
   { name: "reviews", link: "/reviews" },
-  { name: "therapists", link: "/therapists" },
+  { name: "therapists", link: "/therapist-list" },
   { name: "contact", link: "/contact" },
 ];
 

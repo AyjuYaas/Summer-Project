@@ -7,7 +7,7 @@
 }
 
 .nav-login .profile-pic {
-  font-size: 2rem;
+  font-size: 2.5vw;
   display: flex;
   align-items: center;
   color: var(--text);
@@ -16,28 +16,11 @@
   color: var(--highlight);
 }
 
-.nav-btn {
-  text-decoration: none;
-  color: var(--text);
-  padding: 5px 20px;
-  border-radius: 20px;
-}
-
-.outline-btn {
-  background-color: transparent;
-  border: 2px solid var(--button-border);
-}
-.outline-btn:hover {
-  color: var(--highlight);
-  border-color: var(--highlight);
-}
-
-.filled-btn {
-  background-color: var(--button);
-  border: 2px solid var(--button);
-}
-.filled-btn:hover {
-  background: linear-gradient(90deg, var(--button) 10%, var(--gradient) 100%);
+@media (min-width: 1700px) {
+  .nav-login .profile-pic {
+    font-size: 2vw;
+    width: max-content;
+  }
 }
 
 @media (max-width: 1100px) {
@@ -54,5 +37,11 @@
   .nav-btn {
     width: 100%;
     text-align: center;
+  }
+}
+
+@media (max-width: 550px) {
+  .nav-login {
+    width: auto;
   }
 }

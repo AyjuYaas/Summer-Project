@@ -3,10 +3,12 @@
 
   --primary-bg: #fdfbf1;
   --secondary-bg: #ebefeb;
+  --third-bg: #f7f0e6;
   --footer-bg: #303b36;
 
-  --text: #0e2517;
+  --text: #102518;
   --highlight: #357960;
+  --white-text: #f6f8ee;
 
   --button: #81f18e;
   --button-border: #4a5a4d;
@@ -27,6 +29,6 @@
 }
 
 body {
-  min-width: 215px;
-  min-height: 200vh;
+  min-width: 300px;
+  background-color: var(--primary-bg);
 }
