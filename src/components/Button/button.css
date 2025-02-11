@@ -8,10 +8,7 @@
   width: 100%;
   min-width: max-content;
   cursor: pointer;
-}
-
-.btn .active {
-  display: none;
+  border: none;
 }
 
 .outline-btn {
@@ -25,7 +22,7 @@
 
 .filled-btn {
   background-color: var(--button);
-  border: 3px solid var(--button);
+  border: 2px solid var(--button);
 }
 .filled-btn:hover {
   background: linear-gradient(90deg, var(--button) 10%, var(--gradient) 100%);

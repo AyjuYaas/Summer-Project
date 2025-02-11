@@ -17,7 +17,7 @@
   background: rgba(255, 255, 255, 0.6); /* Becomes solid */
   backdrop-filter: blur(10px); /* Adds blur effect */
   box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1);
-  padding: 1.3rem;
+  /* padding: 1rem; */
 }
 
 .nav-inner {
@@ -31,6 +31,7 @@
   position: absolute;
   font-size: 2rem;
   right: 20px;
+  margin-top: 0.5rem;
   top: auto;
   display: none;
   cursor: pointer;

@@ -1,5 +1,7 @@
 .nav-login {
   display: flex;
+  flex-basis: 0;
+  flex-grow: 1;
   gap: 0.5rem;
   position: relative;
   align-items: center;
@@ -14,6 +16,10 @@
 }
 .nav-login .profile-pic:hover {
   color: var(--highlight);
+}
+
+.nav-login .btn-holder {
+  width: 100%;
 }
 
 @media (min-width: 1700px) {
@@ -33,10 +39,6 @@
   }
   .nav-login .profile-pic {
     font-size: 3rem;
-  }
-  .nav-btn {
-    width: 100%;
-    text-align: center;
   }
 }
 

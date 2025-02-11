@@ -1,4 +1,4 @@
-.logo {
+.nav-logo {
   display: flex;
   align-items: center;
   text-transform: capitalize;
@@ -10,24 +10,25 @@
   cursor: pointer;
   position: relative;
   z-index: 21;
+  letter-spacing: 2px;
 }
-.logo-img {
+.nav-logo .logo-img {
   height: 2.5rem;
 }
-.logo-txt span:nth-child(even) {
+.nav-logo .logo-txt span:nth-child(even) {
   color: var(--highlight);
 }
 
 @media (max-width: 1100px) {
-  .logo {
+  .nav-logo {
     width: 100%;
-    padding: 1.5rem;
+    padding: 1rem 1.5rem;
     background-color: var(--secondary-bg);
   }
 }
 
 @media (max-width: 300px) {
-  .logo-txt {
+  .nav-logo .logo-txt {
     display: none;
   }
 }

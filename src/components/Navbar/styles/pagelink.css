@@ -33,10 +33,10 @@
 }
 
 /* ========== Set for active tabs ============ */
-.active {
+.nav-links .active {
   position: relative;
 }
-.active::after {
+.nav-links .active::after {
   content: "";
   position: absolute;
   bottom: 0; /* Keep it in the same position */
@@ -56,5 +56,11 @@
   .nav-link-hr {
     border: 1px solid var(--text);
     margin: 20px 0;
+  }
+  .nav-link-items:hover::after {
+    display: none;
+  }
+  .nav-links .active::after {
+    display: none;
   }
 }

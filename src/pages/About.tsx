@@ -1,5 +1,5 @@
 import React from "react";
-import Navbar from "../layouts/Navbar";
+import Navbar from "../components/Navbar";
 
 export default function About(): React.ReactElement {
   return (
