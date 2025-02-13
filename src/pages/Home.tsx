@@ -1,14 +1,6 @@
 import React from "react";
-import Navbar from "../components/Navbar";
-import Landing from "../layouts/Home/Landing";
-import Description from "../layouts/Home/Description";
+import { HomeLayout } from "../layouts/HomeLayout";
 
 export default function Home(): React.ReactElement {
-  return (
-    <div>
-      <Navbar />
-      <Landing />
-      <Description />
-    </div>
-  );
+  return <HomeLayout />;
 }

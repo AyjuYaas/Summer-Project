@@ -8,23 +8,20 @@
   justify-content: space-evenly;
   align-items: center;
   min-width: 215px;
-  background-color: var(--secondary-bg);
   padding: 1.5rem 2rem;
   z-index: 20;
+  background: rgba(255, 255, 255, 0.5); /* Becomes solid */
+  backdrop-filter: blur(30px); /* Adds blur effect */
+  transition: background 0.4s ease; /* Smooth transition */
 }
-
-.nav-scroll {
-  background: rgba(255, 255, 255, 0.6); /* Becomes solid */
-  backdrop-filter: blur(10px); /* Adds blur effect */
-  box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1);
-  /* padding: 1rem; */
+.nav:hover {
+  background-color: var(--secondary-bg);
+  /* backdrop-filter: none; */
 }
-
 .nav-inner {
   display: flex;
   flex: 1;
   align-items: center;
-  justify-content: center;
 }
 
 .mobile-menu {
@@ -40,7 +37,7 @@
 
 @media (min-width: 1700px) {
   .nav {
-    font-size: 1.5vw;
+    font-size: 1.4vw;
   }
 }
 
@@ -48,9 +45,6 @@
   .nav {
     justify-content: flex-start;
     padding: 0;
-  }
-  .navbar-scroll {
-    background-color: var(--secondary-bg);
   }
   .nav-inner {
     position: absolute;
@@ -72,5 +66,11 @@
   }
   .mobile-menu {
     display: inline;
+  }
+}
+
+@media (max-height: 300px) {
+  .nav {
+    position: initial;
   }
 }

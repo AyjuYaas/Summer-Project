@@ -1,11 +1,11 @@
-import { useState } from "react";
+import React, { useState } from "react";
 import { Link } from "react-router-dom";
 import { CgProfile } from "react-icons/cg";
 import Button from "../../../Button/Button";
 
 import "../../styles/navlogin.css";
 
-const LoginLogout = () => {
+const LoginLogout = (): React.ReactElement => {
   // ============ Handle Login of User ===============
   const [logStatus, setLogStatus] = useState<boolean>(false); // Starting as logged in for testing
   const changeLogin = () => setLogStatus((prevState) => !prevState);

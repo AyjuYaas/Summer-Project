@@ -1,7 +1,7 @@
 .nav-links {
   display: flex;
   list-style-type: none;
-  gap: 1.5rem;
+  gap: 1.5vw;
   text-transform: capitalize;
   /* font-size: 1.3rem; */
   font-weight: 500;

@@ -1,42 +1,52 @@
 .landing {
   position: relative;
   background-color: var(--footer-bg);
+  height: 60vh;
+  min-height: 700px;
+  max-height: 1000px;
+  display: flex;
+  justify-content: center;
+}
+
+.landing .holder {
   color: var(--white-text);
-  height: 90vh;
   display: flex;
   align-items: center;
   justify-content: space-around;
-  padding: 2rem;
-  gap: 3rem;
+  width: 100%;
 }
 
 .landing .non-img {
   display: flex;
   flex-direction: column;
-  justify-content: flex-start;
-  align-items: flex-start;
+  align-items: center;
   gap: 1rem;
 }
 
 .landing .heading {
   display: flex;
   flex-direction: column;
-  font-size: 6vw;
+  font-size: 4.5vw;
   font-weight: 700;
+}
+
+.landing .heading .highlight {
+  color: var(--link-text);
 }
 
 .landing .content {
   display: flex;
   flex-direction: column;
-  font-size: 1.5vw;
+  font-size: 1.4vw;
   font-weight: 400;
   height: 100%;
-  gap: 15px;
+  gap: 1rem;
 }
 
 .landing .content :nth-child(2) {
-  width: max-content;
-  font-weight: 600;
+  width: 100%;
+  /* font-size: 1.6vw; */
+  font-weight: 700;
   color: var(--footer-bg);
 }
 
@@ -58,18 +68,24 @@
   width: 100%;
   overflow: hidden;
   line-height: 0;
-  margin-bottom: -1px;
+  margin-bottom: -5px;
 }
 
 .wavy svg {
   position: relative;
   display: block;
   width: calc(107% + 1.3px);
-  height: 77px;
+  height: 55px;
 }
 
 .wavy .shape-fill {
   fill: #fdfbf1;
+}
+
+@media (min-width: 1700px) {
+  .landing {
+    /* min-height: 90vh; */
+  }
 }
 
 @media (max-width: 1100px) {
@@ -82,6 +98,7 @@
   }
   .landing .heading {
     font-size: 3rem;
+    text-align: start;
   }
   .landing .content {
     font-size: 1rem;
@@ -93,7 +110,28 @@
 }
 
 @media (max-width: 700px) {
-  .landing img {
+  .landing {
+    padding: 2rem;
+  }
+
+  .landing .img {
     display: none;
+  }
+  .landing .non-img {
+    width: 100%;
+    align-items: center;
+  }
+  .landing .content :nth-child(2) {
+    width: max-content;
+  }
+}
+
+@media (max-width: 400px) {
+  .landing .heading {
+    width: 100%;
+    font-size: 2rem;
+  }
+  .landing .content {
+    font-size: 1rem;
   }
 }
