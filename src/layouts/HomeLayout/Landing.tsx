@@ -13,7 +13,7 @@ export default function Landing(): React.ReactElement {
         <section className="non-img">
           <div className="heading">
             <span>
-              Find <span className="highlight">Therapist</span>.
+              Find <span style={{ color: "var(--button)" }}>Therapist,</span>
             </span>
             <span>Start Healing.</span>
           </div>
