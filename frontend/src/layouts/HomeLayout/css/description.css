@@ -13,12 +13,13 @@
   display: grid;
   grid-template: 2fr 2fr/2fr 1fr;
   /* padding: 2rem; */
+  margin-bottom: 50px;
 }
 
 .home-des .heading {
   order: 1;
   font-size: 3rem;
-  font-weight: 700;
+  font-weight: 650;
   color: var(--text);
   display: flex;
   align-items: center;

@@ -13,7 +13,6 @@ export function HomeLayout(): JSX.Element {
 
   return (
     <>
-      <Navbar />
       <Landing />
       <Description />
       <WhyTheraFind />

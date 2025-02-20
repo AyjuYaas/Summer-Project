@@ -8,7 +8,6 @@ const LoginLayout = (): JSX.Element => {
   }, []);
   return (
     <>
-      <Navbar />
       <LoginForm />
     </>
   );
