@@ -1,5 +1,5 @@
 import { JSX } from "react";
-import { IKContext, IKImage, IKUpload } from "imagekitio-react";
+import { IKContext, IKUpload } from "imagekitio-react";
 
 interface AuthResponse {
   signature: string;
