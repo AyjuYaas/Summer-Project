@@ -38,7 +38,7 @@ const userSchema = new mongoose.Schema(
       default:
         "https://res.cloudinary.com/dfotn4ovh/image/upload/v1739808245/TheraFind/vdyzkxfy0oqyam37fozm.jpg",
     },
-    problems: [{ type: String, trim: true }],
+    problems: { type: mongoose.Schema.Types.Mixed, default: { none: 0 } },
     selected_therapists: [
       { type: mongoose.Schema.Types.ObjectId, ref: "Therapist" },
     ],
@@ -48,6 +48,9 @@ const userSchema = new mongoose.Schema(
 
 // Before saving the user to db, hash the password and call the next function
 userSchema.pre("save", async function (next) {
+  if (!this.isModified("password")) {
+    return next();
+  }
   this.password = await bcrypt.hash(this.password, 10);
   next();
 });

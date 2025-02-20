@@ -50,6 +50,7 @@ const therapistSchema = new mongoose.Schema(
       type: Boolean,
       default: true,
     },
+    matched_user: [{ type: mongoose.Schema.Types.ObjectId, ref: "User" }],
     rating: {
       type: Number,
       min: 0,
@@ -69,6 +70,9 @@ const therapistSchema = new mongoose.Schema(
 
 // Before saving to database, hash the password
 therapistSchema.pre("save", async function (next) {
+  if (!this.isModified("password")) {
+    return next();
+  }
   this.password = await bcrypt.hash(this.password, 10);
   next();
 });
