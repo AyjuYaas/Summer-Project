@@ -1,5 +1,5 @@
 from flask import Flask, request, jsonify
-from tensorflow.keras.models import load_model
+from tensorflow.keras.models import load_model # type: ignore
 import re
 import numpy as np
 import pickle
