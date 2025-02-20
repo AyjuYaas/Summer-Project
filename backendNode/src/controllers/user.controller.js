@@ -1,0 +1,41 @@
+import cloudinary from "../config/cloudinary.js";
+import User from "../models/user.model";
+
+export const updateProfile = async (req, res) => {
+  try {
+    const { image, ...otherFields } = req.body;
+    const updatedData = otherFields;
+
+    if (image) {
+      // base64 format
+      if (image.startsWith("data:image")) {
+        try {
+          const uploadResponse = await cloudinary.uploader.upload(image);
+          updatedData.image = uploadResponse.secure_url;
+        } catch (err) {
+          return status(400).json({
+            success: false,
+            message: "Error uploading image. Profile cannot be updated!",
+          });
+        }
+      }
+    }
+
+    const updatedUser = await User.findByIdAndUpdate(
+      req.user._id,
+      updatedData,
+      { new: true }
+    );
+
+    res.status(200).json({
+      success: true,
+      user: updatedUser,
+    });
+  } catch (err) {
+    console.log(`Error in update user profile: ${err}`);
+    res.status(500).json({
+      success: false,
+      message: "Internal Server Error",
+    });
+  }
+};
