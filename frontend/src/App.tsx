@@ -1,5 +1,5 @@
 import React from "react";
-import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
+import { Routes, Route } from "react-router-dom";
 import Home from "./pages/Home";
 import About from "./pages/About";
 import Contact from "./pages/Contact";
@@ -15,7 +15,7 @@ import Navbar from "./components/Navbar";
 
 export default function App(): React.ReactElement {
   return (
-    <Router>
+    <div>
       <Navbar />
       <Routes>
         <Route path="/" element={<Home />} />
@@ -29,6 +29,6 @@ export default function App(): React.ReactElement {
         <Route path="/admin" element={<Admin />} />
         <Route path="*" element={<NotFound />} />
       </Routes>
-    </Router>
+    </div>
   );
 }

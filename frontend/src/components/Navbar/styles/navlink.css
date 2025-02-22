@@ -7,7 +7,6 @@
   font-weight: 500;
   flex: 2;
   justify-content: center;
-  z-index: 19;
 }
 .nav-link-items {
   text-decoration: none;
@@ -50,8 +49,9 @@
   .nav-links {
     margin-top: 3rem;
     flex-direction: column;
-    justify-content: flex-end;
+    justify-content: center;
     width: 100%;
+    flex: 0;
   }
   .nav-link-hr {
     border: 1px solid grey;
@@ -62,5 +62,8 @@
   }
   .nav-links .active::after {
     display: none;
+  }
+  .nav-links .active {
+    color: var(--highlight);
   }
 }

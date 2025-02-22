@@ -9,7 +9,7 @@
   color: black;
   cursor: pointer;
   position: relative;
-  z-index: 21;
+  z-index: 30;
   letter-spacing: 2px;
 }
 .nav-logo .logo-img {
@@ -27,13 +27,11 @@
 
 @media (max-width: 1100px) {
   .nav-logo {
-    width: 100%;
     padding: 1rem 1.5rem;
-    background-color: var(--secondary-bg);
   }
 }
 
-@media (max-width: 300px) {
+@media (max-width: 500px) {
   .nav-logo .logo-txt {
     display: none;
   }

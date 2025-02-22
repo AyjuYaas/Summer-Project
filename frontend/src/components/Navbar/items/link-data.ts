@@ -1,8 +1,13 @@
-const pageLinks = [
-  { name: "about", link: "/about" },
-  { name: "reviews", link: "/reviews" },
-  { name: "therapists", link: "/therapist-list" },
-  { name: "contact", link: "/contact" },
+interface navLink {
+  name: string;
+  path: string;
+}
+
+const navLinks: navLink[] = [
+  { name: "about", path: "/about" },
+  { name: "reviews", path: "/reviews" },
+  { name: "therapists", path: "/therapist-list" },
+  { name: "contact", path: "/contact" },
 ];
 
-export { pageLinks };
+export { navLinks };

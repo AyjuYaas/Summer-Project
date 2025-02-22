@@ -36,14 +36,9 @@
     flex-direction: column;
     align-items: center;
     gap: 1rem;
+    width: 100%;
   }
   .nav-login .profile-pic {
     font-size: 3rem;
-  }
-}
-
-@media (max-width: 550px) {
-  .nav-login {
-    width: auto;
   }
 }

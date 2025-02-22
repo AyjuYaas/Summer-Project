@@ -2,8 +2,7 @@
   position: relative;
   background-color: var(--footer-bg);
   height: 60vh;
-  min-height: 550px;
-  max-height: 1000px;
+  min-height: 600px;
   display: flex;
   justify-content: center;
 }
@@ -14,6 +13,7 @@
   align-items: center;
   justify-content: space-around;
   width: 100%;
+  height: 90%;
 }
 
 .landing .non-img {

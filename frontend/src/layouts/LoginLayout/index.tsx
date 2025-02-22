@@ -1,5 +1,5 @@
 import { JSX, useEffect } from "react";
-import LoginForm from "./LoginForm";
+import AuthForm from "./AuthForm";
 
 const LoginLayout = (): JSX.Element => {
   useEffect(() => {
@@ -7,7 +7,7 @@ const LoginLayout = (): JSX.Element => {
   }, []);
   return (
     <>
-      <LoginForm />
+      <AuthForm />
     </>
   );
 };
