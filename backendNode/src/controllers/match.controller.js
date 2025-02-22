@@ -35,6 +35,7 @@ export async function getRecommendation(req, res) {
     const recommended = await Therapist.find({
       $and: [
         { specialization: { $in: Object.keys(currentUser.problems) } },
+        { _id: { $nin: currentUser.selected_therapists } },
         { availability: true },
       ], // That specialize in the users problems
     }).select("name image specialization rating");

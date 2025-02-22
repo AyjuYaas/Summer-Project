@@ -1,5 +1,6 @@
 import dotenv from "dotenv";
 dotenv.config();
+
 import express from "express";
 import cookieParser from "cookie-parser";
 import cors from "cors";
@@ -10,7 +11,6 @@ import therapistAuthRoutes from "./routes/therapistAuth.route.js"; // done
 import userRoutes from "./routes/user.route.js"; // done
 import therapistRoutes from "./routes/therapist.route.js";
 import matchRoutes from "./routes/match.route.js";
-// import messageRoute from "./routes/message.route.js";
 
 // lib imports
 import { connectDB } from "./config/database.js";
@@ -36,7 +36,7 @@ app.use("/api/therapists", therapistRoutes);
 app.use("/api/matches", matchRoutes);
 // app.use("/api/messages", messageRoute);
 
-const PORT = process.env.PORT || 8080;
+const PORT = process.env.PORT;
 app.listen(PORT, () => {
   console.log(`Server is running on port: ${PORT}`);
   connectDB();
