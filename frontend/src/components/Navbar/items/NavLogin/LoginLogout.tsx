@@ -1,27 +1,34 @@
-import { JSX, useState } from "react";
+import { JSX } from "react";
 import { Link } from "react-router-dom";
-import { CgProfile } from "react-icons/cg";
-import Button from "../../../Button/Button";
 
 import "../../styles/navlogin.css";
+import { useAuthStore } from "../../../../store/useAuthStore";
 
 const LoginLogout = (): JSX.Element => {
   // ============ Handle Login of User ===============
-  const [logStatus, setLogStatus] = useState<boolean>(false); // Starting as logged in for testing
-  const changeLogin = () => setLogStatus((prevState) => !prevState);
+  const { authUser, authType, logout } = useAuthStore();
   return (
     <>
-      {logStatus ? (
-        <>
-          <Link to="/profile" className="profile-pic">
-            <CgProfile />
+      {authUser ? (
+        <div className="logout-menu">
+          <Link
+            to={authType === "user" ? "/user/home" : "/therapist/home"}
+            className="profile-pic-div"
+          >
+            <img
+              src={authUser.image}
+              alt="profile-pic"
+              className="profile-pic"
+            />
           </Link>
-          <button onClick={() => changeLogin()} className="btn-holder">
-            <Button content="logout" type="outline" />
+          <button className="btn outline-btn logout-btn" onClick={logout}>
+            Logout
           </button>
-        </>
+        </div>
       ) : (
-        <Button to="/login" content="login" type="outline" />
+        <Link to="/user/login" className="btn outline-btn">
+          Login
+        </Link>
       )}
     </>
   );

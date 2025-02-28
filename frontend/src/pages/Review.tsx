@@ -1,6 +1,6 @@
-import React from "react";
+import { JSX } from "react";
 
-export default function Review(): React.ReactElement {
+export default function Review(): JSX.Element {
   return (
     <div>
       <h1 className="top">This is Review Page</h1>

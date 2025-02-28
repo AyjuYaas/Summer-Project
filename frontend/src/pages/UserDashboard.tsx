@@ -1,6 +1,6 @@
-import React from "react";
+import { JSX } from "react";
 
-export default function Profile(): React.ReactElement {
+export default function UserDashboard(): JSX.Element {
   return (
     <div>
       <h1 className="top">This is profile view</h1>

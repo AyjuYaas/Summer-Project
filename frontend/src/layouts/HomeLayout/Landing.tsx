@@ -1,10 +1,9 @@
 import { JSX } from "react";
 
-import Button from "../../components/Button/Button";
-
 import img from "../../assets/images/Landing.png";
 
 import "./css/landing.css";
+import { Link } from "react-router-dom";
 
 export default function Landing(): JSX.Element {
   return (
@@ -20,7 +19,9 @@ export default function Landing(): JSX.Element {
 
           <div className="content">
             <p>Match with the best Therapists around the world.</p>
-            <Button to="/find-therapist" content="Start Here" type="filled" />
+            <Link to="/find-therapist" className="btn filled-btn">
+              Start Here
+            </Link>
           </div>
         </section>
         <section className="img">

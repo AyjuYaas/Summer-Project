@@ -1,5 +1,6 @@
 import express from "express";
-import { protectRoute } from "../middleware/userAuth.middle.js";
+import { protectRoute } from "../middleware/auth.middle.js";
+
 import {
   getMatches,
   getRecommendation,

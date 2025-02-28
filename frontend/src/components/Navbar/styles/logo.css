@@ -13,7 +13,7 @@
   letter-spacing: 2px;
 }
 .nav-logo .logo-img {
-  height: 2.5rem;
+  height: 3rem;
 }
 .nav-logo .logo-txt span:nth-child(even) {
   color: var(--highlight);
@@ -21,7 +21,7 @@
 
 @media (min-width: 1700px) {
   .nav-logo .logo-img {
-    height: 2vw;
+    height: 2.7vw;
   }
 }
 

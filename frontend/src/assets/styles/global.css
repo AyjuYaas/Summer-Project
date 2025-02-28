@@ -21,9 +21,6 @@
 }
 
 * {
-  /* margin: 0; */
-  /* padding: 0; */
-  border: none;
   box-sizing: border-box;
   font-synthesis: none;
   text-rendering: optimizeLegibility;
@@ -35,4 +32,34 @@ body {
   min-width: 300px;
   background-color: var(--primary-bg);
   /* background-color: var(--primary-bg); */
+}
+
+.btn {
+  text-decoration: none;
+  text-transform: capitalize;
+  text-align: center;
+  color: var(--text);
+  padding: 7px 30px;
+  border-radius: 40px;
+  width: 100%;
+  min-width: max-content;
+  cursor: pointer;
+  border: none;
+}
+
+.outline-btn {
+  background-color: transparent;
+  border: 2px solid var(--button-border);
+}
+.outline-btn:hover {
+  color: var(--highlight);
+  border-color: var(--highlight);
+}
+
+.filled-btn {
+  background-color: var(--button);
+  border: 2px solid var(--button);
+}
+.filled-btn:hover {
+  background: linear-gradient(90deg, var(--button) 10%, var(--gradient) 100%);
 }

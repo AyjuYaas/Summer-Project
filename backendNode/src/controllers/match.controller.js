@@ -11,7 +11,7 @@ export async function getTherapist(req, res) {
         { _id: { $nin: currentUser.selected_therapists } },
         { availability: true },
       ], // Those that are not selected by the user and those are available
-    }).select("name image specialization");
+    }).select("name image rating experience specialization");
 
     res.status(200).json({
       success: true,

@@ -28,6 +28,11 @@ const therapistSchema = new mongoose.Schema(
       required: true,
       unique: true,
     },
+    gender: {
+      type: String,
+      enum: ["Male", "Female", "Other"],
+      required: true,
+    },
     specialization: [
       {
         type: String,

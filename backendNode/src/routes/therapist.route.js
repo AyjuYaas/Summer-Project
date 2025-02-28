@@ -1,5 +1,5 @@
 import express from "express";
-import { protectRoute } from "../middleware/therapistAuth.middle.js";
+import { protectRoute } from "../middleware/auth.middle.js";
 import updateTherapist from "../controllers/therapist.controller.js";
 import {
   getConversation,

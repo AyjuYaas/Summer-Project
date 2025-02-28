@@ -1,7 +1,7 @@
 .landing {
   position: relative;
   background-color: var(--footer-bg);
-  height: 60vh;
+  height: 90vh;
   min-height: 600px;
   display: flex;
   justify-content: center;
@@ -86,6 +86,7 @@
 @media (max-width: 1100px) {
   .landing {
     flex-wrap: wrap;
+    height: 60vh;
   }
   .landing .non-img {
     flex-direction: column;

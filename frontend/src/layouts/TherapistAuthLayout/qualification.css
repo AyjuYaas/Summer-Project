@@ -1,0 +1,82 @@
+/* ======== The entire panel =============  */
+.p-multiselect-panel {
+  border: 1px solid #d1d5db;
+  border-radius: 6px;
+  background: var(--secondary-bg);
+  box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.1);
+  width: 300px;
+}
+
+/* =========== Panel Header =============  */
+.p-multiselect-header {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0.5rem;
+  position: relative;
+}
+.p-multiselect-header .p-checkbox input[type="checkbox"] {
+  position: absolute;
+  height: 20px;
+}
+
+/* ============= Panel Items =============== */
+.p-multiselect-item {
+  display: flex;
+  align-items: center;
+  justify-content: start;
+  gap: 1rem;
+  padding: 10px;
+  font-size: 14px;
+  cursor: pointer;
+  transition: background 0.2s ease-in-out;
+  border-bottom: 1px solid white;
+}
+/* Remove border from last item  */
+.p-multiselect-item:last-child {
+  border-bottom: none;
+}
+.p-multiselect-item:hover {
+  background: #f3f4f6;
+}
+/* On selection of items  */
+.p-multiselect-item.p-highlight {
+  background-color: var(--highlight);
+  color: white;
+}
+.p-multiselect-items .p-checkbox input[type="checkbox"] {
+  display: none;
+}
+.p-multiselect-item span {
+  display: block;
+  white-space: normal;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  word-wrap: break-word;
+  max-width: 100%;
+}
+
+/* Token / Selection Display */
+.p-multiselect-token {
+  background: var(--footer-bg);
+  color: white;
+  padding: 4px 8px;
+  border-radius: 4px;
+  font-size: 12px;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  margin: 4px;
+}
+
+.p-multiselect-token-label {
+  white-space: normal;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  word-wrap: break-word;
+  max-width: 100%;
+}
+.p-chips-token-icon {
+  margin-left: 4px;
+  cursor: pointer;
+}

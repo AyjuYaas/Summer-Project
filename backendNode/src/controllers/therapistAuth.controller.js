@@ -15,6 +15,7 @@ export const signup = async (req, res) => {
     email,
     password,
     phone,
+    gender,
     specialization,
     experience,
     qualification,
@@ -27,6 +28,7 @@ export const signup = async (req, res) => {
       !email ||
       !password ||
       !phone ||
+      !gender ||
       !specialization ||
       !experience ||
       !qualification
@@ -58,6 +60,7 @@ export const signup = async (req, res) => {
       email,
       password,
       phone,
+      gender,
       specialization,
       experience,
       qualification,
@@ -125,12 +128,4 @@ export const login = async (req, res) => {
     console.log(`Error in therapist login controller: ${err}`);
     res.status(500).json({ success: false, message: "Server Error" });
   }
-};
-
-export const logout = async (req, res) => {
-  res.clearCookie("jwt");
-  res.status(200).json({
-    success: true,
-    message: "Logged out Successfully",
-  });
 };

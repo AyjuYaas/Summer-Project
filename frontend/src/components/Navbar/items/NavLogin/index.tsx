@@ -1,8 +1,8 @@
 import { JSX } from "react";
-import Button from "../../../Button/Button";
 import LoginLogout from "./LoginLogout";
 
 import "../../styles/navlogin.css";
+import { Link } from "react-router-dom";
 
 interface NavLinkProps {
   setOpenNavbar: React.Dispatch<React.SetStateAction<boolean>>;
@@ -12,7 +12,10 @@ export default function NavLogin({ setOpenNavbar }: NavLinkProps): JSX.Element {
   return (
     <div className="nav-login" onClick={() => setOpenNavbar(false)}>
       <LoginLogout />
-      <Button to="/find-therapist" content="get started" type="filled" />
+
+      <Link to="/find-therapist" className="btn filled-btn">
+        Get Started
+      </Link>
     </div>
   );
 }

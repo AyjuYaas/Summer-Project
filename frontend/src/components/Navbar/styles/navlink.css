@@ -31,6 +31,10 @@
   left: 0;
 }
 
+.nav-link-hr {
+  display: none;
+}
+
 /* ========== Set for active tabs ============ */
 .nav-links .active {
   position: relative;
@@ -54,6 +58,7 @@
     flex: 0;
   }
   .nav-link-hr {
+    display: block;
     border: 1px solid grey;
     margin: 20px 0;
   }

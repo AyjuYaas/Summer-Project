@@ -1,6 +1,6 @@
-import React from "react";
+import { JSX } from "react";
 
-export default function About(): React.ReactElement {
+export default function About(): JSX.Element {
   return (
     <div>
       <h1 className="top">This is About page</h1>

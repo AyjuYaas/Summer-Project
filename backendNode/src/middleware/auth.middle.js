@@ -1,5 +1,6 @@
 import jwt from "jsonwebtoken";
 import User from "../models/user.model.js";
+import Therapist from "../models/therapist.model.js";
 
 export const protectRoute = async (req, res, next) => {
   try {
@@ -26,9 +27,16 @@ export const protectRoute = async (req, res, next) => {
     }
 
     // Finally, if neither, then token is valid, thus find the user
-    const currentUser = await User.findById(decode.id);
+    let currentUser = await User.findById(decode.id);
+    let role = "user";
+
+    if (!currentUser) {
+      currentUser = await Therapist.findById(decode.id);
+      role = "therapist";
+    }
     // Send the user to the requesting function
     req.user = currentUser;
+    req.role = role;
     next();
   } catch (err) {
     console.log(`Error in auth middleware: ${err}`);
