@@ -1,9 +1,6 @@
 import { JSX } from "react";
+import ReviewLayout from "../layouts/NavLinksLayout/ReviewLayout";
 
 export default function Review(): JSX.Element {
-  return (
-    <div>
-      <h1 className="top">This is Review Page</h1>
-    </div>
-  );
+  return <ReviewLayout />;
 }

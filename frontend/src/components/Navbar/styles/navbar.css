@@ -33,7 +33,7 @@
   top: auto;
   display: none;
   cursor: pointer;
-  z-index: 23;
+  z-index: 30;
 }
 
 @media (min-width: 1700px) {
@@ -64,7 +64,7 @@
     background-color: var(--secondary-bg);
     transition: 0.3s ease-in-out;
     transform: translateY(-100vh);
-    z-index: 22;
+    z-index: 0;
   }
   .responsive-nav {
     transform: none;

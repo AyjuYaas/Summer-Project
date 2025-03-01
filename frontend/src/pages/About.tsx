@@ -1,9 +1,6 @@
 import { JSX } from "react";
+import AboutLayout from "../layouts/NavLinksLayout/AboutLayout";
 
 export default function About(): JSX.Element {
-  return (
-    <div>
-      <h1 className="top">This is About page</h1>
-    </div>
-  );
+  return <AboutLayout />;
 }

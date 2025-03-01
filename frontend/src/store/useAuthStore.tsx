@@ -88,7 +88,7 @@ export const useAuthStore = create<AuthState>((set) => ({
       set({ authUser: response.data.user, authType: "user" });
       toast.success("Account created successfully");
     } catch (error: any) {
-      toast.error(error.response.data.message || "Something went wrong");
+      toast.error("Something went wrong");
     } finally {
       set({ loading: false });
     }
@@ -102,7 +102,7 @@ export const useAuthStore = create<AuthState>((set) => ({
       set({ authUser: response.data.user, authType: "user" });
       toast.success("Logged in successfully");
     } catch (error: any) {
-      toast.error(error.response.data.message || "Something went wrong");
+      toast.error("Something went wrong");
     } finally {
       set({ loading: false });
     }
@@ -118,7 +118,7 @@ export const useAuthStore = create<AuthState>((set) => ({
       set({ authUser: response.data.therapist, authType: "therapist" });
       toast.success("Account created successfully");
     } catch (error: any) {
-      toast.error(error.response.data.message || "Something went wrong");
+      toast.error("Something went wrong");
     } finally {
       set({ loading: false });
     }
@@ -134,7 +134,7 @@ export const useAuthStore = create<AuthState>((set) => ({
       set({ authUser: response.data.therapist, authType: "therapist" });
       toast.success("Logged in successfully");
     } catch (error: any) {
-      toast.error(error.response.data.message || "Something went wrong");
+      toast.error("Something went wrong");
     } finally {
       set({ loading: false });
     }

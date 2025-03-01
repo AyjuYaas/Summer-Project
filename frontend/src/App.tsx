@@ -80,16 +80,7 @@ export default function App(): React.ReactElement {
             )
           }
         />
-        <Route
-          path="/find-therapist"
-          element={
-            authUser && authType === "user" ? (
-              <FindTherapist />
-            ) : (
-              <Navigate to="/user/login" />
-            )
-          }
-        />
+        <Route path="/find-therapist" element={<FindTherapist />} />
 
         {/* Therapist Routes */}
         <Route

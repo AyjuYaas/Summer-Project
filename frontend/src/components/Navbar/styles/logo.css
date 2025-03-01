@@ -12,16 +12,16 @@
   z-index: 30;
   letter-spacing: 2px;
 }
-.nav-logo .logo-img {
-  height: 3rem;
+.logo-img {
+  width: 4rem;
 }
-.nav-logo .logo-txt span:nth-child(even) {
+.logo-txt span:nth-child(even) {
   color: var(--highlight);
 }
 
 @media (min-width: 1700px) {
-  .nav-logo .logo-img {
-    height: 2.7vw;
+  .logo-img {
+    height: 2.5vw;
   }
 }
 
@@ -32,7 +32,16 @@
 }
 
 @media (max-width: 500px) {
-  .nav-logo .logo-txt {
+  .logo-txt {
     display: none;
+  }
+}
+
+@media (max-width: 360px) {
+  .logo-holder {
+    background-color: var(--secondary-bg);
+
+    padding: 20px 0px;
+    width: 79vw;
   }
 }

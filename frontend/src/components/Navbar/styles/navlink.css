@@ -7,6 +7,7 @@
   font-weight: 500;
   flex: 2;
   justify-content: center;
+  z-index: 20;
 }
 .nav-link-items {
   text-decoration: none;

@@ -28,6 +28,13 @@
 .nav-login .logout-menu {
   display: flex;
   gap: 0.5rem;
+  justify-content: center;
+  align-items: center;
+}
+
+.nav-login .logout-menu .profile-buttons {
+  display: flex;
+  gap: 0.5rem;
 }
 
 @media (min-width: 1700px) {
