@@ -27,7 +27,7 @@ const FooterLinks = (): JSX.Element => {
           </ul>
         </div>
 
-        <div className=" flex flex-col text-xl text-[var(--link-text)] font-medium gap-5 items-center justify-center items-center">
+        <div className=" flex flex-col text-xl text-[var(--link-text)] font-medium gap-5 justify-center items-center">
           <h1 className="text-[var(--white-text)]">Associate With Us</h1>
           <div className="flex flex-col gap-3 items-center justify-center">
             <Link to="/user/login" className="hover:text-[var(--button)]">
