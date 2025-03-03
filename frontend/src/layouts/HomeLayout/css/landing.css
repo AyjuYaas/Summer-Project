@@ -4,14 +4,15 @@
   height: 90vh;
   min-height: 600px;
   display: flex;
-  justify-content: center;
+  justify-content: space-between;
+  padding: 0rem 6rem;
 }
 
 .landing .holder {
   color: var(--white-text);
   display: flex;
   align-items: center;
-  justify-content: space-around;
+  justify-content: space-between;
   width: 100%;
   height: 90%;
 }
@@ -87,6 +88,7 @@
   .landing {
     flex-wrap: wrap;
     height: 60vh;
+    padding: 0rem 6rem;
   }
   .landing .non-img {
     flex-direction: column;
@@ -107,7 +109,7 @@
 
 @media (max-width: 700px) {
   .landing {
-    padding: 2rem;
+    padding: 2rem 6rem;
   }
 
   .landing .img {
@@ -123,6 +125,9 @@
 }
 
 @media (max-width: 400px) {
+  .landing {
+    padding: 2rem;
+  }
   .landing .heading {
     width: 100%;
     font-size: 2rem;

@@ -10,7 +10,7 @@ const router = express.Router();
 
 router.use(protectRoute);
 
-router.post("/update", updateTherapist);
+router.put("/update", updateTherapist);
 
 // To send messages
 router.post("/message/send", sendMessage);

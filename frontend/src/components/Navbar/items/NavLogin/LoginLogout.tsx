@@ -5,6 +5,7 @@ import "../../styles/navlogin.css";
 import { useAuthStore } from "../../../../store/useAuthStore";
 import { RiUserSettingsFill } from "react-icons/ri";
 import { IoLogOut } from "react-icons/io5";
+import defaultImage from "../../../../assets/images/default-profile.jpg";
 
 const LoginLogout = (): JSX.Element => {
   // ============ Handle Login of User ===============
@@ -18,7 +19,7 @@ const LoginLogout = (): JSX.Element => {
             className="profile-pic-div"
           >
             <img
-              src={authUser.image}
+              src={authUser.image || defaultImage}
               alt="profile-pic"
               className="profile-pic"
             />

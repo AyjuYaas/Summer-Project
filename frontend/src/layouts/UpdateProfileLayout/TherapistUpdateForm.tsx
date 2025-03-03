@@ -1,34 +1,46 @@
-import React, { JSX, useState } from "react";
+import { JSX, useRef, useState } from "react";
 import { useAuthStore } from "../../store/useAuthStore";
-import specializationData from "./data/specializations-data";
-import genderData from "./data/gender-data";
+import { useUserStore } from "../../store/useUserStore";
+import genderData from "../TherapistAuthLayout/data/gender-data";
+import specializationData from "../TherapistAuthLayout/data/specializations-data";
 import { MultiSelect } from "primereact/multiselect";
-import qualificationData from "./data/qualification-data";
-import QualificationLabel from "./data/QualificationLabel";
-import "./qualification.css";
+import qualificationData from "../TherapistAuthLayout/data/qualification-data";
+import QualificationLabel from "../TherapistAuthLayout/data/QualificationLabel";
 
-interface FormDataInterface {
+interface Therapist {
   name: string;
   email: string;
-  password: string;
   phone: string;
-  gender: string;
   specialization: string[];
+  gender: string;
+  image: string;
   experience: string;
-  qualification: [];
+  qualification: string[];
+  availability: boolean;
 }
 
-const SignupForm = (): JSX.Element => {
-  const [formData, setFormData] = useState<FormDataInterface>({
-    name: "",
-    email: "",
-    password: "",
-    phone: "",
-    gender: "",
-    specialization: [],
-    experience: "",
-    qualification: [],
+const TherapistUpdateForm = (): JSX.Element => {
+  const { authUser } = useAuthStore();
+
+  const fileInputRef = useRef<HTMLInputElement | null>(null);
+  const { loading, updateProfile } = useUserStore();
+
+  const [formData, setFormData] = useState<Therapist>({
+    name: authUser?.name || "",
+    email: authUser?.email || "",
+    phone: authUser?.phone || "",
+    specialization: (authUser as unknown as Therapist)?.specialization || [],
+    gender: (authUser as unknown as Therapist)?.gender || "",
+    image: authUser?.image || "",
+    experience: (authUser as unknown as Therapist)?.experience || "",
+    qualification: (authUser as unknown as Therapist)?.qualification || [],
+    availability: (authUser as unknown as Therapist)?.availability || true,
   });
+
+  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
+    e.preventDefault();
+    updateProfile(formData, "therapists");
+  };
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
@@ -53,15 +65,22 @@ const SignupForm = (): JSX.Element => {
     }));
   };
 
-  const { signupTherapist: signup, loading } = useAuthStore();
+  const handleImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files ? e.target.files[0] : "";
+    if (file) {
+      const reader = new FileReader();
+      reader.onloadend = () => {
+        setFormData({
+          ...formData,
+          image: typeof reader.result === "string" ? reader.result : "",
+        });
+      };
+      reader.readAsDataURL(file);
+    }
+  };
 
   return (
-    <form
-      onSubmit={(e: React.FormEvent<HTMLFormElement>) => {
-        e.preventDefault();
-        signup(formData);
-      }}
-    >
+    <form onSubmit={handleSubmit}>
       {/* ========== Name ========= */}
       <div>
         <label
@@ -78,8 +97,7 @@ const SignupForm = (): JSX.Element => {
           id="name"
           value={formData.name}
           onChange={handleChange}
-          placeholder="Your Name"
-          required
+          placeholder="Your New Name"
           className="block w-full px-3 py-4 border border-[var(--button-border)] rounded-lg focus:outline-1"
         />
       </div>
@@ -88,7 +106,7 @@ const SignupForm = (): JSX.Element => {
       <div>
         <label
           htmlFor="email"
-          className="block text-md font-medium text-[var(--highlight)] ml-0.5"
+          className="block text-md font-medium ml-0.5 text-[var(--highlight)]"
         >
           Email
         </label>
@@ -100,31 +118,7 @@ const SignupForm = (): JSX.Element => {
           id="email"
           value={formData.email}
           onChange={handleChange}
-          placeholder="Your email"
-          required
-          className="block w-full px-3 py-4 border border-[var(--button-border)] rounded-lg focus:outline-1"
-        />
-      </div>
-
-      {/* ============ Password ============= */}
-      <div>
-        <label
-          htmlFor="password"
-          className="block text-md font-medium text-[var(--highlight)] ml-0.5"
-        >
-          Password
-        </label>
-      </div>
-      <div className="mb-5">
-        <input
-          type="password"
-          name="password"
-          id="password"
-          value={formData.password}
-          onChange={handleChange}
-          placeholder="Your password"
-          minLength={6}
-          required
+          placeholder="Your New email"
           className="block w-full px-3 py-4 border border-[var(--button-border)] rounded-lg focus:outline-1"
         />
       </div>
@@ -133,7 +127,7 @@ const SignupForm = (): JSX.Element => {
       <div>
         <label
           htmlFor="phone"
-          className="block text-md font-medium text-[var(--highlight)] ml-0.5"
+          className="block text-md font-medium ml-0.5 text-[var(--highlight)]"
         >
           Phone
         </label>
@@ -145,10 +139,9 @@ const SignupForm = (): JSX.Element => {
           id="phone"
           value={formData.phone}
           onChange={handleChange}
-          placeholder="Your Phone"
-          pattern="\d{10}" // Ensures exactly 10 digits
-          maxLength={10} // Prevents more than 10 digits
-          required
+          placeholder="Your New Phone"
+          pattern="\d{10}"
+          maxLength={10}
           className="block w-full px-3 py-4 border border-[var(--button-border)] rounded-lg focus:outline-1"
         />
       </div>
@@ -164,7 +157,7 @@ const SignupForm = (): JSX.Element => {
       </div>
       <div className="mb-5 flex gap-6 items-center">
         {genderData.map((gender: string) => (
-          <label key={gender} className="flex items-center justify-center">
+          <label key={gender} className="flex items-center">
             <input
               type="radio"
               name="gender"
@@ -258,11 +251,45 @@ const SignupForm = (): JSX.Element => {
         </div>
       </div>
 
+      {/* ========== Image Update =========== */}
+      <div className="mb-5">
+        <label
+          htmlFor="upload"
+          className="block text-md font-medium text-[var(--highlight)] ml-0.5"
+        >
+          Profile Image
+        </label>
+        <button
+          type="button"
+          onClick={() => fileInputRef.current?.click()}
+          className={`text-center bg-[var(--highlight)] mt-1 px-8 py-2 rounded-lg text-[var(--white-text)] min-w-max border-0 font-medium cursor-pointer hover:bg-emerald-800 duration-75`}
+        >
+          Upload Image
+        </button>
+        <input
+          ref={fileInputRef}
+          type="file"
+          accept="image/*"
+          onChange={handleImageChange}
+          className="hidden"
+        />
+
+        {formData.image && (
+          <div className="my-5 ">
+            <img
+              src={formData.image}
+              alt={formData.name + "-img"}
+              className="w-40 h-full object-cover rounded-full border-2"
+            />
+          </div>
+        )}
+      </div>
+
       {/* ========== Sign up button =========== */}
       <div>
         <input
           type="submit"
-          value={loading ? "Signing up..." : "Signup"}
+          value={loading ? "Updating..." : "Update"}
           className={`text-center px-8 py-2 rounded-4xl text-[var(--text)] w-full min-w-max border-2 font-medium mt-5 ${
             loading
               ? "cursor-not-allowed bg-gray-400 border-gray-400"
@@ -274,4 +301,4 @@ const SignupForm = (): JSX.Element => {
     </form>
   );
 };
-export default SignupForm;
+export default TherapistUpdateForm;

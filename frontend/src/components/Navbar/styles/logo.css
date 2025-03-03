@@ -2,7 +2,7 @@
   display: flex;
   align-items: center;
   text-transform: capitalize;
-  justify-content: flex-start;
+  justify-content: start;
   gap: 10px;
   font-weight: 700;
   text-decoration: none;
@@ -27,7 +27,7 @@
 
 @media (max-width: 1100px) {
   .nav-logo {
-    padding: 1rem 1.5rem;
+    padding: 1rem 0rem;
   }
 }
 

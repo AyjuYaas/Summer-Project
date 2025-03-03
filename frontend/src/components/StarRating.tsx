@@ -10,13 +10,11 @@ const StarRating = ({ rating, color }: { rating: number; color: string }) => {
     <div className="flex">
       {/* Render full stars */}
       {[...Array(fullStars)].map((_, index) => (
-        <FaStar key={`full-${index}`} className={`text-${color}`} />
+        <FaStar key={`full-${index}`} className={`${color}`} />
       ))}
 
       {/* Render half star if applicable */}
-      {hasHalfStar && (
-        <FaStarHalfStroke key="half" className={`text-${color}`} />
-      )}
+      {hasHalfStar && <FaStarHalfStroke key="half" className={`${color}`} />}
 
       {/* Render empty stars (optional for UI balance) */}
       {[...Array(emptyStars)].map((_, index) => (

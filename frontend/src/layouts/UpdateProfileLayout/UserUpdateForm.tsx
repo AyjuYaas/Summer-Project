@@ -1,39 +1,57 @@
-import React, { JSX, useState } from "react";
+import { JSX, useRef, useState } from "react";
 import { useAuthStore } from "../../store/useAuthStore";
+import { useUserStore } from "../../store/useUserStore";
 import genderData from "../TherapistAuthLayout/data/gender-data";
 
-interface FormDataInterface {
+interface User {
   name: string;
   email: string;
-  password: string;
   phone: string;
   age: string;
   gender: string;
+  image: string;
 }
 
-const SignupForm = (): JSX.Element => {
-  const [formData, setFormData] = useState<FormDataInterface>({
-    name: "",
-    email: "",
-    password: "",
-    phone: "",
-    age: "",
-    gender: "",
+const UserUpdateForm = (): JSX.Element => {
+  const { authUser } = useAuthStore();
+
+  const fileInputRef = useRef<HTMLInputElement | null>(null);
+  const { loading, updateProfile } = useUserStore();
+
+  const [formData, setFormData] = useState<User>({
+    name: authUser?.name || "",
+    email: authUser?.email || "",
+    phone: authUser?.phone || "",
+    age: (authUser as unknown as User)?.age || "",
+    gender: (authUser as unknown as User)?.gender || "",
+    image: authUser?.image || "",
   });
+
+  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
+    e.preventDefault();
+    updateProfile(formData, "users");
+  };
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
   };
 
-  const { signupUser: signup, loading } = useAuthStore();
+  const handleImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files ? e.target.files[0] : "";
+    if (file) {
+      const reader = new FileReader();
+      reader.onloadend = () => {
+        setFormData({
+          ...formData,
+          image: typeof reader.result === "string" ? reader.result : "",
+        });
+      };
+      reader.readAsDataURL(file);
+    }
+  };
 
   return (
-    <form
-      onSubmit={(e: React.FormEvent<HTMLFormElement>) => {
-        e.preventDefault();
-        signup(formData);
-      }}
-    >
+    <form onSubmit={handleSubmit}>
       {/* ========== Name ========= */}
       <div>
         <label
@@ -50,8 +68,7 @@ const SignupForm = (): JSX.Element => {
           id="name"
           value={formData.name}
           onChange={handleChange}
-          placeholder="Your Name"
-          required
+          placeholder="Your New Name"
           className="block w-full px-3 py-4 border border-[var(--button-border)] rounded-lg focus:outline-1"
         />
       </div>
@@ -72,31 +89,7 @@ const SignupForm = (): JSX.Element => {
           id="email"
           value={formData.email}
           onChange={handleChange}
-          placeholder="Your email"
-          required
-          className="block w-full px-3 py-4 border border-[var(--button-border)] rounded-lg focus:outline-1"
-        />
-      </div>
-
-      {/* ============ Password ============= */}
-      <div>
-        <label
-          htmlFor="password"
-          className="block text-md font-medium text-[var(--highlight)] ml-0.5"
-        >
-          Password
-        </label>
-      </div>
-      <div className="mb-5">
-        <input
-          type="password"
-          name="password"
-          id="password"
-          value={formData.password}
-          onChange={handleChange}
-          placeholder="Your password"
-          minLength={6}
-          required
+          placeholder="Your New email"
           className="block w-full px-3 py-4 border border-[var(--button-border)] rounded-lg focus:outline-1"
         />
       </div>
@@ -117,10 +110,9 @@ const SignupForm = (): JSX.Element => {
           id="phone"
           value={formData.phone}
           onChange={handleChange}
-          placeholder="Your Phone"
-          pattern="\d{10}" // Ensures exactly 10 digits
-          maxLength={10} // Prevents more than 10 digits
-          required
+          placeholder="Your New Phone"
+          pattern="\d{10}"
+          maxLength={10}
           className="block w-full px-3 py-4 border border-[var(--button-border)] rounded-lg focus:outline-1"
         />
       </div>
@@ -141,8 +133,7 @@ const SignupForm = (): JSX.Element => {
           id="age"
           value={formData.age}
           onChange={handleChange}
-          placeholder="Enter your Age"
-          required
+          placeholder="Enter New your Age"
           className="block w-full px-3 py-4 border border-[var(--button-border)] rounded-lg focus:outline-1"
         />
       </div>
@@ -151,32 +142,67 @@ const SignupForm = (): JSX.Element => {
       <div>
         <label
           htmlFor="gender"
-          className="block text-md font-medium text-[var(--highlight)] ml-0.5"
+          className="block text-md font-medium text-[var(--text)] ml-0.5"
         >
           Gender
         </label>
       </div>
       <div className="mb-5 flex gap-6">
         {genderData.map((gender: string) => (
-          <label key={gender}>
+          <label key={gender} className="flex items-center">
             <input
               type="radio"
               name="gender"
               value={gender}
               checked={formData.gender === gender}
               onChange={handleChange}
-              className="mr-1 w-4 h-4"
+              className="peer hidden"
             />
+            <div className="mr-1 w-5 h-5 hover:cursor-pointer bg-[var(--cbg-three)] border-4 border-gray-200 peer-checked:bg-[var(--highlight)] rounded-full transition-all"></div>
             {gender}
           </label>
         ))}
+      </div>
+
+      {/* ========== Image Update =========== */}
+      <div className="mb-5">
+        <label
+          htmlFor="upload"
+          className="block text-md font-medium text-[var(--text)] ml-0.5"
+        >
+          Profile Image
+        </label>
+        <button
+          type="button"
+          onClick={() => fileInputRef.current?.click()}
+          className={`text-center bg-[var(--highlight)] mt-1 px-8 py-2 rounded-lg text-[var(--white-text)] min-w-max border-0 font-medium cursor-pointer hover:bg-emerald-800 duration-75`}
+        >
+          Upload Image
+        </button>
+        <input
+          ref={fileInputRef}
+          type="file"
+          accept="image/*"
+          onChange={handleImageChange}
+          className="hidden"
+        />
+
+        {formData.image && (
+          <div className="my-5">
+            <img
+              src={formData.image}
+              alt={formData.name + "-img"}
+              className="w-40 h-full object-cover rounded-full border-2"
+            />
+          </div>
+        )}
       </div>
 
       {/* ========== Sign up button =========== */}
       <div>
         <input
           type="submit"
-          value={loading ? "Signing up..." : "Signup"}
+          value={loading ? "Updating..." : "Update"}
           className={`text-center px-8 py-2 rounded-4xl text-[var(--text)] w-full min-w-max border-2 font-medium mt-5 ${
             loading
               ? "cursor-not-allowed bg-gray-400 border-gray-400"
@@ -188,4 +214,5 @@ const SignupForm = (): JSX.Element => {
     </form>
   );
 };
-export default SignupForm;
+
+export default UserUpdateForm;

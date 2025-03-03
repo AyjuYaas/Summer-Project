@@ -31,6 +31,7 @@ interface User {
   age: number;
   gender: string;
   image: string;
+  imagePublicId: string;
   problems: any;
   selected_therapists: string[];
   createdAt: string;
@@ -44,7 +45,9 @@ interface Therapist {
   email: string;
   password: string;
   image: string;
+  imagePublicId: string;
   phone: string;
+  gender: string;
   specification: string[];
   experience: number;
   qualification: string[];

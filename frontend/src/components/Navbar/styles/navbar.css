@@ -9,8 +9,8 @@
   justify-content: space-evenly;
   align-items: center;
   min-width: 215px;
-  padding: 1rem 2rem;
-  background: rgba(235, 239, 235, 0.7); /* Becomes solid */
+  padding: 1rem 6rem;
+  background: rgba(229, 229, 229, 0.6);
   backdrop-filter: blur(10px);
   transition: background 0.4s ease; /* Smooth transition */
   z-index: 30;
@@ -39,14 +39,14 @@
 @media (min-width: 1700px) {
   .nav {
     font-size: 1.4vw;
-    padding: 2.5vw;
+    padding: 2.5vw 6rem;
   }
 }
 
 @media (max-width: 1100px) {
   .nav {
     justify-content: flex-start;
-    padding: 0;
+    padding: 0 6rem;
     background-color: var(--secondary-bg);
   }
   .nav-inner {
@@ -72,11 +72,15 @@
 
   .menu-icon {
     display: inline;
+    right: 4rem;
   }
 }
 
-@media (max-height: 300px) {
+@media (max-width: 400px) {
   .nav {
-    /* position: initial; */
+    padding: 1rem 2rem;
+  }
+  .menu-icon {
+    right: 2rem;
   }
 }

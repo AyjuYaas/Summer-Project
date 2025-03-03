@@ -1,16 +1,9 @@
 .nav-login {
   display: flex;
-  /* flex-basis: 0;
-  flex-grow: 1; */
-  gap: 0.5rem;
   position: relative;
   align-items: center;
   margin-left: auto;
-}
-
-.nav-login .btn {
-  width: max-content;
-  height: max-content;
+  gap: 0.5rem;
 }
 
 .nav-login .profile-pic-div {
@@ -20,37 +13,50 @@
 }
 
 .nav-login .profile-pic {
-  width: 45px;
+  width: 55px;
+  height: 55px;
+  object-fit: fill;
+  object-position: center;
   border-radius: 100%;
   border: 2px solid var(--text);
 }
 
 .nav-login .logout-menu {
   display: flex;
-  gap: 0.5rem;
+  gap: 1rem;
   justify-content: center;
   align-items: center;
 }
 
 .nav-login .logout-menu .profile-buttons {
   display: flex;
-  gap: 0.5rem;
+  gap: 1rem;
+}
+
+.nav-login .logout-menu .btn {
+  width: 55px;
+  height: 55px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 2rem;
+  padding: 5px;
 }
 
 @media (min-width: 1700px) {
   .nav-login .profile-pic {
-    width: 2.5vw;
-    margin: auto;
+    width: 3.5vw;
+    height: 3.5vw;
   }
 }
 
 @media (max-width: 1100px) {
   .nav-login {
-    margin-top: 20px;
+    margin-top: 2rem;
     margin-right: auto;
     flex-direction: column;
     align-items: center;
-    gap: 1rem;
+    gap: 2rem;
     width: 100%;
   }
   .nav-login .logout-menu {
@@ -59,9 +65,5 @@
     align-items: center;
     width: 100%;
     gap: 1rem;
-  }
-
-  .nav-login .btn {
-    width: 100%;
   }
 }

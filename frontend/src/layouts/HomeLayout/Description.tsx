@@ -12,9 +12,10 @@ function Description(): JSX.Element {
         <div className="heading">
           <h1>
             Find the Right{" "}
-            <span style={{ color: "var(--highlight)" }}>Therapist</span>, Start{" "}
-            <span style={{ color: "var(--highlight-two)" }}>Your</span> Healing
-            Journey
+            <span style={{ color: "var(--highlight)" }} className="font-fancy">
+              Therapist
+            </span>
+            , Start Your Healing Journey
           </h1>
         </div>
 

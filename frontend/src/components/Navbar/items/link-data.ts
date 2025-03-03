@@ -5,8 +5,7 @@ interface navLink {
 
 const navLinks: navLink[] = [
   { name: "about", path: "/about" },
-  { name: "reviews", path: "/reviews" },
-  { name: "therapists", path: "/therapist-list" },
+  { name: "community", path: "/therapist-list" },
   { name: "contact", path: "/contact" },
 ];
 

@@ -11,10 +11,28 @@ export const updateProfile = async (req, res) => {
       // base64 format
       if (image.startsWith("data:image")) {
         try {
-          const uploadResponse = await cloudinary.uploader.upload(image);
-          updatedData.image = uploadResponse.secure_url;
+          if (!req.user.imagePublicId) {
+            const uploadResponse = await cloudinary.uploader.upload(image, {
+              crop: "auto",
+              width: 300,
+              height: 300,
+              gravity: "auto",
+            });
+            updatedData.image = uploadResponse.secure_url;
+            updatedData.imagePublicId = uploadResponse.public_id;
+          } else {
+            const uploadResponse = await cloudinary.uploader.upload(image, {
+              public_id: req.user.imagePublicId,
+              crop: "auto",
+              width: 300,
+              height: 300,
+              gravity: "auto",
+            });
+            updatedData.image = uploadResponse.secure_url;
+          }
         } catch (err) {
-          return status(400).json({
+          console.log(err);
+          return res.status(400).json({
             success: false,
             message: "Error uploading image. Profile cannot be updated!",
           });

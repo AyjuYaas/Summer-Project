@@ -10,8 +10,25 @@ export default async function updateTherapist(req, res) {
       // base 64 formal
       if (image.startsWith("data:image")) {
         try {
-          const uploadResponse = await cloudinary.uploader.upload(image);
-          updatedData.image = uploadResponse.secure_url;
+          if (!req.user.imagePublicId) {
+            const uploadResponse = await cloudinary.uploader.upload(image, {
+              crop: "auto",
+              width: 300,
+              height: 300,
+              gravity: "auto",
+            });
+            updatedData.image = uploadResponse.secure_url;
+            updatedData.imagePublicId = uploadResponse.public_id;
+          } else {
+            const uploadResponse = await cloudinary.uploader.upload(image, {
+              public_id: req.user.imagePublicId,
+              crop: "auto",
+              width: 300,
+              height: 300,
+              gravity: "auto",
+            });
+            updatedData.image = uploadResponse.secure_url;
+          }
         } catch (error) {
           return res.status(400).json({
             success: false,
@@ -22,7 +39,7 @@ export default async function updateTherapist(req, res) {
     }
 
     const updatedTherapist = await Therapist.findByIdAndUpdate(
-      req.therapist.id,
+      req.user._id,
       updatedData,
       { new: true }
     );

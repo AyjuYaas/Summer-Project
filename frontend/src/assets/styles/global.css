@@ -1,15 +1,26 @@
+@import url("https://fonts.googleapis.com/css2?family=Chewy&display=swap");
+@layer theme, base, components, utilities;
 @import "tailwindcss";
 
-:root {
-  font-family: Inter, system-ui, Avenir, Helvetica, Arial, sans-serif;
+@theme {
+  --font-fancy: "Chewy", system-ui;
+}
 
-  --primary-bg: #fdfbf1;
-  --secondary-bg: #ebefeb;
-  --third-bg: #f7f0e6;
+:root {
+  --primary-bg: #e5e5e5;
+  --secondary-bg: #e5e5e5;
+  --third-bg: #d1d8c7;
   --footer-bg: #303b36;
 
-  --text: #102518;
-  --highlight: #357960;
+  --cbg-one: #a3dcd5;
+  --cbg-two: #bddffa;
+  --cbg-three: #e7b89c;
+  --cbg-four: #d1d8c7;
+  --cbg-five: #d5bdaf;
+  /* --cbg-five: #a9927d; */
+
+  --text: #3a4344;
+  --highlight: #015950;
   --highlight-two: #a98467;
   --white-text: #f6f8ee;
   --link-text: #c2c5aa;
@@ -20,6 +31,10 @@
   --gradient: #addfff;
 }
 
+html {
+  scroll-behavior: smooth;
+}
+
 * {
   box-sizing: border-box;
   font-synthesis: none;
@@ -27,7 +42,6 @@
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
 }
-
 body {
   min-width: 300px;
   background-color: var(--primary-bg);
@@ -62,4 +76,30 @@ body {
 }
 .filled-btn:hover {
   background: linear-gradient(90deg, var(--button) 10%, var(--gradient) 100%);
+}
+
+/* Targeting WebKit-based browsers (Chrome, Edge, Safari) */
+.scrollbar::-webkit-scrollbar {
+  width: 8px; /* Scrollbar width */
+  height: 8px; /* Scrollbar height (for horizontal scrollbars) */
+  align-self: center;
+}
+
+/* Track (background) */
+.scrollbar::-webkit-scrollbar-track {
+  border-radius: 10px;
+  margin-left: 5rem;
+  margin-right: 5rem;
+}
+
+/* Thumb (draggable part) */
+.scrollbar::-webkit-scrollbar-thumb {
+  background: #4e4376; /* Thumb color */
+  border-radius: 10px;
+  height: 30px; /* Adjust the thumb length */
+}
+
+/* Hover effect */
+.scrollbar::-webkit-scrollbar-thumb:hover {
+  background: #2b5876;
 }

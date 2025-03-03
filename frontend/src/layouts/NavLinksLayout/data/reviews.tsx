@@ -6,57 +6,51 @@ interface Review {
 
 const reviews: Review[] = [
   {
-    name: "John",
+    name: "Liam",
     rating: 5,
-    review: "I like the platform.",
+    review:
+      "An amazing platform that truly understands mental health needs. The therapist recommendations were spot-on, and the entire process was seamless!",
   },
   {
-    name: "Emily",
+    name: "Isabella",
+    rating: 4.5,
+    review: "Really helpful service! The interface is smooth and easy to use.",
+  },
+  {
+    name: "Noah",
     rating: 4,
-    review: `Great experience, but the UI could be improved. Lorem ipsum dolor sit amet consectetur adipisicing elit. Illum asperiores ipsam magni totam, neque eligendi cum quasi voluptates rem velit distinctio, fugiat similique est perferendis natus corrupti enim ipsum? Culpa? Mollitia recusandae ea id ad perferendis dolorum unde. Veniam quidem ducimus blanditiis animi, voluptate numquam autem praesentium alias, quaerat sint quas itaque! Tempora dolorem culpa quibusdam perspiciatis placeat harum eum! Sunt, beatae deleniti? Accusamus, consectetur labore placeat dolorum nihil ex similique aliquid blanditiis alias ea atque fugiat ipsum provident tempore rem eum expedita? Temporibus aperiam provident modi inventore porro ad!`,
-  },
-  {
-    name: "Michael",
-    rating: 5,
-    review: "TheraFind made it so easy to find the right therapist for me!",
+    review:
+      "Good experience overall, but the initial setup was a bit confusing. Once I figured it out, everything went smoothly.",
   },
   {
     name: "Sophia",
+    rating: 5,
+    review:
+      "The best therapy platform I’ve come across! The video sessions are smooth, and I feel truly heard and understood. The therapist matching was also very accurate, and I felt comfortable discussing my issues right from the first session. I highly recommend this to anyone looking for professional support in a safe environment.",
+  },
+  {
+    name: "Ethan",
     rating: 4.2,
     review:
-      "Very helpful platform, but I wish there were more therapists available.",
-  },
-  {
-    name: "David",
-    rating: 5,
-    review:
-      "Seamless booking process and great therapists. Highly recommended!",
-  },
-  {
-    name: "Olivia",
-    rating: 4,
-    review: "Good service, but the response time could be a little faster.",
-  },
-  {
-    name: "Daniel",
-    rating: 5,
-    review:
-      "Life-changing platform. Finally found a therapist that truly understands me.",
-  },
-  {
-    name: "Emma",
-    rating: 4.5,
-    review: "Loved the experience! The video call feature is very smooth.",
-  },
-  {
-    name: "James",
-    rating: 5,
-    review: "Simple, efficient, and highly useful for mental health support.",
+      "Great service with professional therapists. However, I encountered minor glitches in the messaging feature. Hope they improve it soon!",
   },
   {
     name: "Ava",
+    rating: 5,
+    review:
+      "The convenience of booking sessions, the seamless video calls, and the quality of therapists make this platform stand out. I've tried other therapy apps, but none felt as intuitive and reliable as this one. The ability to choose from different therapists based on expertise and reviews helped me find the perfect match. I’m grateful for the positive impact it has had on my mental well-being!",
+  },
+  {
+    name: "Mason",
     rating: 4,
-    review: "Great service, but I hope they add more features in the future.",
+    review:
+      "Great experience, but I wish there were more therapists available.",
+  },
+  {
+    name: "Olivia",
+    rating: 4.5,
+    review:
+      "The platform is great, but I had some trouble with the payment process. The support team was helpful, though, and resolved my issue quickly. I appreciate the effort to make therapy more accessible.",
   },
 ];
 

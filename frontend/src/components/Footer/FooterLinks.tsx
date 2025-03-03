@@ -16,7 +16,7 @@ const FooterLinks = (): JSX.Element => {
       </div>
 
       <div className="w-full flex justify-center items-center flex-col gap-10 lg:flex-row lg:justify-around lg:items-start">
-        <div className="flex flex-col text-xl capitalize text-[var(--link-text)] font-medium max-w-max gap-5">
+        <div className="flex flex-col text-xl capitalize text-[var(--link-text)] font-medium max-w-max gap-5 items-center">
           <h1 className="text-[var(--white-text)]">Company</h1>
           <ul className="flex flex-col gap-3 justify-center items-center">
             {navLinks.map(({ name, path }: PageLink, index: number) => (
@@ -27,7 +27,7 @@ const FooterLinks = (): JSX.Element => {
           </ul>
         </div>
 
-        <div className=" flex flex-col text-xl text-[var(--link-text)] font-medium gap-5 items-center justify-center text-center">
+        <div className=" flex flex-col text-xl text-[var(--link-text)] font-medium gap-5 items-center justify-center items-center">
           <h1 className="text-[var(--white-text)]">Associate With Us</h1>
           <div className="flex flex-col gap-3 items-center justify-center">
             <Link to="/user/login" className="hover:text-[var(--button)]">

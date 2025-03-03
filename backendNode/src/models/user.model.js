@@ -36,7 +36,11 @@ const userSchema = new mongoose.Schema(
     image: {
       type: String,
       default:
-        "https://res.cloudinary.com/dfotn4ovh/image/upload/v1739808245/TheraFind/vdyzkxfy0oqyam37fozm.jpg",
+        "https://res.cloudinary.com/dfotn4ovh/image/upload/v1740918491/default-profile_e206nk.jpg",
+    },
+    imagePublicId: {
+      type: String,
+      default: "",
     },
     problems: { type: mongoose.Schema.Types.Mixed, default: { none: 0 } },
     selected_therapists: [

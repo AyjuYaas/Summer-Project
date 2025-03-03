@@ -3,28 +3,32 @@ import { Routes, Route, Navigate } from "react-router-dom";
 import ReactLoading from "react-loading";
 
 // ======== Nav Routes =============
+import Navbar from "./components/Navbar";
 import Home from "./pages/Home";
 import About from "./pages/About";
 import Contact from "./pages/Contact";
-import Review from "./pages/Review";
 import TherapistList from "./pages/TherapistList";
 
 // ======== User Routes =============
 import Login from "./pages/UserLogin";
 import UserDashboard from "./pages/UserDashboard";
+
 import FindTherapist from "./pages/FindTherapist";
 
 // ======== Therapist Routes =============
 import TherapistLogin from "./pages/TherapistLogin";
+import TherapistDashboard from "./pages/TherapistDashboard";
+
+// ======== Profile Update Routes =============
+import UpdateProfile from "./pages/UpdateProfile";
 
 // ======== Default Routes =============
 import Admin from "./pages/Admin";
 import NotFound from "./pages/NotFound";
 
-import Navbar from "./components/Navbar";
+// ======== Auth and Toast =============
 import { useAuthStore } from "./store/useAuthStore";
 import { Toaster } from "react-hot-toast";
-import TherapistDashboard from "./pages/TherapistDashboard";
 
 export default function App(): React.ReactElement {
   const { checkAuth, authUser, authType, checkingAuth } = useAuthStore();
@@ -45,11 +49,12 @@ export default function App(): React.ReactElement {
     <div>
       <Toaster />
       <Navbar />
+
       <Routes>
         {/* Default Nav Routes  */}
         <Route path="/" element={<Home />} />
         <Route path="/about" element={<About />} />
-        <Route path="/reviews" element={<Review />} />
+
         <Route path="/therapist-list" element={<TherapistList />} />
         <Route path="/contact" element={<Contact />} />
 
@@ -80,6 +85,16 @@ export default function App(): React.ReactElement {
             )
           }
         />
+        <Route
+          path="/user/update-profile"
+          element={
+            authUser && authType === "user" ? (
+              <UpdateProfile />
+            ) : (
+              <Navigate to="/user/login" />
+            )
+          }
+        />
         <Route path="/find-therapist" element={<FindTherapist />} />
 
         {/* Therapist Routes */}
@@ -100,6 +115,16 @@ export default function App(): React.ReactElement {
           element={
             authUser && authType === "therapist" ? (
               <TherapistDashboard />
+            ) : (
+              <Navigate to="/therapist/login" />
+            )
+          }
+        />
+        <Route
+          path="/therapist/update-profile"
+          element={
+            authUser && authType === "therapist" ? (
+              <UpdateProfile />
             ) : (
               <Navigate to="/therapist/login" />
             )
