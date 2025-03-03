@@ -156,9 +156,8 @@ const UserUpdateForm = (): JSX.Element => {
               value={gender}
               checked={formData.gender === gender}
               onChange={handleChange}
-              className="peer hidden"
+              className="mr-1 w-4 h-4"
             />
-            <div className="mr-1 w-5 h-5 hover:cursor-pointer bg-[var(--cbg-three)] border-4 border-gray-200 peer-checked:bg-[var(--highlight)] rounded-full transition-all"></div>
             {gender}
           </label>
         ))}
@@ -172,13 +171,6 @@ const UserUpdateForm = (): JSX.Element => {
         >
           Profile Image
         </label>
-        <button
-          type="button"
-          onClick={() => fileInputRef.current?.click()}
-          className={`text-center bg-[var(--highlight)] mt-1 px-8 py-2 rounded-lg text-[var(--white-text)] min-w-max border-0 font-medium cursor-pointer hover:bg-emerald-800 duration-75`}
-        >
-          Upload Image
-        </button>
         <input
           ref={fileInputRef}
           type="file"
@@ -196,6 +188,13 @@ const UserUpdateForm = (): JSX.Element => {
             />
           </div>
         )}
+        <button
+          type="button"
+          onClick={() => fileInputRef.current?.click()}
+          className={`text-center bg-[#2f4858] text-[white] hover:bg-[#565b70] duration-100 mt-1 px-8 py-2 rounded-lg min-w-max border-0 font-medium cursor-pointer`}
+        >
+          Upload Image
+        </button>
       </div>
 
       {/* ========== Sign up button =========== */}
@@ -203,10 +202,10 @@ const UserUpdateForm = (): JSX.Element => {
         <input
           type="submit"
           value={loading ? "Updating..." : "Update"}
-          className={`text-center px-8 py-2 rounded-4xl text-[var(--text)] w-full min-w-max border-2 font-medium mt-5 ${
+          className={`text-center px-8 py-3 rounded-4xl text-[var(--text)] w-full min-w-max font-medium mt-5 ${
             loading
-              ? "cursor-not-allowed bg-gray-400 border-gray-400"
-              : "cursor-pointer filled-btn"
+              ? "cursor-not-allowed bg-[#a18691]"
+              : "cursor-pointer bg-[#2f4858] text-[white] hover:bg-[#565b70] duration-100"
           }`}
           disabled={loading}
         />

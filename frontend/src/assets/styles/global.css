@@ -71,11 +71,14 @@ body {
 }
 
 .filled-btn {
-  background-color: var(--button);
-  border: 2px solid var(--button);
+  /* background-color: var(--button); */
+  background-color: #b2c7b4;
+  border: 3px solid #b2c7b4;
+  transition: background 0.3s ease-in-out;
 }
 .filled-btn:hover {
-  background: linear-gradient(90deg, var(--button) 10%, var(--gradient) 100%);
+  background-color: #90ada1;
+  background-position: right top;
 }
 
 /* Targeting WebKit-based browsers (Chrome, Edge, Safari) */

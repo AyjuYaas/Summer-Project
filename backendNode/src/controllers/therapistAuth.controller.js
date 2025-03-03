@@ -38,6 +38,13 @@ export const signup = async (req, res) => {
         message: "All fields are required",
       });
     }
+    // ============== Email Validation ============
+    if (!validator.validate(email)) {
+      return res.status(400).json({
+        success: false,
+        message: "Invalid Email Address",
+      });
+    }
     // =========== Check if the password is less than 6 ===========
     if (password.length < 6) {
       return res.status(400).json({

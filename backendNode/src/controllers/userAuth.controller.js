@@ -1,5 +1,6 @@
 import User from "../models/user.model.js";
 import jwt from "jsonwebtoken";
+import validator from "email-validator";
 
 // =========== Creates a token fot the user ===============
 const signToken = (id) => {
@@ -22,6 +23,13 @@ export const signup = async (req, res) => {
         message: "All fields are required",
       });
     }
+    // ============== Email Validation ============
+    if (!validator.validate(email)) {
+      return res.status(400).json({
+        success: false,
+        message: "Invalid Email Address",
+      });
+    }
     // =========== Check if the password is less than 6 ===========
     if (password.length < 6) {
       return res.status(400).json({
@@ -29,7 +37,6 @@ export const signup = async (req, res) => {
         message: "Password must be at least 6 characters",
       });
     }
-
     // ============== Check if the phone-number is 10 digits ============
     if (phone.length < 10 || phone.length > 10) {
       return res.status(400).json({

@@ -15,7 +15,7 @@ const AboutLayout = (): JSX.Element => {
             <span className="font-fancy tracking-wider">Therafind</span>
           </div>
 
-          <p className="md:text-3xl text-justify font-light ">
+          <p className="md:text-3xl text-justify font-light leading-11">
             TheraFind is more than just a project, it is an idea, a vision, and
             a step toward in making therapy accessible to everyone. This
             platform was conceptualized as part of the{" "}
@@ -33,7 +33,7 @@ const AboutLayout = (): JSX.Element => {
             <span className="font-fancy tracking-wider">Vision</span>
           </div>
 
-          <p className="md:text-3xl text-justify font-light">
+          <p className="md:text-3xl text-justify font-light leading-11">
             The core idea behind TheraFind is simple yet impactful: creating a
             space where individuals can easily find the right therapist based on
             their needs. In a world where mental health is often overlooked or
@@ -49,7 +49,7 @@ const AboutLayout = (): JSX.Element => {
             <span className="font-fancy tracking-wider">Purpose</span>
           </div>
 
-          <p className="md:text-3xl text-justify font-light">
+          <p className="md:text-3xl text-justify font-light leading-11">
             While TheraFind remains an academic requirement for the successful
             completion of the BIM 6th Semester Summer Project, its foundation is
             built on a real-world problem making therapy available to all. This

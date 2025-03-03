@@ -1,6 +1,7 @@
 import cloudinary from "../config/cloudinary.js";
 import User from "../models/user.model.js";
 import axios from "axios";
+import { validate } from "email-validator";
 
 export const updateProfile = async (req, res) => {
   try {
@@ -38,6 +39,21 @@ export const updateProfile = async (req, res) => {
           });
         }
       }
+    }
+
+    // ============== Email Validation ============
+    if (!validate(updatedData.email)) {
+      return res.status(400).json({
+        success: false,
+        message: "Invalid Email Address",
+      });
+    }
+    // ============== Check if the phone-number is 10 digits ============
+    if (updatedData.phone.length < 10 || updatedData.phone.length > 10) {
+      return res.status(400).json({
+        success: false,
+        message: "Phone number should be 10 digits",
+      });
     }
 
     const updatedUser = await User.findByIdAndUpdate(

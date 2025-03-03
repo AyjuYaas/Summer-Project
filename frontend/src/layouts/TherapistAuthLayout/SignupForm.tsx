@@ -171,9 +171,8 @@ const SignupForm = (): JSX.Element => {
               value={gender}
               checked={formData.gender === gender}
               onChange={handleChange}
-              className="peer hidden"
+              className="mr-1 w-4 h-4"
             />
-            <div className="mr-1 w-5 h-5 hover:cursor-pointer bg-[var(--cbg-three)] border-4 border-gray-200 peer-checked:bg-[var(--highlight)] rounded-full transition-all"></div>
             {gender}
           </label>
         ))}
@@ -263,10 +262,10 @@ const SignupForm = (): JSX.Element => {
         <input
           type="submit"
           value={loading ? "Signing up..." : "Signup"}
-          className={`text-center px-8 py-2 rounded-4xl text-[var(--text)] w-full min-w-max border-2 font-medium mt-5 ${
+          className={`text-center px-8 py-3 rounded-4xl w-full min-w-max font-medium mt-5 ${
             loading
-              ? "cursor-not-allowed bg-gray-400 border-gray-400"
-              : "cursor-pointer filled-btn"
+              ? "cursor-not-allowed bg-[#80a5ad]"
+              : "cursor-pointer bg-[#45646d] text-white hover:bg-[#2f4858] duration-100"
           }`}
           disabled={loading}
         />

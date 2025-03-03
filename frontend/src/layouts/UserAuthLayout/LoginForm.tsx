@@ -71,10 +71,10 @@ const LoginForm = (): JSX.Element => {
         <input
           type="submit"
           value={loading ? "Logging in..." : "Login"}
-          className={`text-center px-8 py-2 rounded-4xl text-[var(--text)] w-full min-w-max border-2 font-medium mt-5 ${
+          className={`text-center px-8 py-3 rounded-4xl text-[var(--text)] w-full min-w-max font-medium mt-5 ${
             loading
-              ? "cursor-not-allowed bg-gray-400 border-gray-400"
-              : "cursor-pointer filled-btn"
+              ? "cursor-not-allowed bg-[#a18691]"
+              : "cursor-pointer bg-[#2f4858] text-[white] hover:bg-[#565b70] duration-100"
           }`}
           disabled={loading}
         />

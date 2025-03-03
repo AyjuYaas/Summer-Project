@@ -31,7 +31,7 @@ const LoginLogout = (): JSX.Element => {
                   ? "/user/update-profile"
                   : "/therapist/update-profile"
               }
-              className="btn filled-btn"
+              className={`btn filled-btn `}
             >
               <RiUserSettingsFill />
             </Link>
