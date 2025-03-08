@@ -29,13 +29,21 @@ import NotFound from "./pages/NotFound";
 // ======== Auth and Toast =============
 import { useAuthStore } from "./store/useAuthStore";
 import { Toaster } from "react-hot-toast";
+import Chat from "./pages/Chat";
+import { useNavStore } from "./store/useNavStore";
+import GetStarted from "./pages/GetStarted";
 
 export default function App(): React.ReactElement {
   const { checkAuth, authUser, authType, checkingAuth } = useAuthStore();
+  const { getTherapists } = useNavStore();
 
   useEffect(() => {
     checkAuth();
   }, [checkAuth]);
+
+  useEffect(() => {
+    getTherapists();
+  }, [getTherapists]);
 
   if (checkingAuth)
     return (
@@ -74,6 +82,13 @@ export default function App(): React.ReactElement {
           }
         />
 
+        <Route
+          path="/get-started"
+          element={
+            !authUser ? <GetStarted /> : <Navigate to="/user/find-therapist" />
+          }
+        />
+
         {/* User Routes */}
         <Route
           path="/user/home"
@@ -95,7 +110,16 @@ export default function App(): React.ReactElement {
             )
           }
         />
-        <Route path="/find-therapist" element={<FindTherapist />} />
+        <Route
+          path="/user/find-therapist"
+          element={
+            authUser && authType === "user" ? (
+              <FindTherapist />
+            ) : (
+              <Navigate to="/get-started" />
+            )
+          }
+        />
 
         {/* Therapist Routes */}
         <Route
@@ -129,6 +153,12 @@ export default function App(): React.ReactElement {
               <Navigate to="/therapist/login" />
             )
           }
+        />
+
+        {/* Chat Page */}
+        <Route
+          path="chat/:id"
+          element={authUser ? <Chat /> : <Navigate to="/user/login" />}
         />
 
         {/* Admin Route */}

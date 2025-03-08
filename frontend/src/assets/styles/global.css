@@ -45,7 +45,6 @@ html {
 body {
   min-width: 300px;
   background-color: var(--primary-bg);
-  /* background-color: var(--primary-bg); */
 }
 
 .btn {

@@ -4,6 +4,7 @@ import { useUserStore } from "../../store/useUserStore";
 import genderData from "../TherapistAuthLayout/data/gender-data";
 import specializationData from "../TherapistAuthLayout/data/specializations-data";
 import { MultiSelect } from "primereact/multiselect";
+import Switch from "react-switch";
 import qualificationData from "../TherapistAuthLayout/data/qualification-data";
 import QualificationLabel from "../TherapistAuthLayout/data/QualificationLabel";
 
@@ -34,7 +35,7 @@ const TherapistUpdateForm = (): JSX.Element => {
     image: authUser?.image || "",
     experience: (authUser as unknown as Therapist)?.experience || "",
     qualification: (authUser as unknown as Therapist)?.qualification || [],
-    availability: (authUser as unknown as Therapist)?.availability || true,
+    availability: (authUser as unknown as Therapist)?.availability || false,
   });
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
@@ -44,6 +45,10 @@ const TherapistUpdateForm = (): JSX.Element => {
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
+  };
+
+  const handleAvailabilityChange = (e: boolean) => {
+    setFormData({ ...formData, availability: e });
   };
 
   const handleSpecializationChange = (
@@ -81,6 +86,23 @@ const TherapistUpdateForm = (): JSX.Element => {
 
   return (
     <form onSubmit={handleSubmit}>
+      {/* ========== Availability ========= */}
+      <div className="mb-1">
+        <label
+          htmlFor="Availability"
+          className="block text-md font-medium text-[var(--highlight)] ml-0.5"
+        >
+          Availability
+        </label>
+      </div>
+      <div className="mb-5">
+        <Switch
+          onChange={handleAvailabilityChange}
+          checked={formData.availability}
+          className="react-switch"
+        />
+      </div>
+
       {/* ========== Name ========= */}
       <div>
         <label

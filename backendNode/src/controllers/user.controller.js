@@ -48,6 +48,7 @@ export const updateProfile = async (req, res) => {
         message: "Invalid Email Address",
       });
     }
+
     // ============== Check if the phone-number is 10 digits ============
     if (updatedData.phone.length < 10 || updatedData.phone.length > 10) {
       return res.status(400).json({
@@ -84,20 +85,20 @@ export const problem = async (req, res) => {
 
     const { confidence_scores } = response.data;
 
-    const filteredProblems = Object.fromEntries(
-      Object.entries(confidence_scores).filter(([_, value]) => value > 0.1)
-    );
+    const filteredProblems = Object.entries(confidence_scores)
+      .filter(([_, value]) => value > 0.1)
+      .map(([problem, score]) => ({ problem, score }));
 
     const updatedUser = await User.findByIdAndUpdate(
       req.user._id,
       {
-        $set: { problems: filteredProblems },
+        $set: { problemText: problem, problems: filteredProblems },
       },
       { new: true }
     );
     res.status(200).json({
       success: true,
-      user: updatedUser,
+      problems: updatedUser,
     });
   } catch (error) {
     console.log(`Error in problem of user: ${error}`);

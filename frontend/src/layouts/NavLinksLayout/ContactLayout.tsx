@@ -8,7 +8,7 @@ export default function ContactLayout(): JSX.Element {
   return (
     <div>
       <div className="max-h-full py-15 px-5 flex items-center justify-center">
-        <div className="p-10 md:p-15 flex flex-col bg-[var(--cbg-one)] w-max sm:w-150 md:w-200 mx-auto rounded-4xl">
+        <div className="p-10 md:p-15 flex flex-col bg-[var(--cbg-one)] w-max sm:w-150 md:w-200 mx-auto rounded-4xl shadow-2xl">
           <div className="text-5xl xl:text-6xl font-bold text-[var(--text)] mb-15 flex flex-col items-end">
             <span className="font-light">Contact</span>
             <span className="font-fancy tracking-wider">Details</span>

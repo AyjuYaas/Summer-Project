@@ -44,7 +44,7 @@ const AuthFormTherapist = (): JSX.Element => {
       </div>
       <Link
         to="/user/login"
-        className="text-[var(--highlight)] text-center font-bold hover:text-emerald-500 transition-colors duration-200 underline underline-offset-2 mt-10 xl:text-2xl"
+        className="text-[var(--highlight)] text-center font-bold hover:text-[var(--highlight-two)] transition-colors duration-200 underline underline-offset-2 mt-10 xl:text-2xl"
       >
         Switch to User Mode?
       </Link>

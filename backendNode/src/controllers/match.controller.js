@@ -11,7 +11,7 @@ export async function getTherapist(req, res) {
         { _id: { $nin: currentUser.selected_therapists } },
         { availability: true },
       ], // Those that are not selected by the user and those are available
-    }).select("name image rating experience specialization");
+    }).select("_id name image rating experience specialization");
 
     res.status(200).json({
       success: true,
@@ -38,7 +38,7 @@ export async function getRecommendation(req, res) {
         { _id: { $nin: currentUser.selected_therapists } },
         { availability: true },
       ], // That specialize in the users problems
-    }).select("name image specialization rating");
+    }).select("_id name image specialization experience rating");
 
     res.status(200).json({
       success: true,
@@ -86,15 +86,26 @@ export async function selectTherapist(req, res) {
 
 export async function getMatches(req, res) {
   try {
-    const user = await User.findById(req.user._id).populate(
-      "selected_therapists",
-      "name image"
-    );
+    if (req.role === "user") {
+      const user = await User.findById(req.user._id).populate(
+        "selected_therapists",
+        "_id name image"
+      );
 
-    res.status(200).json({
-      success: true,
-      select_therapists: user.selected_therapists,
-    });
+      res.status(200).json({
+        success: true,
+        matches: user.selected_therapists,
+      });
+    } else {
+      const therapist = await Therapist.findById(req.user._id).populate(
+        "matched_user",
+        "_id name image"
+      );
+      res.status(200).json({
+        success: true,
+        matches: therapist.matched_user,
+      });
+    }
   } catch (error) {
     console.log(`Error in getTherapist ${error}`);
     res.status(500).json({

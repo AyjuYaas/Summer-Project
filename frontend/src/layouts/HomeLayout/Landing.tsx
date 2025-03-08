@@ -25,7 +25,7 @@ export default function Landing(): JSX.Element {
 
           <div className="content">
             <p>Match with the best Therapists around the world.</p>
-            <Link to="/find-therapist" className="btn filled-btn">
+            <Link to="/get-started" className="btn filled-btn">
               Start Here
             </Link>
           </div>

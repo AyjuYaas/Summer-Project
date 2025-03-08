@@ -1,5 +1,6 @@
 import cloudinary from "../config/cloudinary.js";
 import Therapist from "../models/therapist.model.js";
+import { validate } from "email-validator";
 
 export default async function updateTherapist(req, res) {
   try {
@@ -36,6 +37,21 @@ export default async function updateTherapist(req, res) {
           });
         }
       }
+    }
+
+    // ============== Email Validation ============
+    if (!validate(updatedData.email)) {
+      return res.status(400).json({
+        success: false,
+        message: "Invalid Email Address",
+      });
+    }
+    // ============== Check if the phone-number is 10 digits ============
+    if (updatedData.phone.length < 10 || updatedData.phone.length > 10) {
+      return res.status(400).json({
+        success: false,
+        message: "Phone number should be 10 digits",
+      });
     }
 
     const updatedTherapist = await Therapist.findByIdAndUpdate(

@@ -45,15 +45,7 @@ const IndividualTherapist = ({
             <span className="text-[#00927f] text-lg sm:text-xl xl:text-2xl">
               Experience
             </span>
-            <span
-              className="font-medium text-2xl md:text-3xl"
-              style={{
-                background:
-                  "-webkit-radial-gradient(circle, #2b5876 0%, #4e4376 51%, #2b5876 100%)",
-                WebkitBackgroundClip: "text",
-                WebkitTextFillColor: "transparent",
-              }}
-            >
+            <span className="font-medium text-2xl md:text-3xl text-[var(--text)]">
               {therapist.experience} years
             </span>
           </p>
@@ -63,15 +55,7 @@ const IndividualTherapist = ({
             <span className="text-[#00927f] text-lg sm:text-xl xl:text-2xl">
               Specialization
             </span>{" "}
-            <ul
-              className="flex flex-col justify-center items-center font-extrabold text-lg md:text-xl lg:text-2xl"
-              style={{
-                background:
-                  "-webkit-radial-gradient(circle, #2b5876 0%, #4e4376 51%, #2b5876 100%)",
-                WebkitBackgroundClip: "text",
-                WebkitTextFillColor: "transparent",
-              }}
-            >
+            <ul className="flex flex-col justify-center items-center font-extrabold text-lg md:text-xl lg:text-2xl text-[var(--text)]">
               {therapist.specialization
                 .slice(0, 2)
                 .map((content: string, index: number) => (

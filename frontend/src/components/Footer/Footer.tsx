@@ -15,7 +15,7 @@ const Footer = (): JSX.Element => {
         <Link
           className="btn filled-btn text-2xl font-bold"
           style={{ width: "max-content" }}
-          to="/find-therapist"
+          to="/get-started"
         >
           Get Started
         </Link>

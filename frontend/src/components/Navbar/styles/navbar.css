@@ -63,7 +63,7 @@
     justify-content: flex-start;
     background-color: var(--secondary-bg);
     transition: 0.3s ease-in-out;
-    transform: translateY(-100vh);
+    transform: translateY(-150%);
     z-index: 0;
   }
   .responsive-nav {
@@ -78,7 +78,7 @@
 
 @media (max-width: 400px) {
   .nav {
-    padding: 1rem 2rem;
+    padding: 1rem 4.3rem;
   }
   .menu-icon {
     right: 2rem;

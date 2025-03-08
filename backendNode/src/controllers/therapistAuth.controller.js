@@ -1,5 +1,6 @@
 import Therapist from "../models/therapist.model.js";
 import jwt from "jsonwebtoken";
+import validator from "email-validator";
 
 // Create a new token based on id
 const signToken = (id) => {

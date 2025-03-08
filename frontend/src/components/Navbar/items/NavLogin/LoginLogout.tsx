@@ -45,7 +45,7 @@ const LoginLogout = (): JSX.Element => {
           <Link to="/user/login" className="btn outline-btn">
             Login
           </Link>
-          <Link to="/find-therapist" className="btn filled-btn">
+          <Link to="/get-started" className="btn filled-btn">
             Get Started
           </Link>
         </>

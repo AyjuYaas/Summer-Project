@@ -9,7 +9,7 @@ interface Reason {
 const WhyTheraFind = (): JSX.Element => {
   return (
     <div
-      className="mx-auto p-10 flex flex-col gap-10 justify-center items-center h-[600px] "
+      className="mx-auto p-10 flex flex-col gap-10 justify-center items-center h-[600px]"
       style={{ backgroundColor: "var(--third-bg)" }}
     >
       <h1 className="font-bold text-center text-[1.9rem] md:text-[3vw] tracking-wider text-[var(--text)]">

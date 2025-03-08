@@ -42,7 +42,8 @@ const userSchema = new mongoose.Schema(
       type: String,
       default: "",
     },
-    problems: { type: mongoose.Schema.Types.Mixed, default: { none: 0 } },
+    problemText: { type: String, default: "" },
+    problems: { type: mongoose.Schema.Types.Array, default: [] },
     selected_therapists: [
       { type: mongoose.Schema.Types.ObjectId, ref: "Therapist" },
     ],

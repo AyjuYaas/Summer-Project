@@ -19,6 +19,7 @@
   object-position: center;
   border-radius: 100%;
   border: 2px solid var(--text);
+  background-color: white;
 }
 
 .nav-login .logout-menu {

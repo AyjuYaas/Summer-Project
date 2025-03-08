@@ -22,6 +22,11 @@ interface signupParamsTherapist {
   qualification: [];
 }
 
+interface Problems {
+  problem: string;
+  score: number;
+}
+
 interface User {
   _id: string;
   name: string;
@@ -32,7 +37,8 @@ interface User {
   gender: string;
   image: string;
   imagePublicId: string;
-  problems: any;
+  problemText: string;
+  problems: Problems[];
   selected_therapists: string[];
   createdAt: string;
   updatedAt: string;

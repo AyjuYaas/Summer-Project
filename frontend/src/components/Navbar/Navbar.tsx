@@ -25,7 +25,7 @@ export default function Navbar(): JSX.Element {
       document.body.style.overflowY = "visible";
     }
     return () => {
-      document.body.style.overflowY = "visible"; // Reset overflow when component unmounts
+      document.body.style.overflowY = "hidden"; // Reset overflow when component unmounts
     };
   }, [openNavbar]);
 
