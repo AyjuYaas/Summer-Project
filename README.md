@@ -131,14 +131,14 @@ cd Summer-Project
 
 ### Node.js Backend (`.env`)
 
-PORT=5000
-MONGO_URL=mongodb://127.0.0.1:27017/TheraFind
-JWT_SECRET=your_jwt_secret
-NODE_ENV=production
-CLOUDINARY_CLOUD_NAME=<Your Cloudinary Cloud Name>
-CLOUDINARY_API_KEY=<Your Cloudinary API KEY>
-CLOUDINARY_API_SECRET=<Your Cloudinary API SECRET>
-FLASK_URL=http://127.0.0.1:5002/predict
+- PORT=5000
+- MONGO_URL=mongodb://127.0.0.1:27017/TheraFind
+- JWT_SECRET=your_jwt_secret
+- NODE_ENV=production
+- CLOUDINARY_CLOUD_NAME=Your_Cloudinary_Cloud_Name
+- CLOUDINARY_API_KEY=Your_Cloudinary_API_KEY
+- CLOUDINARY_API_SECRET=Your_Cloudinary_API_SECRET
+- FLASK_URL=http://127.0.0.1:5002/predict
 
 ---
 
