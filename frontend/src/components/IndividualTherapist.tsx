@@ -1,0 +1,73 @@
+import { JSX, memo } from "react";
+import StarRating from "./StarRating";
+
+interface Therapist {
+  name: string;
+  image: string;
+  experience: number;
+  rating: number;
+  specialization: string[];
+}
+
+interface IndividualTherapist {
+  therapist: Therapist;
+}
+
+const IndividualTherapist = memo(
+  ({ therapist }: IndividualTherapist): JSX.Element => {
+    return (
+      <section className="w-60 h-auto sm:w-80 lg:h-120 flex flex-col hover:shadow-2xl rounded-4xl shadow-2xs duration-75 cursor-pointer text-xl overflow-hidden">
+        <div className="flex flex-col rounded-2xl h-full">
+          <div className=" bg-[#1d2b36] p-10 flex flex-col justify-between items-center lg:flex-row w-full">
+            {/* Image of Therapist */}
+            <img
+              src={therapist.image}
+              alt={`${therapist.name}-profile`}
+              className="h-20 rounded-full lg:h-31 3xl:h-40 border-3"
+            />
+
+            {/* Name and Rating of Therapist */}
+            <div className="flex flex-col justify-center items-center gap-5 lg:items-start">
+              <h1 className="font-extrabold w-full text-[white] text-center lg:text-end text-xl md:text-2xl lg:text-2xl ">
+                {`${therapist.name.split(" ").slice(0, 1)} 
+                ${therapist.name.split(" ").slice(1, 2)}`}
+              </h1>
+              <div className="lg:self-end">
+                <StarRating rating={therapist.rating} color="text-yellow-300" />
+              </div>
+            </div>
+          </div>
+
+          <div className="bg-[#f0f8ff] w-full h-full flex flex-col justify-center gap-10 px-2 py-10 items-center">
+            {/* Experience  */}
+            <p className="flex flex-col items-center font-bold">
+              <span className="text-[#00927f] text-lg sm:text-xl xl:text-2xl">
+                Experience
+              </span>
+              <span className="font-medium text-xl md:text-2xl text-[var(--text)]">
+                {therapist.experience} years
+              </span>
+            </p>
+
+            {/* Specialization  */}
+            <div className="flex flex-col items-center font-bold">
+              <span className="text-[#00927f] text-lg sm:text-xl xl:text-2xl">
+                Specialization
+              </span>{" "}
+              <ul className="flex flex-col justify-center items-center font-extrabold text-lg md:text-xl text-[var(--text)]">
+                {therapist.specialization
+                  .slice(0, 2)
+                  .map((content: string, index: number) => (
+                    <li key={index} className="text-center font-medium">
+                      {content}
+                    </li>
+                  ))}
+              </ul>
+            </div>
+          </div>
+        </div>
+      </section>
+    );
+  }
+);
+export default IndividualTherapist;

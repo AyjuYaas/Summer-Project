@@ -3,6 +3,7 @@ import ProblemBar from "./components/ProblemBar";
 import ReactLoading from "react-loading";
 import { FaHandHoldingHeart } from "react-icons/fa";
 import { useUserStore } from "../../store/useUserStore";
+import { IoMdAlert } from "react-icons/io";
 
 interface Problems {
   problem: string;
@@ -27,12 +28,12 @@ const PredictedProblem = ({ problems, problemText }: Props): JSX.Element => {
   };
 
   return (
-    <div className="bg-[var(--cbg-one)] rounded-2xl p-10 flex flex-col gap-5 w-full h-max shadow-2xl">
+    <div className="bg-[var(--cbg-one)] rounded-2xl p-10 flex flex-col gap-5 flex-2/3 h-max shadow-xl hover:shadow-2xl">
       <div className="flex flex-col gap-1">
         <span className="font-fancy text-2xl md:text-3xl lg:text-4xl tracking-wider">
           Predicted Problem Category
         </span>
-        <span className="text-lg">
+        <span className="text-sm">
           This is just a prediction and not an actual estimate. Refer to a
           therapist for actual diagnostic.
         </span>
@@ -50,7 +51,7 @@ const PredictedProblem = ({ problems, problemText }: Props): JSX.Element => {
             </span>
           ) : (
             <>
-              <span>Your current problems show likelihood of having:</span>
+              <span>Your current problems shows signs of:</span>
               <div className="flex flex-col gap-2 text-lg">
                 {problems.map(({ problem, score }, index: number) => (
                   <span
@@ -64,11 +65,15 @@ const PredictedProblem = ({ problems, problemText }: Props): JSX.Element => {
                   </span>
                 ))}
               </div>
+              <span className="text-sm flex items-center gap-1">
+                <IoMdAlert /> The percentage show the prediction accuracy using
+                AI, so it is not accurate
+              </span>
             </>
           )}
         </div>
       </div>
-      <div className="h-full flex justify-end items-end mt-10">
+      <div className="h-full flex justify-end items-end">
         {isOpen ? (
           <ProblemBar
             problemText={problemText}

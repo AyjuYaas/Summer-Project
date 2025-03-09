@@ -92,7 +92,7 @@ export const signup = async (req, res) => {
     });
   } catch (err) {
     console.log(`Error in therapist signup controller: ${err}`);
-    res.status(500).json({ success: false, message: "Server Error" });
+    res.status(500).json({ success: false, message: "Internal Server Error" });
   }
 };
 
@@ -134,6 +134,6 @@ export const login = async (req, res) => {
     });
   } catch (err) {
     console.log(`Error in therapist login controller: ${err}`);
-    res.status(500).json({ success: false, message: "Server Error" });
+    res.status(500).json({ success: false, message: "Internal Server Error" });
   }
 };

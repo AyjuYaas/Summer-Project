@@ -1,0 +1,78 @@
+import { JSX, useEffect, useState } from "react";
+import { useMatchStore } from "../../store/useMatchStore";
+import LoadingMessage from "./components/LoadingMessage";
+import NoMatches from "./components/NoMatches";
+import IndividualRequest from "./components/IndividualRequest";
+import OpenRequestingUser from "./components/OpenRequestingUser";
+import { useAuthStore } from "../../store/useAuthStore";
+
+interface RequestingUser {
+  _id: string;
+  name: string;
+  gender: string;
+  image: string;
+  problemText: string;
+  requestId: string;
+}
+
+const PendingRequests = (): JSX.Element => {
+  const {
+    request,
+    getPendingRequest,
+    loadingPending: loading,
+  } = useMatchStore();
+
+  const [selectedUser, setSelectedUser] = useState<RequestingUser | null>(null);
+
+  const handlePendingUser = (user: RequestingUser) => {
+    setSelectedUser(user);
+  };
+
+  const { authUser } = useAuthStore();
+  useEffect(() => {
+    getPendingRequest();
+  }, [authUser]);
+
+  return (
+    <div className="bg-[var(--cbg-three)] rounded-2xl p-10 flex flex-col h-max shadow-xl hover:shadow-2xl flex-1/3">
+      <div className="flex flex-col gap-1">
+        <span className="font-fancy text-2xl md:text-3xl lg:text-4xl tracking-wider">
+          Your Requests
+        </span>
+      </div>
+      <hr className="mt-4" />
+
+      <div>
+        <div className="flex flex-col mt-3">
+          {loading ? (
+            <LoadingMessage />
+          ) : request.length === 0 ? (
+            <NoMatches />
+          ) : (
+            request.map((req) => (
+              <div
+                key={req.user._id}
+                onClick={() =>
+                  handlePendingUser({ ...req.user, requestId: req._id })
+                }
+              >
+                <IndividualRequest
+                  id={req.user._id}
+                  name={req.user.name}
+                  image={req.user.image}
+                />
+              </div>
+            ))
+          )}
+        </div>
+      </div>
+      {selectedUser && (
+        <OpenRequestingUser
+          user={selectedUser}
+          onClose={() => setSelectedUser(null)}
+        />
+      )}
+    </div>
+  );
+};
+export default PendingRequests;

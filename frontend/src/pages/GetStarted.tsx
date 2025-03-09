@@ -1,6 +1,7 @@
 import { JSX } from "react";
+import GetStartedLayout from "../layouts/NavLinksLayout/GetStartedLayout";
 
 const GetStarted = (): JSX.Element => {
-  return <div>GetStarted</div>;
+  return <GetStartedLayout />;
 };
 export default GetStarted;

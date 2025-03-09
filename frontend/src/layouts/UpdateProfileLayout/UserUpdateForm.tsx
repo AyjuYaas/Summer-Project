@@ -2,6 +2,7 @@ import { JSX, useRef, useState } from "react";
 import { useAuthStore } from "../../store/useAuthStore";
 import { useUserStore } from "../../store/useUserStore";
 import genderData from "../TherapistAuthLayout/data/gender-data";
+import { FaCamera } from "react-icons/fa";
 
 interface User {
   name: string;
@@ -52,6 +53,35 @@ const UserUpdateForm = (): JSX.Element => {
 
   return (
     <form onSubmit={handleSubmit}>
+      {/* ========== Image Update =========== */}
+      <div className="mb-5 flex mx-auto relative w-max p-0">
+        <input
+          ref={fileInputRef}
+          type="file"
+          accept="image/*"
+          onChange={handleImageChange}
+          className="hidden"
+        />
+
+        {formData.image && (
+          <div className="my-5">
+            <img
+              src={formData.image}
+              alt={formData.name + "-img"}
+              className="size-40 rounded-full border-2 bg-white object-cover"
+              style={{ imageRendering: "-webkit-optimize-contrast" }}
+            />
+          </div>
+        )}
+        <button
+          type="button"
+          onClick={() => fileInputRef.current?.click()}
+          className={`absolute bottom-7 right-1 text-center size-10 flex items-center justify-center bg-[#2f4858] text-[white] hover:bg-[#565b70] duration-100 rounded-full p-1 min-w-max border-0 font-medium cursor-pointer`}
+        >
+          <FaCamera />
+        </button>
+      </div>
+
       {/* ========== Name ========= */}
       <div>
         <label
@@ -161,40 +191,6 @@ const UserUpdateForm = (): JSX.Element => {
             {gender}
           </label>
         ))}
-      </div>
-
-      {/* ========== Image Update =========== */}
-      <div className="mb-5">
-        <label
-          htmlFor="upload"
-          className="block text-md font-medium text-[var(--text)] ml-0.5"
-        >
-          Profile Image
-        </label>
-        <input
-          ref={fileInputRef}
-          type="file"
-          accept="image/*"
-          onChange={handleImageChange}
-          className="hidden"
-        />
-
-        {formData.image && (
-          <div className="my-5">
-            <img
-              src={formData.image}
-              alt={formData.name + "-img"}
-              className="w-40 h-full object-cover rounded-full border-2"
-            />
-          </div>
-        )}
-        <button
-          type="button"
-          onClick={() => fileInputRef.current?.click()}
-          className={`text-center bg-[#2f4858] text-[white] hover:bg-[#565b70] duration-100 mt-1 px-8 py-2 rounded-lg min-w-max border-0 font-medium cursor-pointer`}
-        >
-          Upload Image
-        </button>
       </div>
 
       {/* ========== Sign up button =========== */}

@@ -11,6 +11,7 @@
   min-width: 215px;
   padding: 1rem 6rem;
   background: rgba(229, 229, 229, 0.6);
+  -webkit-backdrop-filter: blur(10px); /* For Safari */
   backdrop-filter: blur(10px);
   transition: background 0.4s ease; /* Smooth transition */
   z-index: 30;

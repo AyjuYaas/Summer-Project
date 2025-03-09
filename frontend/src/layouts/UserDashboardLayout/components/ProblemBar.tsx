@@ -35,6 +35,10 @@ const ProblemBar = ({ problemText, toggleProblemBar }: Props): JSX.Element => {
     };
   }, [toggleProblemBar]);
 
+  const wordCount = problems
+    .split(/\s+/) // Split by whitespace
+    .filter((word) => word.length > 0).length; // Filter out empty strings
+
   return (
     <div className="fixed z-100 top-0 bottom-0 left-0 right-0 h-screen w-full backdrop-blur-xs flex justify-center items-center self-center justify-self-center">
       <div
@@ -45,10 +49,18 @@ const ProblemBar = ({ problemText, toggleProblemBar }: Props): JSX.Element => {
           <div className="flex flex-col gap-5 mb-10">
             <label
               htmlFor="problems"
-              className="flex flex-col text-xl md:text-2xl"
+              className="flex flex-col text-xl md:text-3xl"
             >
               <span>Enter</span>
               <span className="font-fancy tracking-wider">Your Problem</span>
+              <span className="text-base">
+                Describe your problem in detail,{" "}
+                <span className="font-semibold text-[var(--highlight-two)]">
+                  in more than 20 words
+                </span>
+                , for the therapist to properly understand and system to
+                classify more accurately
+              </span>
             </label>
             <textarea
               id="problems"
@@ -74,6 +86,9 @@ const ProblemBar = ({ problemText, toggleProblemBar }: Props): JSX.Element => {
             <IoSend />
           </button>
         </form>
+        <div>
+          <span>Words: {wordCount}</span>
+        </div>
         <button
           className="absolute top-10 right-6 bg-[var(--text)] text-white size-8 text-2xl flex justify-center items-center rounded-full cursor-pointer"
           onClick={toggleProblemBar}

@@ -1,6 +1,9 @@
 import express from "express";
 import { protectRoute } from "../middleware/auth.middle.js";
-import updateTherapist from "../controllers/therapist.controller.js";
+import {
+  updateTherapist,
+  respondRequest,
+} from "../controllers/therapist.controller.js";
 import {
   getConversation,
   sendMessage,
@@ -14,5 +17,9 @@ router.put("/update", updateTherapist);
 
 // To send messages
 router.post("/message/send", sendMessage);
-router.post("/message/conversation/:receiverId", getConversation);
+router.get("/message/conversation/:receiverId", getConversation);
+
+// To handle requests
+router.post("/request/respond", respondRequest);
+
 export default router;

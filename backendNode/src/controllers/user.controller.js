@@ -5,28 +5,32 @@ import { validate } from "email-validator";
 
 export const updateProfile = async (req, res) => {
   try {
+    // ============== Get the Updated Data ==============
     const { image, ...otherFields } = req.body;
     const updatedData = otherFields;
 
+    // ============== Upload image to cloudinary ==============
     if (image) {
       // base64 format
       if (image.startsWith("data:image")) {
         try {
+          // Incase it is their first upload
           if (!req.user.imagePublicId) {
             const uploadResponse = await cloudinary.uploader.upload(image, {
               crop: "auto",
-              width: 300,
-              height: 300,
+              width: 500,
+              height: 500,
               gravity: "auto",
             });
             updatedData.image = uploadResponse.secure_url;
             updatedData.imagePublicId = uploadResponse.public_id;
           } else {
+            // incase they are changing their image, replace the one on cloudinary
             const uploadResponse = await cloudinary.uploader.upload(image, {
               public_id: req.user.imagePublicId,
               crop: "auto",
-              width: 300,
-              height: 300,
+              width: 500,
+              height: 500,
               gravity: "auto",
             });
             updatedData.image = uploadResponse.secure_url;
@@ -41,7 +45,7 @@ export const updateProfile = async (req, res) => {
       }
     }
 
-    // ============== Email Validation ============
+    // ========== Email Validation ============
     if (!validate(updatedData.email)) {
       return res.status(400).json({
         success: false,
@@ -78,21 +82,47 @@ export const updateProfile = async (req, res) => {
 
 export const problem = async (req, res) => {
   const { problem } = req.body;
+
+  if (!problem) {
+    return res.status(400).json({
+      success: false,
+      message: "Problem text is required.",
+    });
+  }
+
+  // Trim the problem for any line-breaks at the end
+  const problemTrimmed = problem.replace(/\n+$/, "");
+
+  const wordCount = problemTrimmed
+    .split(/\s+/) // Split by whitespace
+    .filter((word) => word.length > 0).length; // Filter out empty strings
+
+  if (wordCount < 20) {
+    return res.status(400).json({
+      success: false,
+      message: "Problem text must be at least 20 characters long.",
+    });
+  }
+
   try {
+    // Get response from the flask api
     const response = await axios.post(process.env.FLASK_URL, {
-      text: problem,
+      text: problemTrimmed,
     });
 
+    // Get the classification of diseases
     const { confidence_scores } = response.data;
 
+    // Convert the object into array
     const filteredProblems = Object.entries(confidence_scores)
       .filter(([_, value]) => value > 0.1)
       .map(([problem, score]) => ({ problem, score }));
 
+    // Update the user's problem text and problems
     const updatedUser = await User.findByIdAndUpdate(
       req.user._id,
       {
-        $set: { problemText: problem, problems: filteredProblems },
+        $set: { problemText: problemTrimmed, problems: filteredProblems },
       },
       { new: true }
     );

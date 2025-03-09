@@ -42,9 +42,16 @@ export const useUserStore = create<AuthState>((set) => ({
       await axiosInstance.put(`/${type}/update`, data);
       toast.success("Profile updated successfully");
       useAuthStore.getState().checkAuth();
-    } catch (error) {
-      console.log(`Error on update user: ${error}`);
-      toast.error("Something went wrong!");
+    } catch (error: any) {
+      if (error.response) {
+        const errorMessage =
+          error.response.data.message || "Something went wrong.";
+        toast.error(errorMessage);
+      } else if (error.request) {
+        toast.error("Network error. Please check your internet connection.");
+      } else {
+        toast.error("Something went wrong. Please try again.");
+      }
     } finally {
       set({ loading: false });
     }
@@ -56,9 +63,16 @@ export const useUserStore = create<AuthState>((set) => ({
       await axiosInstance.put("/users/problems", { problem });
       toast.success("Successfully Posted your Problem");
       useAuthStore.getState().checkAuth();
-    } catch (error) {
-      console.log(`Error on profile update: ${error}`);
-      toast.error("Error fetching your problem");
+    } catch (error: any) {
+      if (error.response) {
+        const errorMessage =
+          error.response.data.message || "Something went wrong.";
+        toast.error(errorMessage);
+      } else if (error.request) {
+        toast.error("Network error. Please check your internet connection.");
+      } else {
+        toast.error("Something went wrong. Please try again.");
+      }
     } finally {
       set({ loading: false });
     }

@@ -3,16 +3,22 @@ import Message from "../models/message.model.js";
 export const sendMessage = async (req, res) => {
   try {
     const { content, receiverId } = req.body;
-    var senderId = "";
-    var senderType = "";
-    var receiverType = "";
+
+    if (!content || !receiverId) {
+      return res.status(400).json({
+        success: false,
+        message: "Content and receiverId are required.",
+      });
+    }
+
+    let senderId = req.user._id;
+    let senderType = "";
+    let receiverType = "";
 
     if (req.baseUrl === "/api/users") {
-      senderId = req.user._id;
       senderType = "User";
       receiverType = "Therapist";
     } else {
-      senderId = req.therapist._id;
       senderType = "Therapist";
       receiverType = "User";
     }
@@ -27,7 +33,7 @@ export const sendMessage = async (req, res) => {
 
     // Send the message in real time
 
-    res.status(201).json({
+    res.status(200).json({
       success: true,
       message: newMessage,
     });
@@ -43,16 +49,22 @@ export const sendMessage = async (req, res) => {
 export const getConversation = async (req, res) => {
   try {
     const { receiverId } = req.params;
-    var senderId = "";
-    var senderType = "";
-    var receiverType = "";
+
+    if (!receiverId) {
+      return res.status(400).json({
+        success: false,
+        message: "Receiver ID is required.",
+      });
+    }
+
+    let senderId = req.user._id;
+    let senderType = "";
+    let receiverType = "";
 
     if (req.baseUrl === "/api/users") {
-      senderId = req.user._id;
       senderType = "User";
       receiverType = "Therapist";
     } else {
-      senderId = req.therapist._id;
       senderType = "Therapist";
       receiverType = "User";
     }

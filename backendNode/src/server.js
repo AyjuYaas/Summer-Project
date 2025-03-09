@@ -40,19 +40,42 @@ app.get("/api/all-therapist", allTherapist);
 // When the user checks if they are authenticated or not -
 // The middleware protectRoute is called -
 app.get("/api/auth/me", protectRoute, async (req, res) => {
-  res.send({
-    success: true,
-    user: req.user,
-    role: req.role,
-  });
+  try {
+    if (!req.user || !req.role) {
+      return res.status(401).json({
+        success: false,
+        message: "Unauthorized. Please log in.",
+      });
+    }
+
+    res.status(200).json({
+      success: true,
+      user: req.user,
+      role: req.role,
+    });
+  } catch (error) {
+    console.error("Error in /api/auth/me:", error);
+    res.status(500).json({
+      success: false,
+      message: "Internal Server Error",
+    });
+  }
 });
 
 app.post("/api/auth/logout", async (req, res) => {
-  res.clearCookie("jwt");
-  res.status(200).json({
-    success: true,
-    message: "Logged out Successfully",
-  });
+  try {
+    res.clearCookie("jwt");
+    res.status(200).json({
+      success: true,
+      message: "Logged out Successfully",
+    });
+  } catch (error) {
+    console.log(`Error in Logout: ${error}`);
+    res.status(500).json({
+      success: false,
+      message: "Internal Server Error",
+    });
+  }
 });
 
 const PORT = process.env.PORT;

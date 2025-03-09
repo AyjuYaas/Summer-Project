@@ -81,6 +81,7 @@ interface AuthState {
 
 export const useAuthStore = create<AuthState>((set) => ({
   authUser: null,
+
   authType: "",
 
   checkingAuth: true,
@@ -97,7 +98,15 @@ export const useAuthStore = create<AuthState>((set) => ({
       set({ authUser: response.data.user, authType: "user" });
       toast.success("Account created successfully");
     } catch (error: any) {
-      toast.error("Something went wrong");
+      if (error.response) {
+        const errorMessage =
+          error.response.data.message || "Something went wrong.";
+        toast.error(errorMessage);
+      } else if (error.request) {
+        toast.error("Network error. Please check your internet connection.");
+      } else {
+        toast.error("Something went wrong. Please try again.");
+      }
     } finally {
       set({ loading: false });
     }
@@ -111,7 +120,15 @@ export const useAuthStore = create<AuthState>((set) => ({
       set({ authUser: response.data.user, authType: "user" });
       toast.success("Logged in successfully");
     } catch (error: any) {
-      toast.error("Something went wrong");
+      if (error.response) {
+        const errorMessage =
+          error.response.data.message || "Something went wrong.";
+        toast.error(errorMessage);
+      } else if (error.request) {
+        toast.error("Network error. Please check your internet connection.");
+      } else {
+        toast.error("Something went wrong. Please try again.");
+      }
     } finally {
       set({ loading: false });
     }
@@ -127,7 +144,15 @@ export const useAuthStore = create<AuthState>((set) => ({
       set({ authUser: response.data.therapist, authType: "therapist" });
       toast.success("Account created successfully");
     } catch (error: any) {
-      toast.error("Something went wrong");
+      if (error.response) {
+        const errorMessage =
+          error.response.data.message || "Something went wrong.";
+        toast.error(errorMessage);
+      } else if (error.request) {
+        toast.error("Network error. Please check your internet connection.");
+      } else {
+        toast.error("Something went wrong. Please try again.");
+      }
     } finally {
       set({ loading: false });
     }
@@ -143,7 +168,15 @@ export const useAuthStore = create<AuthState>((set) => ({
       set({ authUser: response.data.therapist, authType: "therapist" });
       toast.success("Logged in successfully");
     } catch (error: any) {
-      toast.error("Something went wrong");
+      if (error.response) {
+        const errorMessage =
+          error.response.data.message || "Something went wrong.";
+        toast.error(errorMessage);
+      } else if (error.request) {
+        toast.error("Network error. Please check your internet connection.");
+      } else {
+        toast.error("Something went wrong. Please try again.");
+      }
     } finally {
       set({ loading: false });
     }
@@ -157,7 +190,15 @@ export const useAuthStore = create<AuthState>((set) => ({
         toast.success("Logged out successfully");
       }
     } catch (error: any) {
-      toast.error(error || "Something went wrong");
+      if (error.response) {
+        const errorMessage =
+          error.response.data.message || "Something went wrong.";
+        toast.error(errorMessage);
+      } else if (error.request) {
+        toast.error("Network error. Please check your internet connection.");
+      } else {
+        toast.error("Something went wrong. Please try again.");
+      }
     }
   },
 

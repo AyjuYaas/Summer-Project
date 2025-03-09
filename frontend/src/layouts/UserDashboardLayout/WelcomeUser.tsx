@@ -13,7 +13,7 @@ const WelcomeUser = ({ image, name }: Props): JSX.Element => {
         alt="profile-pic"
         className="size-30 rounded-full bg-white"
       />
-      <div className="flex flex-col justify-center items-start">
+      <div className="flex flex-col justify-center items-center md:items-start">
         <span>Welcome,</span>
         <span className="font-fancy tracking-wider">{name}</span>
       </div>

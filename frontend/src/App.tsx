@@ -39,11 +39,11 @@ export default function App(): React.ReactElement {
 
   useEffect(() => {
     checkAuth();
-  }, [checkAuth]);
+  }, []);
 
   useEffect(() => {
     getTherapists();
-  }, [getTherapists]);
+  }, []);
 
   if (checkingAuth)
     return (
@@ -85,7 +85,11 @@ export default function App(): React.ReactElement {
         <Route
           path="/get-started"
           element={
-            !authUser ? <GetStarted /> : <Navigate to="/user/find-therapist" />
+            !authUser || authType === "therapist" ? (
+              <GetStarted />
+            ) : (
+              <Navigate to="/user/find-therapist" />
+            )
           }
         />
 
@@ -110,6 +114,7 @@ export default function App(): React.ReactElement {
             )
           }
         />
+        {/* <Route path="/user/find-therapist" element={<FindTherapist />} /> */}
         <Route
           path="/user/find-therapist"
           element={

@@ -32,10 +32,15 @@ const LoginLogout = (): JSX.Element => {
                   : "/therapist/update-profile"
               }
               className={`btn filled-btn `}
+              aria-label="profile settings"
             >
               <RiUserSettingsFill />
             </Link>
-            <button className="btn outline-btn" onClick={logout}>
+            <button
+              className="btn outline-btn"
+              onClick={logout}
+              aria-label="Logout"
+            >
               <IoLogOut />
             </button>
           </div>

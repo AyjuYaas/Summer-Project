@@ -23,6 +23,7 @@ export const signup = async (req, res) => {
         message: "All fields are required",
       });
     }
+
     // ============== Email Validation ============
     if (!validator.validate(email)) {
       return res.status(400).json({
@@ -30,6 +31,7 @@ export const signup = async (req, res) => {
         message: "Invalid Email Address",
       });
     }
+
     // =========== Check if the password is less than 6 ===========
     if (password.length < 6) {
       return res.status(400).json({
@@ -37,6 +39,7 @@ export const signup = async (req, res) => {
         message: "Password must be at least 6 characters",
       });
     }
+
     // ============== Check if the phone-number is 10 digits ============
     if (phone.length < 10 || phone.length > 10) {
       return res.status(400).json({
@@ -73,7 +76,7 @@ export const signup = async (req, res) => {
     });
   } catch (err) {
     console.log(`Error in user signup controller: ${err}`);
-    res.status(500).json({ success: false, message: "Server Error" });
+    res.status(500).json({ success: false, message: "Internal Server Error" });
   }
 };
 
@@ -118,6 +121,6 @@ export const login = async (req, res) => {
     });
   } catch (err) {
     console.log(`Error in user login controller: ${err}`);
-    res.status(500).json({ success: false, message: "Server Error" });
+    res.status(500).json({ success: false, message: "Internal Server Error" });
   }
 };

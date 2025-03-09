@@ -1,9 +1,6 @@
 import { JSX } from "react";
+import TherapistDashboardLayout from "../layouts/TherapistDashboardLayout";
 
 export default function TherapistDashboard(): JSX.Element {
-  return (
-    <div>
-      <h1 className="top">This is profile view</h1>
-    </div>
-  );
+  return <TherapistDashboardLayout />;
 }

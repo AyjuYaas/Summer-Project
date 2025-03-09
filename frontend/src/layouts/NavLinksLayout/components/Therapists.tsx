@@ -1,16 +1,15 @@
 import { JSX } from "react";
-import IndividualTherapist from "./IndividualTherapist";
+import IndividualTherapist from "../../../components/IndividualTherapist";
 import { useNavStore } from "../../../store/useNavStore";
 import ReactLoading from "react-loading";
 
 const Therapists = (): JSX.Element => {
   const { loading, therapists } = useNavStore();
-
   return (
-    <div className="relative bg-[var(--cbg-three)] rounded-[40px] sm:rounded-[80px] text-[var(--text)] shadow-2xl gap-5 min-w-70 pr-10 md:pr-15 max-w-350">
+    <div className="relative bg-[var(--cbg-three)] rounded-[40px] sm:rounded-[80px] text-[var(--text)] shadow-2xl gap-5 min-w-70 pr-10 md:pr-15 max-w-300">
       <div className=" flex justify-end pt-10 pl-10 md:pt-10 md:pl-15">
-        <h1 className="flex flex-col text-3xl sm:text-5xl lg:text-7xl items-end">
-          <span className="text-2xl sm:text-4xl lg:text-5xl">Meet Our</span>
+        <h1 className="flex flex-col text-3xl sm:text-4xl lg:text-5xl items-end">
+          <span className="text-2xl sm:text-3xl lg:text-4xl">Meet Our</span>
           <span className="font-bold font-fancy tracking-widest">
             Therapists
           </span>
