@@ -5,16 +5,21 @@ import { useUserStore } from "../../../store/useUserStore";
 
 interface Props {
   problemText: string;
+  direction: string;
   toggleProblemBar: () => void;
 }
 
-const ProblemBar = ({ problemText, toggleProblemBar }: Props): JSX.Element => {
+const ProblemBar = ({
+  problemText,
+  direction = "default",
+  toggleProblemBar,
+}: Props): JSX.Element => {
   const [problems, setProblems] = useState<string>(problemText || "");
 
   const { updateProblem, loading } = useUserStore();
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
-    updateProblem(problems);
+    updateProblem(problems, direction);
     toggleProblemBar();
     e.preventDefault();
   };

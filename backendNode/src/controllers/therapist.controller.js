@@ -3,6 +3,7 @@ import Request from "../models/request.model.js";
 import Therapist from "../models/therapist.model.js";
 import { validate } from "email-validator";
 import User from "../models/user.model.js";
+import { getConnectedUsers, getIo } from "../socket/socket.server.js";
 
 export async function updateTherapist(req, res) {
   try {
@@ -66,9 +67,13 @@ export async function updateTherapist(req, res) {
       { new: true }
     );
 
+    // ======= Return user data without the password ===========
+    const therapistWithoutPassword = { ...updatedTherapist.toObject() };
+    delete therapistWithoutPassword.password;
+
     res.status(200).json({
       success: true,
-      therapist: updatedTherapist,
+      user: therapistWithoutPassword,
     });
   } catch (error) {
     console.log(`Error in Therapist profile update: ${error}`);
@@ -80,15 +85,15 @@ export async function updateTherapist(req, res) {
 }
 
 export async function respondRequest(req, res) {
-  // Get the requestId, the status from the body
+  // ======= Get the request Id and response of the therapist =========
   const { requestId, response } = req.body;
   const therapistId = req.user._id;
 
   try {
-    // FInd the request on db
+    // ======= Find the request from db ========
     const requestByUser = await Request.findById(requestId);
 
-    // if no request send error
+    // ======= If there is no response ======
     if (!requestByUser) {
       return res.status(400).json({
         success: false,
@@ -96,7 +101,7 @@ export async function respondRequest(req, res) {
       });
     }
 
-    // if the request was not sent by the associated therapist
+    // ======= If the request was not sent by the associated therapist
     if (!requestByUser.therapist.equals(therapistId)) {
       return res.status(400).json({
         success: false,
@@ -104,25 +109,55 @@ export async function respondRequest(req, res) {
       });
     }
 
-    // If they accept
+    // ======= If nothing find the therapist and the user
+    const therapist = await Therapist.findById(therapistId);
+    const user = await User.findById(requestByUser.user);
+
+    // ======= If either therapist or use does not exist
+    if (!user || !therapist) {
+      return res.status(400).json({
+        success: false,
+        message: "User or Therapist not found.",
+      });
+    }
+
+    // ======= If therapist is already matched with the user
+    if (therapist.matched_user.includes(user._id)) {
+      return res.status(400).json({
+        success: false,
+        message: "Request already responded to",
+      });
+    }
+
+    // ====================================================
+    // ======= Use Socket IO to send the notification
+    const connectedUsers = getConnectedUsers();
+    const io = getIo();
+    // ======= Check the connection id of the sending user ==========
+    const requestingUserSocketId = connectedUsers.get(user._id.toString());
+    // ====================================================
+
+    // ======= If therapist accepts the request ==========
     if (response === "accept") {
+      // ======= Change the status of request to Accept
       requestByUser.status = "Accept";
 
-      const user = await User.findById(requestByUser.user);
-      const therapist = await Therapist.findById(therapistId);
-
-      if (!user || !therapist) {
-        return res.status(400).json({
-          success: false,
-          message: "User or Therapist not found.",
-        });
-      }
-
-      // Push the selection into the respective therapist and user
+      // ======= Push the selection into the respective therapist and user ======
       user.selected_therapists.push(therapistId);
       therapist.matched_user.push(requestByUser.user);
 
+      // ======= Save the changes in the database
       await Promise.all([requestByUser.save(), user.save(), therapist.save()]);
+
+      // ====================================================
+      // ======= Send the response to the User about the status
+      if (requestingUserSocketId) {
+        io.to(requestingUserSocketId).emit("requestResponse", {
+          success: true,
+          name: therapist.name,
+        });
+      }
+      // ====================================================
 
       return res.status(200).json({
         success: true,
@@ -130,10 +165,23 @@ export async function respondRequest(req, res) {
       });
     }
 
-    // If rejected
+    // If therapist rejected the request
     if (response === "reject") {
+      // ======= Set the status to decline ===========
       requestByUser.status = "Decline";
+
+      // ======= Save the changes to db ===========
       await requestByUser.save();
+
+      // ====================================================
+      // ======= Send the response to the User about the status
+      if (requestingUserSocketId) {
+        io.to(requestingUserSocketId).emit("requestResponse", {
+          success: false,
+          name: therapist.name,
+        });
+      }
+      // ====================================================
 
       return res.status(200).json({
         success: true,

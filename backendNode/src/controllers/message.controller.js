@@ -1,21 +1,16 @@
 import Message from "../models/message.model.js";
+import { getConnectedUsers, getIo } from "../socket/socket.server.js";
+import cloudinary from "./../config/cloudinary.js";
 
 export const sendMessage = async (req, res) => {
   try {
-    const { content, receiverId } = req.body;
-
-    if (!content || !receiverId) {
-      return res.status(400).json({
-        success: false,
-        message: "Content and receiverId are required.",
-      });
-    }
+    const { text, image, receiverId } = req.body;
 
     let senderId = req.user._id;
-    let senderType = "";
-    let receiverType = "";
+    let senderType;
+    let receiverType;
 
-    if (req.baseUrl === "/api/users") {
+    if (req.role === "user") {
       senderType = "User";
       receiverType = "Therapist";
     } else {
@@ -23,15 +18,53 @@ export const sendMessage = async (req, res) => {
       receiverType = "User";
     }
 
-    const newMessage = await Message.create({
+    if (!image && !text) {
+      res.status(400).json({
+        success: false,
+        message: "Empty Fields",
+      });
+    }
+
+    const messageData = {
       sender: senderId,
       senderType,
       receiver: receiverId,
       receiverType,
-      content,
-    });
+    };
 
-    // Send the message in real time
+    let imageURL;
+    if (image) {
+      // base 64 formal
+      if (image.startsWith("data:image")) {
+        try {
+          const uploadResponse = await cloudinary.uploader.upload(image);
+          imageURL = uploadResponse.secure_url;
+        } catch (error) {
+          return res.status(400).json({
+            success: false,
+            message: "Error uploading image!",
+          });
+        }
+      }
+      messageData.image = imageURL;
+    }
+
+    if (text) {
+      messageData.text = text.trim();
+    }
+
+    const newMessage = await Message.create(messageData);
+
+    // ==== SOCKET IO NOTIFICATION =====
+    const io = getIo();
+    const connectedUsers = getConnectedUsers();
+    const receiverSocketId = connectedUsers.get(receiverId);
+
+    if (receiverSocketId) {
+      io.to(receiverSocketId).emit("newMessage", {
+        message: newMessage,
+      });
+    }
 
     res.status(200).json({
       success: true,
@@ -58,10 +91,10 @@ export const getConversation = async (req, res) => {
     }
 
     let senderId = req.user._id;
-    let senderType = "";
-    let receiverType = "";
+    let senderType;
+    let receiverType;
 
-    if (req.baseUrl === "/api/users") {
+    if (req.role === "user") {
       senderType = "User";
       receiverType = "Therapist";
     } else {

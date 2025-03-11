@@ -2,6 +2,7 @@ import { create } from "zustand";
 import { axiosInstance } from "../lib/Axios";
 import toast from "react-hot-toast";
 import { useAuthStore } from "./useAuthStore";
+import { useMatchStore } from "./useMatchStore";
 
 interface FormDataUser {
   name: string;
@@ -30,7 +31,7 @@ interface AuthState {
     params: FormDataUser | FormDataTherapist,
     type: string
   ) => void;
-  updateProblem: (problem: string) => void;
+  updateProblem: (problem: string, direction: string) => void;
 }
 
 export const useUserStore = create<AuthState>((set) => ({
@@ -39,9 +40,9 @@ export const useUserStore = create<AuthState>((set) => ({
   updateProfile: async (data, type) => {
     try {
       set({ loading: true });
-      await axiosInstance.put(`/${type}/update`, data);
+      const res = await axiosInstance.put(`/${type}/update`, data);
       toast.success("Profile updated successfully");
-      useAuthStore.getState().checkAuth();
+      useAuthStore.getState().setAuthUser(res.data.user);
     } catch (error: any) {
       if (error.response) {
         const errorMessage =
@@ -57,12 +58,16 @@ export const useUserStore = create<AuthState>((set) => ({
     }
   },
 
-  updateProblem: async (problem: string) => {
+  updateProblem: async (problem: string, direction: string) => {
     try {
       set({ loading: true });
-      await axiosInstance.put("/users/problems", { problem });
+      const res = await axiosInstance.put("/users/problems", { problem });
       toast.success("Successfully Posted your Problem");
-      useAuthStore.getState().checkAuth();
+      if (direction === "prediction") {
+        useAuthStore.getState().setAuthUser(res.data.problems);
+      } else {
+        useMatchStore.getState().getRecommendations();
+      }
     } catch (error: any) {
       if (error.response) {
         const errorMessage =

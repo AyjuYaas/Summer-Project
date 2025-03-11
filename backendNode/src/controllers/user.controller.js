@@ -61,15 +61,20 @@ export const updateProfile = async (req, res) => {
       });
     }
 
+    // ============== Find and update the user with their details ============
     const updatedUser = await User.findByIdAndUpdate(
       req.user._id,
       updatedData,
       { new: true }
     );
 
+    // ======= Return user data without the password ===========
+    const userWithoutPassword = { ...updatedUser.toObject() };
+    delete userWithoutPassword.password;
+
     res.status(200).json({
       success: true,
-      user: updatedUser,
+      user: userWithoutPassword,
     });
   } catch (err) {
     console.log(`Error in update user profile: ${err}`);
@@ -83,6 +88,7 @@ export const updateProfile = async (req, res) => {
 export const problem = async (req, res) => {
   const { problem } = req.body;
 
+  // ====== If no problem, return false ============
   if (!problem) {
     return res.status(400).json({
       success: false,
@@ -90,13 +96,15 @@ export const problem = async (req, res) => {
     });
   }
 
-  // Trim the problem for any line-breaks at the end
+  // ======= Trim the text from any line breaks at the end ============
   const problemTrimmed = problem.replace(/\n+$/, "");
 
+  // ======= Counting the number of words ============
   const wordCount = problemTrimmed
     .split(/\s+/) // Split by whitespace
     .filter((word) => word.length > 0).length; // Filter out empty strings
 
+  // ======= Work count must be 20 or higher ============
   if (wordCount < 20) {
     return res.status(400).json({
       success: false,
@@ -105,20 +113,20 @@ export const problem = async (req, res) => {
   }
 
   try {
-    // Get response from the flask api
+    // ======= Get the response from the flask api ============
     const response = await axios.post(process.env.FLASK_URL, {
       text: problemTrimmed,
     });
 
-    // Get the classification of diseases
-    const { confidence_scores } = response.data;
+    // ======= Get the problems from response ============
+    const { problems } = response.data;
 
-    // Convert the object into array
-    const filteredProblems = Object.entries(confidence_scores)
-      .filter(([_, value]) => value > 0.1)
-      .map(([problem, score]) => ({ problem, score }));
+    // ======= Only select values greater than ten percent ============
+    const filteredProblems = problems
+      .filter((problem) => problem.score > 0.1) // Keep only scores > 0.1
+      .map(({ problem, score }) => ({ problem, score })); // Map to the desired format
 
-    // Update the user's problem text and problems
+    // ======= update the user's problem text and problems ============
     const updatedUser = await User.findByIdAndUpdate(
       req.user._id,
       {
@@ -126,9 +134,14 @@ export const problem = async (req, res) => {
       },
       { new: true }
     );
+
+    // ======= Return user data without the password ===========
+    const userWithoutPassword = { ...updatedUser.toObject() };
+    delete userWithoutPassword.password;
+
     res.status(200).json({
       success: true,
-      problems: updatedUser,
+      problems: userWithoutPassword,
     });
   } catch (error) {
     console.log(`Error in problem of user: ${error}`);

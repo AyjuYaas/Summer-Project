@@ -96,7 +96,7 @@ body {
 
 /* Thumb (draggable part) */
 .scrollbar::-webkit-scrollbar-thumb {
-  background: #4e4376; /* Thumb color */
+  background: #2f4858; /* Thumb color */
   border-radius: 10px;
   height: 30px; /* Adjust the thumb length */
 }

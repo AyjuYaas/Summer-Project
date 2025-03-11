@@ -11,7 +11,7 @@ const Connections = (): JSX.Element => {
   useEffect(() => {
     getMatches();
     getPendingRequest();
-  }, []);
+  }, [getMatches, getPendingRequest]);
 
   return (
     <div className="bg-[var(--cbg-four)] rounded-2xl p-10 flex flex-col h-max shadow-xl hover:shadow-2xl flex-2/4">

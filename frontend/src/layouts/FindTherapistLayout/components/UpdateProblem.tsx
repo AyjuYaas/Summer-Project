@@ -40,6 +40,7 @@ const UpdateProblem = (): JSX.Element => {
     <div className="h-full flex justify-end items-end">
       {isOpen ? (
         <ProblemBar
+          direction="default"
           problemText={(authUser as unknown as User).problemText}
           toggleProblemBar={toggleProblemBar}
         />

@@ -32,7 +32,7 @@ const OtherTherapist = (): JSX.Element => {
 
   useEffect(() => {
     getTherapists();
-  }, []);
+  }, [getTherapists]);
 
   return (
     <div className="w-full rounded-4xl p-10 bg-[var(--cbg-four)] flex flex-col gap-4 self-end">

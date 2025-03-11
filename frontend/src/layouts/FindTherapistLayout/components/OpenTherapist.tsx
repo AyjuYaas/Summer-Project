@@ -20,6 +20,7 @@ interface Props {
 
 const OpenTherapist = ({ therapist, onClose }: Props): JSX.Element => {
   const { selectTherapist, loadingSelection } = useMatchStore();
+
   const handleConnection = async () => {
     selectTherapist(therapist._id);
     onClose();

@@ -21,6 +21,7 @@ const OpenRequestingUser = ({ user, onClose }: Props): JSX.Element => {
 
   const handleResponse = async (response: string) => {
     respondRequest(user.requestId, response);
+
     onClose();
   };
 

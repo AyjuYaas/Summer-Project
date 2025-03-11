@@ -1,6 +1,11 @@
 import Therapist from "../models/therapist.model.js";
 import User from "../models/user.model.js";
 import Request from "../models/request.model.js";
+import {
+  getConnectedUsers,
+  getIo,
+  getOnlineUsers,
+} from "../socket/socket.server.js";
 
 export async function getTherapist(req, res) {
   try {
@@ -20,7 +25,6 @@ export async function getTherapist(req, res) {
       success: true,
       therapists: therapists,
     });
-    //
   } catch (error) {
     console.log(`Error in Get Therapist: ${error}`);
     res.status(500).json({
@@ -32,6 +36,7 @@ export async function getTherapist(req, res) {
 
 export async function getRecommendation(req, res) {
   try {
+    // Get the current User
     const currentUser = await User.findById(req.user._id);
 
     // Extract problem names from the user's problems array
@@ -65,7 +70,9 @@ export async function getRecommendation(req, res) {
 
 export async function selectTherapist(req, res) {
   try {
+    // Get the selected therapist's id from the client
     const { therapistId } = req.params;
+
     // Check if therapistId is not null
     if (!therapistId) {
       return res.status(400).json({
@@ -83,13 +90,16 @@ export async function selectTherapist(req, res) {
       });
     }
 
+    // Get the current User's Id
     const currentUser = await User.findById(req.user._id);
 
+    // Search for any previous requests
     const existingRequest = await Request.findOne({
       user: req.user._id,
       therapist: therapistId,
     });
 
+    // If the therapist is already selected or if an request exists,
     if (
       currentUser.selected_therapists.includes(therapistId) ||
       existingRequest
@@ -104,8 +114,9 @@ export async function selectTherapist(req, res) {
     const selectedTherapistsCount = currentUser.selected_therapists.length;
     const pendingRequestsCount = await Request.countDocuments({
       user: req.user._id,
-      status: "Pending", // Assuming requests have a "status" field
+      status: "Pending",
     });
+
     // Make sure it does not exceed three
     if (selectedTherapistsCount + pendingRequestsCount >= 3) {
       return res.status(400).json({
@@ -114,11 +125,28 @@ export async function selectTherapist(req, res) {
       });
     }
 
+    // If everything is checked, create a new request and add to db
     const newRequest = new Request({
       user: req.user._id,
       therapist: therapistId,
     });
     await newRequest.save();
+
+    // ====================================================
+    // ======= Send Notification to the THERAPIST
+    const connectedUsers = getConnectedUsers();
+    const io = getIo();
+    // Get the therapist id who was requested
+    const requestingTherapistSocketId = connectedUsers.get(
+      therapistId.toString()
+    );
+
+    // If they are online send a notification
+    if (requestingTherapistSocketId) {
+      io.to(requestingTherapistSocketId).emit("newRequest", {
+        name: currentUser.name,
+      });
+    }
 
     // ========== Send Success Response ============
     res.status(200).json({
@@ -137,6 +165,7 @@ export async function selectTherapist(req, res) {
 
 export async function getPendingRequest(req, res) {
   try {
+    // Get all the PENDING request from the db
     const allRequests = await Request.find({
       $or: [{ user: req.user._id }, { therapist: req.user._id }],
       status: "Pending",

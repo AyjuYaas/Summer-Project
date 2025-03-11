@@ -4,7 +4,6 @@ import LoadingMessage from "./components/LoadingMessage";
 import NoMatches from "./components/NoMatches";
 import IndividualRequest from "./components/IndividualRequest";
 import OpenRequestingUser from "./components/OpenRequestingUser";
-import { useAuthStore } from "../../store/useAuthStore";
 
 interface RequestingUser {
   _id: string;
@@ -28,10 +27,9 @@ const PendingRequests = (): JSX.Element => {
     setSelectedUser(user);
   };
 
-  const { authUser } = useAuthStore();
   useEffect(() => {
     getPendingRequest();
-  }, [authUser]);
+  }, [getPendingRequest]);
 
   return (
     <div className="bg-[var(--cbg-three)] rounded-2xl p-10 flex flex-col h-max shadow-xl hover:shadow-2xl flex-1/3">

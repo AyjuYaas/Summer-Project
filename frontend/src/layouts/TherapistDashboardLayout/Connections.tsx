@@ -3,15 +3,13 @@ import { useMatchStore } from "../../store/useMatchStore";
 import LoadingMessage from "./components/LoadingMessage";
 import NoMatches from "./components/NoMatches";
 import IndividualMessage from "./components/IndividualMessage";
-import { useAuthStore } from "../../store/useAuthStore";
 
 const Connections = (): JSX.Element => {
   const { matches, getMatches, loading } = useMatchStore();
-  const { authUser } = useAuthStore();
 
   useEffect(() => {
     getMatches();
-  }, [authUser]);
+  }, [getMatches]);
 
   return (
     <div className="bg-[var(--cbg-four)] rounded-2xl p-10 flex flex-col h-max shadow-xl hover:shadow-2xl flex-2/3">

@@ -1,6 +1,7 @@
 import { create } from "zustand";
 import { axiosInstance } from "../lib/Axios";
 import toast from "react-hot-toast";
+import { disconnectSocket, initializeSocket } from "../socket/socket.client";
 
 interface signupParamsUser {
   name: string;
@@ -71,6 +72,7 @@ interface AuthState {
   authType: string;
   checkingAuth: boolean;
   loading: boolean;
+  setAuthUser: (user: any) => void;
   signupUser: (params: signupParamsUser) => void;
   loginUser: (credentials: { email: string; password: string }) => void;
   signupTherapist: (params: signupParamsTherapist) => void;
@@ -88,6 +90,8 @@ export const useAuthStore = create<AuthState>((set) => ({
 
   loading: false,
 
+  setAuthUser: (user: any) => set({ authUser: user }),
+
   signupUser: async (signupData: signupParamsUser) => {
     try {
       set({ loading: true });
@@ -96,6 +100,7 @@ export const useAuthStore = create<AuthState>((set) => ({
         signupData
       );
       set({ authUser: response.data.user, authType: "user" });
+      initializeSocket(response.data.user._id);
       toast.success("Account created successfully");
     } catch (error: any) {
       if (error.response) {
@@ -118,6 +123,9 @@ export const useAuthStore = create<AuthState>((set) => ({
       const response = await axiosInstance.post("auth/user/login", credentials);
 
       set({ authUser: response.data.user, authType: "user" });
+
+      initializeSocket(response.data.user._id);
+
       toast.success("Logged in successfully");
     } catch (error: any) {
       if (error.response) {
@@ -142,6 +150,7 @@ export const useAuthStore = create<AuthState>((set) => ({
         signupData
       );
       set({ authUser: response.data.therapist, authType: "therapist" });
+      initializeSocket(response.data.therapist._id);
       toast.success("Account created successfully");
     } catch (error: any) {
       if (error.response) {
@@ -166,6 +175,7 @@ export const useAuthStore = create<AuthState>((set) => ({
         credentials
       );
       set({ authUser: response.data.therapist, authType: "therapist" });
+      initializeSocket(response.data.therapist._id);
       toast.success("Logged in successfully");
     } catch (error: any) {
       if (error.response) {
@@ -187,6 +197,7 @@ export const useAuthStore = create<AuthState>((set) => ({
       const response = await axiosInstance.post("auth/logout");
       if (response.data.success) {
         set({ authUser: null, authType: "" });
+        disconnectSocket();
         toast.success("Logged out successfully");
       }
     } catch (error: any) {
@@ -205,6 +216,7 @@ export const useAuthStore = create<AuthState>((set) => ({
   checkAuth: async () => {
     try {
       const response = await axiosInstance.get("/auth/me");
+      initializeSocket(response.data.user._id);
       set({ authUser: response.data.user, authType: response.data.role });
     } catch (error: any) {
       if (error.response?.status === 401) {

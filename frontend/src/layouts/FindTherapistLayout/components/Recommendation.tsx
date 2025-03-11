@@ -2,30 +2,8 @@ import { JSX, useEffect, useState } from "react";
 import { useMatchStore } from "../../../store/useMatchStore";
 import IndividualTherapist from "../../../components/IndividualTherapist";
 import ReactLoading from "react-loading";
-import { useAuthStore } from "../../../store/useAuthStore";
 import OpenTherapist from "./OpenTherapist";
 
-interface Problems {
-  problem: string;
-  score: number;
-}
-interface User {
-  _id: string;
-  name: string;
-  email: string;
-  password: string;
-  phone: string;
-  age: number;
-  gender: string;
-  image: string;
-  imagePublicId: string;
-  problemText: string;
-  problems: Problems[];
-  selected_therapists: string[];
-  createdAt: string;
-  updatedAt: string;
-  __v?: number;
-}
 interface Therapist {
   _id: string;
   name: string;
@@ -48,15 +26,13 @@ const Recommendation = (): JSX.Element => {
     null
   );
 
-  const { authUser } = useAuthStore();
-
   const handleTherapist = (therapist: Therapist) => {
     setSelectedTherapist(therapist);
   };
 
   useEffect(() => {
     getRecommendations();
-  }, [(authUser as unknown as User).problemText]);
+  }, [getRecommendations]);
 
   return (
     <div className=" w-full rounded-4xl p-10 bg-[var(--cbg-three)] flex flex-col gap-4 self-end">

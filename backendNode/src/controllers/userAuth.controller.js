@@ -69,10 +69,14 @@ export const signup = async (req, res) => {
       secure: process.env.NODE_ENV === "production",
     });
 
+    // ======= Return user data without the password ===========
+    const userWithoutPassword = { ...newUser.toObject() };
+    delete userWithoutPassword.password;
+
     // ============= Send Success Message ===========
     res.status(201).json({
       success: true,
-      user: newUser,
+      user: userWithoutPassword,
     });
   } catch (err) {
     console.log(`Error in user signup controller: ${err}`);
@@ -115,9 +119,13 @@ export const login = async (req, res) => {
       secure: process.env.NODE_ENV === "production",
     });
 
+    // ======= Return user data without the password ===========
+    const userWithoutPassword = { ...user.toObject() };
+    delete userWithoutPassword.password;
+
     res.status(200).json({
       success: true,
-      user,
+      user: userWithoutPassword,
     });
   } catch (err) {
     console.log(`Error in user login controller: ${err}`);

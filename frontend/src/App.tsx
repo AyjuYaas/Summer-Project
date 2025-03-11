@@ -32,18 +32,58 @@ import { Toaster } from "react-hot-toast";
 import Chat from "./pages/Chat";
 import { useNavStore } from "./store/useNavStore";
 import GetStarted from "./pages/GetStarted";
+import { useMatchStore } from "./store/useMatchStore";
+import { useMessageStore } from "./store/useMessageStore";
 
 export default function App(): React.ReactElement {
   const { checkAuth, authUser, authType, checkingAuth } = useAuthStore();
   const { getTherapists } = useNavStore();
+  const {
+    listenToNewRequest,
+    stopListeningToRequest,
+    listenToRespondRequest,
+    stopListeningToResponse,
+  } = useMatchStore();
+
+  const { listenToMessages, stopListeningToMessages } = useMessageStore();
 
   useEffect(() => {
     checkAuth();
-  }, []);
+  }, [checkAuth]);
 
   useEffect(() => {
     getTherapists();
-  }, []);
+  }, [getTherapists]);
+
+  useEffect(() => {
+    if (authUser) {
+      listenToMessages();
+      return () => {
+        stopListeningToMessages();
+      };
+    }
+  }, [listenToMessages, stopListeningToMessages, authUser]);
+
+  useEffect(() => {
+    if (authUser && authType === "therapist") {
+      listenToNewRequest();
+      return () => {
+        stopListeningToRequest();
+      };
+    } else if (authUser && authType === "user") {
+      listenToRespondRequest();
+      return () => {
+        stopListeningToResponse();
+      };
+    }
+  }, [
+    listenToNewRequest,
+    stopListeningToRequest,
+    listenToRespondRequest,
+    stopListeningToResponse,
+    authUser,
+    authType,
+  ]);
 
   if (checkingAuth)
     return (
@@ -60,7 +100,18 @@ export default function App(): React.ReactElement {
 
       <Routes>
         {/* Default Nav Routes  */}
-        <Route path="/" element={<Home />} />
+        <Route
+          path="/"
+          element={
+            !authUser ? (
+              <Home />
+            ) : authType === "user" ? (
+              <Navigate to={"/user/home"} />
+            ) : (
+              <Navigate to={"/therapist/home"} />
+            )
+          }
+        />
         <Route path="/about" element={<About />} />
 
         <Route path="/therapist-list" element={<TherapistList />} />

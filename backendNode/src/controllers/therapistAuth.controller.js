@@ -85,10 +85,14 @@ export const signup = async (req, res) => {
       secure: process.env.NODE_ENV === "production",
     });
 
+    // ======= Return user data without the password ===========
+    const therapistWithoutPassword = { ...newTherapist.toObject() };
+    delete therapistWithoutPassword.password;
+
     // ============= Send Success Message ===========
     res.status(201).json({
       success: true,
-      therapist: newTherapist,
+      therapist: therapistWithoutPassword,
     });
   } catch (err) {
     console.log(`Error in therapist signup controller: ${err}`);
@@ -128,9 +132,13 @@ export const login = async (req, res) => {
       secure: process.env.NODE_ENV === "production",
     });
 
+    // ======= Return user data without the password ===========
+    const therapistWithoutPassword = { ...therapist.toObject() };
+    delete therapistWithoutPassword.password;
+
     res.status(200).json({
       success: true,
-      therapist,
+      therapist: therapistWithoutPassword,
     });
   } catch (err) {
     console.log(`Error in therapist login controller: ${err}`);

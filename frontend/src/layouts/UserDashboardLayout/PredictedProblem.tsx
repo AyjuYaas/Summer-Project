@@ -34,8 +34,8 @@ const PredictedProblem = ({ problems, problemText }: Props): JSX.Element => {
           Predicted Problem Category
         </span>
         <span className="text-sm">
-          This is just a prediction and not an actual estimate. Refer to a
-          therapist for actual diagnostic.
+          This is an AI-based prediction, not a real diagnosis. For a proper
+          check-up, please talk to a therapist.
         </span>
       </div>
       <hr />
@@ -51,23 +51,25 @@ const PredictedProblem = ({ problems, problemText }: Props): JSX.Element => {
             </span>
           ) : (
             <>
-              <span>Your current problems shows signs of:</span>
+              <span>Here's what the AI thinks based on your input:</span>
               <div className="flex flex-col gap-2 text-lg">
                 {problems.map(({ problem, score }, index: number) => (
                   <span
                     key={index}
-                    className="bg-red-300 w-max p-3 rounded-2xl"
+                    className={`bg-red-300 p-3 min-w-max rounded-2xl`}
+                    style={{ width: `${Math.round(score * 100)}%` }}
                   >
                     <span className="font-semibold text-[var(--highlight)]">
                       {problem}:{" "}
                     </span>
-                    <span>{(score * 100).toPrecision(4)}%</span>
+                    <span>{(score * 100).toPrecision(4)}% likely</span>
                   </span>
                 ))}
               </div>
               <span className="text-sm flex items-center gap-1">
-                <IoMdAlert /> The percentage show the prediction accuracy using
-                AI, so it is not accurate
+                <IoMdAlert /> These percentages represent the model's confidence
+                in identifying potential issues and are not a substitute for
+                professional diagnosis.
               </span>
             </>
           )}
@@ -77,6 +79,7 @@ const PredictedProblem = ({ problems, problemText }: Props): JSX.Element => {
         {isOpen ? (
           <ProblemBar
             problemText={problemText}
+            direction="prediction"
             toggleProblemBar={toggleProblemBar}
           />
         ) : (

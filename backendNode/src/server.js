@@ -5,6 +5,7 @@ import express from "express";
 import cookieParser from "cookie-parser";
 import cors from "cors";
 import { protectRoute } from "./middleware/auth.middle.js";
+import { createServer } from "http";
 
 // Routes
 import userAuthRoutes from "./routes/userAuth.route.js"; // done
@@ -12,16 +13,23 @@ import therapistAuthRoutes from "./routes/therapistAuth.route.js"; // done
 import userRoutes from "./routes/user.route.js"; // done
 import therapistRoutes from "./routes/therapist.route.js";
 import matchRoutes from "./routes/match.route.js";
+import messageRoutes from "./routes/message.route.js";
 import { allTherapist } from "./routes/allTherapist.route.js";
 
 // lib imports
 import { connectDB } from "./config/database.js";
+import { initializeSocket } from "./socket/socket.server.js";
+
+import { testMessage } from "./routes/testMessage.js";
 
 const app = express();
+const httpServer = createServer(app);
+
+initializeSocket(httpServer);
 
 app.use(
   cors({
-    origin: "http://localhost:5173", // Allow only your frontend to access
+    origin: process.env.CLIENT_URL, // Allow only your frontend to access
     credentials: true, // Allow cookies if required
   })
 );
@@ -35,6 +43,7 @@ app.use("/api/auth/therapist", therapistAuthRoutes);
 app.use("/api/users", userRoutes);
 app.use("/api/therapists", therapistRoutes);
 app.use("/api/matches", matchRoutes);
+app.use("/api/messages", messageRoutes);
 app.get("/api/all-therapist", allTherapist);
 
 // When the user checks if they are authenticated or not -
@@ -78,8 +87,10 @@ app.post("/api/auth/logout", async (req, res) => {
   }
 });
 
+app.get("/test", testMessage);
+
 const PORT = process.env.PORT;
-app.listen(PORT, () => {
+httpServer.listen(PORT, () => {
   console.log(`Server is running on port: ${PORT}`);
   connectDB();
 });

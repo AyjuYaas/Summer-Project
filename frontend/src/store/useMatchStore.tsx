@@ -1,7 +1,7 @@
 import { create } from "zustand";
 import { axiosInstance } from "../lib/Axios";
 import toast from "react-hot-toast";
-import { useAuthStore } from "./useAuthStore";
+import { getSocket } from "../socket/socket.client";
 
 interface Match {
   _id: string;
@@ -51,6 +51,10 @@ interface MatchState {
   selectTherapist: (therapistId: string) => void;
   getPendingRequest: () => void;
   respondRequest: (userId: string, response: string) => void;
+  listenToNewRequest: () => void;
+  stopListeningToRequest: () => void;
+  listenToRespondRequest: () => void;
+  stopListeningToResponse: () => void;
 }
 
 export const useMatchStore = create<MatchState>((set) => ({
@@ -180,7 +184,8 @@ export const useMatchStore = create<MatchState>((set) => ({
         response: response.toLowerCase(),
       });
       toast.success(`${response}ed Successfully`);
-      useAuthStore.getState().checkAuth();
+      useMatchStore.getState().getMatches();
+      useMatchStore.getState().getPendingRequest();
     } catch (error: any) {
       if (error.response) {
         const errorMessage =
@@ -191,6 +196,56 @@ export const useMatchStore = create<MatchState>((set) => ({
       } else {
         toast.error("Something went wrong. Please try again.");
       }
+    }
+  },
+
+  // Listen to new Request by Therapist
+  listenToNewRequest: () => {
+    try {
+      const socket = getSocket();
+
+      socket.on("newRequest", (requestData: any) => {
+        toast.success(`You got a new request from ${requestData.name}`);
+        useMatchStore.getState().getPendingRequest();
+      });
+    } catch (error) {
+      console.log(error);
+    }
+  },
+  stopListeningToRequest: () => {
+    try {
+      const socket = getSocket();
+      if (socket) {
+        socket.off("newRequest");
+      }
+    } catch (error) {
+      console.log(error);
+    }
+  },
+
+  listenToRespondRequest: () => {
+    try {
+      const socket = getSocket();
+      socket.on("requestResponse", (responseData: any) => {
+        if (responseData.success)
+          toast.success(`${responseData.name} Accepted Your Request`);
+        else toast.error(`${responseData.name} Rejected Your Request`);
+      });
+      useMatchStore.getState().getMatches();
+      useMatchStore.getState().getPendingRequest();
+    } catch (error) {
+      console.log(error);
+    }
+  },
+
+  stopListeningToResponse: () => {
+    try {
+      const socket = getSocket();
+      if (socket) {
+        socket.off("requestResponse");
+      }
+    } catch (error) {
+      console.log(error);
     }
   },
 }));

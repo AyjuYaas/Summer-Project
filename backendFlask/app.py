@@ -53,18 +53,16 @@ def predict():
     # Define class labels
     class_labels = ["Stress", "Depression", "Bipolar Disorder", "Personality Disorder", "Anxiety"]
 
-    # Create confidence scores dictionary
-    confidence_scores = {class_labels[i]: round(float(prediction[i]), 4) for i in range(len(class_labels))}
+    # Create a list of dictionaries with problem and score
+    problems = [{"problem": class_labels[i], "score": round(float(prediction[i]), 4)} for i in range(len(class_labels))]
 
-    # Get the predicted class and corresponding label
-    predicted_class_idx = int(np.argmax(prediction))  # Index of highest confidence score
-    predicted_label = class_labels[predicted_class_idx]  # Get class name
+    # Sort the problems list by score in descending order
+    sorted_problems = sorted(problems, key=lambda x: x["score"], reverse=True)
 
     # Return the formatted response as JSON
     return jsonify({
         "input_text": user_text,
-        "confidence_scores": confidence_scores,
-        "predicted_label": predicted_label
+        "problems": sorted_problems,
     })
 
 # Run the Flask app
