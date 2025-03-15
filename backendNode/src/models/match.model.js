@@ -1,6 +1,6 @@
 import mongoose from "mongoose";
 
-const requestSchema = new mongoose.Schema(
+const matchesSchema = new mongoose.Schema(
   {
     user: {
       type: mongoose.Schema.Types.ObjectId,
@@ -14,13 +14,13 @@ const requestSchema = new mongoose.Schema(
     },
     status: {
       type: String,
-      enum: ["Accept", "Decline", "Pending"],
+      enum: ["Accept", "Declined", "Pending", "Removed"],
       default: "Pending",
     },
   },
   { timestamps: true }
 );
 
-const Request = mongoose.model("Request", requestSchema);
+const Match = mongoose.model("Match", matchesSchema);
 
-export default Request;
+export default Match;

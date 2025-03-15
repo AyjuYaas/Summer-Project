@@ -48,7 +48,7 @@ const MessageInput = (): JSX.Element => {
   };
 
   return (
-    <div>
+    <div className="px-4 pb-4">
       {imagePreview && (
         <div className="mb-3 flex items-center gap-2">
           <div className="relative">
@@ -74,7 +74,7 @@ const MessageInput = (): JSX.Element => {
       >
         <input
           type="text"
-          className="w-full bg-white p-3 rounded-lg pr-20"
+          className="w-full bg-white p-3 rounded-lg"
           placeholder="Write your message here..."
           value={text}
           onChange={(e) => setText(e.target.value)}
@@ -90,7 +90,7 @@ const MessageInput = (): JSX.Element => {
 
         <button
           type="button"
-          className={`hidden sm:flex rounded-full size-10 justify-center items-center cursor-pointer hover:bg-[#2f4858] hover:text-white duration-100 ${
+          className={`sm:flex rounded-full size-10 p-1 justify-center items-center cursor-pointer hover:bg-[#2f4858] hover:text-white duration-100 text-center ${
             imagePreview ? "text-emerald-500" : "text-[var(--text)]"
           }`}
           onClick={() => fileInputRef.current?.click()}

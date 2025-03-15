@@ -48,12 +48,12 @@ const OpenRequestingUser = ({ user, onClose }: Props): JSX.Element => {
         ref={menuRef}
       >
         <div className="flex gap-12 text-xl font-bold text-[var(--text)] justify-center items-center">
-          <div className="flex flex-col gap-2 items-center">
+          <div className="flex flex-col gap-2 items-center ">
             {/* image  */}
             <img
               src={user.image}
               alt={`${user.name}-img`}
-              className="size-30 rounded-full"
+              className="size-19 md:size-30 rounded-full object-"
             />
 
             {/* Name */}
@@ -78,7 +78,7 @@ const OpenRequestingUser = ({ user, onClose }: Props): JSX.Element => {
 
         <div className="w-full flex justify-around">
           <button
-            className={`text-white font-bold px-10 py-3 rounded-4xl duration-150 cursor-pointer bg-[#8b4969] hover:bg-[#00c6b1]`}
+            className={`text-white font-bold px-10 py-3 rounded-4xl duration-150 cursor-pointer bg-green-600 hover:bg-green-500`}
             onClick={() => handleResponse("Accept")}
           >
             Accept

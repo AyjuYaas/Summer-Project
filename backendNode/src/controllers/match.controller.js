@@ -1,30 +1,38 @@
 import Therapist from "../models/therapist.model.js";
 import User from "../models/user.model.js";
-import Request from "../models/request.model.js";
-import {
-  getConnectedUsers,
-  getIo,
-  getOnlineUsers,
-} from "../socket/socket.server.js";
+import Match from "../models/match.model.js";
+import { getConnectedUsers, getIo } from "../socket/socket.server.js";
 
 export async function getTherapist(req, res) {
   try {
-    // Get the user
-    const currentUser = await User.findById(req.user._id);
-    // Get the therapist
-    const therapists = await Therapist.find({
-      $and: [
-        { _id: { $nin: currentUser.selected_therapists } },
-        { availability: true },
-      ], // Those that are not selected by the user and those are available
-    }).select(
-      "_id name image specialization experience qualification gender rating"
-    );
+    if (req.role === "user") {
+      const requestedTherapist = await Match.find({
+        user: req.user._id,
+        status: { $in: ["Pending", "Accept"] },
+      }).select("therapist");
 
-    res.status(200).json({
-      success: true,
-      therapists: therapists,
-    });
+      // Get the Requested Therapist Ids
+      const matchedTherapistIds = requestedTherapist.map(
+        (match) => match.therapist
+      );
+
+      // Get the therapist
+      const unmatchedTherapists = await Therapist.find({
+        $and: [{ _id: { $nin: matchedTherapistIds } }, { availability: true }], // Those that are not selected by the user and those are available
+      }).select(
+        "_id name image specialization experience qualification gender rating"
+      );
+
+      return res.status(200).json({
+        success: true,
+        therapists: unmatchedTherapists,
+      });
+    } else {
+      return res.status(400).json({
+        success: false,
+        message: "Not Authorized",
+      });
+    }
   } catch (error) {
     console.log(`Error in Get Therapist: ${error}`);
     res.status(500).json({
@@ -36,28 +44,44 @@ export async function getTherapist(req, res) {
 
 export async function getRecommendation(req, res) {
   try {
-    // Get the current User
-    const currentUser = await User.findById(req.user._id);
+    if (req.role === "user") {
+      // Get the current User
+      const currentUser = await User.findById(req.user._id);
 
-    // Extract problem names from the user's problems array
-    const problemNames = currentUser.problems.map((p) => p.problem);
+      // Extract problem names from the user's problems array
+      const problemNames = currentUser.problems.map((p) => p.problem);
 
-    // Get the therapist
-    const recommended = await Therapist.find({
-      $and: [
-        { specialization: { $in: problemNames } },
-        { _id: { $nin: currentUser.selected_therapists } },
-        { availability: true },
-      ], // That specialize in the users problems
-    }).select(
-      "_id name image specialization experience qualification gender rating"
-    );
+      const requestedTherapist = await Match.find({
+        user: req.user._id,
+        status: { $in: ["Pending", "Accept"] },
+      }).select("therapist");
 
-    res.status(200).json({
-      success: true,
-      therapists: recommended,
-    });
-    //
+      // Get the Requested Therapist Ids
+      const matchedTherapistIds = requestedTherapist.map(
+        (match) => match.therapist
+      );
+
+      // Get the therapist
+      const recommended = await Therapist.find({
+        $and: [
+          { specialization: { $in: problemNames } },
+          { _id: { $nin: matchedTherapistIds } },
+          { availability: true },
+        ], // That specialize in the users problems
+      }).select(
+        "_id name image specialization experience qualification gender rating"
+      );
+
+      return res.status(200).json({
+        success: true,
+        therapists: recommended,
+      });
+    } else {
+      return res.status(400).json({
+        success: false,
+        message: "NOt Authorized",
+      });
+    }
   } catch (error) {
     console.log(`Error in Recommendation: ${error}`);
 
@@ -94,16 +118,14 @@ export async function selectTherapist(req, res) {
     const currentUser = await User.findById(req.user._id);
 
     // Search for any previous requests
-    const existingRequest = await Request.findOne({
+    const existingMatch = await Match.findOne({
       user: req.user._id,
       therapist: therapistId,
+      status: { $in: ["Pending", "Accept"] },
     });
 
     // If the therapist is already selected or if an request exists,
-    if (
-      currentUser.selected_therapists.includes(therapistId) ||
-      existingRequest
-    ) {
+    if (existingMatch) {
       return res.status(400).json({
         success: false,
         message: "Therapist is already selected or a request is pending.",
@@ -111,14 +133,13 @@ export async function selectTherapist(req, res) {
     }
 
     // Check Total Selected Therapists and Pending Requests
-    const selectedTherapistsCount = currentUser.selected_therapists.length;
-    const pendingRequestsCount = await Request.countDocuments({
+    const existingMatchCount = await Match.countDocuments({
       user: req.user._id,
-      status: "Pending",
+      status: { $in: ["Pending", "Accept"] },
     });
 
     // Make sure it does not exceed three
-    if (selectedTherapistsCount + pendingRequestsCount >= 3) {
+    if (existingMatchCount >= 3) {
       return res.status(400).json({
         success: false,
         message: "You cannot have connections with more than 3 therapists",
@@ -126,16 +147,17 @@ export async function selectTherapist(req, res) {
     }
 
     // If everything is checked, create a new request and add to db
-    const newRequest = new Request({
+    const newMatch = new Match({
       user: req.user._id,
       therapist: therapistId,
     });
-    await newRequest.save();
+    await newMatch.save();
 
     // ====================================================
     // ======= Send Notification to the THERAPIST
     const connectedUsers = getConnectedUsers();
     const io = getIo();
+
     // Get the therapist id who was requested
     const requestingTherapistSocketId = connectedUsers.get(
       therapistId.toString()
@@ -166,7 +188,7 @@ export async function selectTherapist(req, res) {
 export async function getPendingRequest(req, res) {
   try {
     // Get all the PENDING request from the db
-    const allRequests = await Request.find({
+    const allRequests = await Match.find({
       $or: [{ user: req.user._id }, { therapist: req.user._id }],
       status: "Pending",
     })
@@ -188,30 +210,36 @@ export async function getPendingRequest(req, res) {
 export async function getMatches(req, res) {
   try {
     if (req.role === "user") {
-      const user = await User.findById(req.user._id).populate(
-        "selected_therapists",
-        "_id name image"
-      );
+      // Find all matches where the logged-in user is the 'user'
+      const matches = await Match.find({ user: req.user._id, status: "Accept" })
+        .populate("therapist", "_id name image")
+        .select("therapist");
 
       res.status(200).json({
         success: true,
-        matches: user.selected_therapists,
+        matches: matches.map((match) => match.therapist),
       });
-    } else {
-      const therapist = await Therapist.findById(req.user._id).populate(
-        "matched_user",
-        "_id name image"
-      );
+    } else if (req.role === "therapist") {
+      // Find all matches where the logged-in therapist is the 'therapist'
+      const matches = await Match.find({
+        therapist: req.user._id,
+        status: "Accept",
+      })
+        .populate("user", "_id name image")
+        .select("user");
+
       res.status(200).json({
         success: true,
-        matches: therapist.matched_user,
+        matches: matches.map((match) => match.user),
       });
+    } else {
+      return res.status(400).json({ success: false, message: "Invalid role." });
     }
   } catch (error) {
-    console.log(`Error in getTherapist ${error}`);
+    console.error("Error fetching matches:", error);
     res.status(500).json({
       success: false,
-      message: "Internal Server Error",
+      message: "Server error while fetching matches.",
     });
   }
 }

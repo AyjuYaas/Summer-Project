@@ -1,9 +1,9 @@
 import { JSX, useEffect, useState } from "react";
 import { useMatchStore } from "../../store/useMatchStore";
 import LoadingMessage from "./components/LoadingMessage";
-import NoMatches from "./components/NoMatches";
 import IndividualRequest from "./components/IndividualRequest";
 import OpenRequestingUser from "./components/OpenRequestingUser";
+import NoRequest from "./components/NoRequest";
 
 interface RequestingUser {
   _id: string;
@@ -45,7 +45,7 @@ const PendingRequests = (): JSX.Element => {
           {loading ? (
             <LoadingMessage />
           ) : request.length === 0 ? (
-            <NoMatches />
+            <NoRequest />
           ) : (
             request.map((req) => (
               <div
@@ -55,7 +55,6 @@ const PendingRequests = (): JSX.Element => {
                 }
               >
                 <IndividualRequest
-                  id={req.user._id}
                   name={req.user.name}
                   image={req.user.image}
                 />

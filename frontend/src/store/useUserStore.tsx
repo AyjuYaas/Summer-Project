@@ -27,15 +27,18 @@ interface FormDataTherapist {
 
 interface AuthState {
   loading: boolean;
+  loadingRemove: boolean;
   updateProfile: (
     params: FormDataUser | FormDataTherapist,
     type: string
   ) => void;
-  updateProblem: (problem: string, direction: string) => void;
+  updateProblem: (problem: string) => void;
+  removeTherapist: (id: string) => void;
 }
 
 export const useUserStore = create<AuthState>((set) => ({
   loading: false,
+  loadingRemove: false,
 
   updateProfile: async (data, type) => {
     try {
@@ -58,16 +61,13 @@ export const useUserStore = create<AuthState>((set) => ({
     }
   },
 
-  updateProblem: async (problem: string, direction: string) => {
+  updateProblem: async (problem: string) => {
     try {
       set({ loading: true });
       const res = await axiosInstance.put("/users/problems", { problem });
       toast.success("Successfully Posted your Problem");
-      if (direction === "prediction") {
-        useAuthStore.getState().setAuthUser(res.data.problems);
-      } else {
-        useMatchStore.getState().getRecommendations();
-      }
+
+      useAuthStore.getState().setAuthUser(res.data.problems);
     } catch (error: any) {
       if (error.response) {
         const errorMessage =
@@ -80,6 +80,29 @@ export const useUserStore = create<AuthState>((set) => ({
       }
     } finally {
       set({ loading: false });
+    }
+  },
+
+  removeTherapist: async (id: string) => {
+    try {
+      set({ loadingRemove: true });
+      const res = await axiosInstance.post(`/users/removeTherapist/${id}`);
+      if (res.data.success) {
+        toast.success("Therapist removed successfully");
+      }
+    } catch (error: any) {
+      if (error.response) {
+        const errorMessage =
+          error.response.data.message || "Something went wrong.";
+        toast.error(errorMessage);
+      } else if (error.request) {
+        toast.error("Network error. Please check your internet connection.");
+      } else {
+        toast.error("Something went wrong. Please try again.");
+      }
+    } finally {
+      set({ loadingRemove: false });
+      useMatchStore.getState().getMatches();
     }
   },
 }));

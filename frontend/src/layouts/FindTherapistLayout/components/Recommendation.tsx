@@ -3,6 +3,7 @@ import { useMatchStore } from "../../../store/useMatchStore";
 import IndividualTherapist from "../../../components/IndividualTherapist";
 import ReactLoading from "react-loading";
 import OpenTherapist from "./OpenTherapist";
+import NoTherapists from "./NoTherapists";
 
 interface Therapist {
   _id: string;
@@ -50,6 +51,8 @@ const Recommendation = (): JSX.Element => {
             <ReactLoading type="bubbles" color="#303b36" />
             <h3>Loading Recommendations</h3>
           </div>
+        ) : recommendations.length === 0 ? (
+          <NoTherapists label="Recommended" />
         ) : (
           recommendations.map((therapist) => (
             <div key={therapist._id} onClick={() => handleTherapist(therapist)}>

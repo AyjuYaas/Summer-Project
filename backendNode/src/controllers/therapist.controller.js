@@ -1,9 +1,9 @@
 import cloudinary from "../config/cloudinary.js";
-import Request from "../models/request.model.js";
 import Therapist from "../models/therapist.model.js";
 import { validate } from "email-validator";
 import User from "../models/user.model.js";
 import { getConnectedUsers, getIo } from "../socket/socket.server.js";
+import Match from "../models/match.model.js";
 
 export async function updateTherapist(req, res) {
   try {
@@ -18,6 +18,7 @@ export async function updateTherapist(req, res) {
           // incase of new Image
           if (!req.user.imagePublicId) {
             const uploadResponse = await cloudinary.uploader.upload(image, {
+              folder: "TheraFind/TherapistProfilePictures",
               crop: "auto",
               width: 500,
               height: 500,
@@ -91,7 +92,7 @@ export async function respondRequest(req, res) {
 
   try {
     // ======= Find the request from db ========
-    const requestByUser = await Request.findById(requestId);
+    const requestByUser = await Match.findById(requestId);
 
     // ======= If there is no response ======
     if (!requestByUser) {
@@ -121,8 +122,14 @@ export async function respondRequest(req, res) {
       });
     }
 
+    const existingRequest = await Match.find({
+      user: user._id,
+      therapist: therapist._id,
+      status: "Accept",
+    });
+
     // ======= If therapist is already matched with the user
-    if (therapist.matched_user.includes(user._id)) {
+    if (existingRequest.length > 0) {
       return res.status(400).json({
         success: false,
         message: "Request already responded to",
@@ -142,12 +149,8 @@ export async function respondRequest(req, res) {
       // ======= Change the status of request to Accept
       requestByUser.status = "Accept";
 
-      // ======= Push the selection into the respective therapist and user ======
-      user.selected_therapists.push(therapistId);
-      therapist.matched_user.push(requestByUser.user);
-
       // ======= Save the changes in the database
-      await Promise.all([requestByUser.save(), user.save(), therapist.save()]);
+      await requestByUser.save();
 
       // ====================================================
       // ======= Send the response to the User about the status

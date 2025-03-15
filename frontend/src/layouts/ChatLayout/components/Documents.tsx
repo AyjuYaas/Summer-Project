@@ -1,24 +1,37 @@
 import ReactLoading from "react-loading";
-import { PiEmptyFill } from "react-icons/pi";
 import { FaAngleDoubleDown } from "react-icons/fa";
 import { format } from "date-fns";
 import { JSX, useEffect, useRef, useState } from "react";
 import { useMessageStore } from "../../../store/useMessageStore";
 import { useParams } from "react-router-dom";
-import PreviewImage from "./PreviewImage";
+import { HiDocumentRemove } from "react-icons/hi";
+import { BsFileEarmarkPdfFill } from "react-icons/bs";
+import PreviewPDF from "./PreviewPDF";
 
-const Messages = (): JSX.Element => {
-  const { getMessages, messages, loading, hasMore, sent } = useMessageStore();
+interface PDF {
+  src: string;
+  name: string;
+}
+
+const Documents = (): JSX.Element => {
+  const {
+    getDocuments,
+    documents,
+    loadingDocuments,
+    hasMoreDocument,
+    sentDocument,
+  } = useMessageStore();
+
   const [loadMore, setLoadMore] = useState<number>(1);
   const { id } = useParams<{ id?: string }>();
   const messagesContainerRef = useRef<HTMLDivElement | null>(null);
-  const [openImage, setOpenImage] = useState<string>("");
+  const [openPdf, setOpenPdf] = useState<PDF | null>(null);
   const [showScrollButton, setShowScrollButton] = useState<boolean>(false);
 
   // Fetch messages on mount and when loadMore changes
   useEffect(() => {
-    if (id && hasMore) {
-      getMessages(id, useMessageStore.getState().cursor);
+    if (id && hasMoreDocument) {
+      getDocuments(id, useMessageStore.getState().cursor);
     }
   }, [id, loadMore]);
 
@@ -36,11 +49,11 @@ const Messages = (): JSX.Element => {
   useEffect(() => {
     if (loadMore === 1) scrollToBottom(false);
     if (!showScrollButton) scrollToBottom(true);
-  }, [messages]);
+  }, [documents]);
 
   useEffect(() => {
     scrollToBottom(true); // Smooth scroll on message sent
-  }, [sent]);
+  }, [sentDocument]);
 
   // Handle scroll events
   const handleScroll = () => {
@@ -54,7 +67,7 @@ const Messages = (): JSX.Element => {
       );
 
       // Load more messages when scrolled to the top
-      if (container.scrollTop === 0 && hasMore && !loading) {
+      if (container.scrollTop === 0 && hasMoreDocument && !loadingDocuments) {
         const previousScrollHeight = container.scrollHeight;
         setLoadMore((prev) => prev + 1);
 
@@ -69,61 +82,66 @@ const Messages = (): JSX.Element => {
     }
   };
 
+  const handlePdfClick = (pdfUrl: string, fileName: string) => {
+    setOpenPdf({ src: pdfUrl, name: fileName }); // Set the PDF URL to open
+  };
+
+  const closePdfPreview = () => {
+    setOpenPdf(null);
+  };
+
   return (
     <div
-      className="h-full min-h-40 flex flex-col overflow-y-auto scrollbar pb-2"
+      className="h-full min-h-40 flex flex-col overflow-y-auto scrollbar pb-2 pr-2"
       ref={messagesContainerRef}
       onScroll={handleScroll}
     >
       {/* Loading Spinner on Initial Load */}
-      {loading && loadMore === 1 ? (
+      {loadingDocuments && loadMore === 1 ? (
         <div className="self-center my-auto flex flex-col gap-2 items-center justify-center">
           <ReactLoading type="spin" color="#303b36" />
-          <span>Loading Messages, please wait...</span>
+          <span className="text-sm">Loading Documents, please wait...</span>
         </div>
-      ) : messages.length === 0 ? (
+      ) : documents.length === 0 ? (
         <div className="self-center my-auto flex flex-col gap-2 items-center justify-center text-xl">
-          <PiEmptyFill className="text-4xl text-[var(--text)]" />
-          <span>No messages yet. Start a conversation!</span>
+          <HiDocumentRemove className="text-4xl text-[var(--text)]" />
+          <span>No Shared Documents yet.</span>
         </div>
       ) : (
         <div className="flex flex-col gap-2">
-          {/* Message List */}
-          {messages.map((message, index: number) => (
+          {documents.map((document, index: number) => (
             <div
               key={index}
-              className={`flex flex-col px-4 ${
-                message.receiver === id ? "items-end" : "items-start"
-              }`}
+              className={`flex flex-col px-4 bg-[#545b74] rounded-2xl p-2 text-white hover:bg-[#816d89] cursor-pointer`}
+              onClick={() =>
+                handlePdfClick(document.document, document.fileName)
+              }
             >
-              {/* Image Message */}
-              {message.image && (
-                <img
-                  src={message.image}
-                  alt="Message"
-                  className={`size-30 rounded-lg border-2 border-[#45646d] mb-1 cursor-pointer object-contain w-max bg-white ${
-                    message.receiver === id ? "self-end" : "self-start"
-                  }`}
-                  onClick={() => setOpenImage(message.image || "")}
-                />
-              )}
+              <div className="flex items-center gap-2">
+                {document.document && (
+                  <BsFileEarmarkPdfFill className="size-5 text-red-400" />
+                )}
 
-              {/* Text Message */}
-              {message.text && (
-                <span
-                  className={`p-3 rounded-xl w-max max-w-50 sm:max-w-80 md:max-w-100 lg:max-w-120 ${
-                    message.receiver === id
-                      ? "bg-[#2f4858] text-white"
-                      : "bg-[#618182] text-white"
-                  }`}
-                >
-                  {message.text}
+                {/* Text Message */}
+                {document.fileName ? (
+                  <span
+                    className={`rounded-xl w-max max-w-50 sm:max-w-80 md:max-w-100 lg:max-w-120 text-base`}
+                  >
+                    {document.fileName}
+                  </span>
+                ) : (
+                  <span>document.pdf</span>
+                )}
+              </div>
+
+              {document.description && (
+                <span className="text-xs line-clamp-3">
+                  {document.description}
                 </span>
               )}
-
               {/* Message Timestamp */}
-              <span className="text-[0.7rem] px-1">
-                {format(new Date(message.createdAt), "MMM d, yyyy h:mm a")}
+              <span className="text-[0.7rem]">
+                {format(new Date(document.createdAt), "MMM d, yyyy h:mm a")}
               </span>
             </div>
           ))}
@@ -132,7 +150,7 @@ const Messages = (): JSX.Element => {
           {showScrollButton && (
             <button
               onClick={() => scrollToBottom(true)}
-              className="absolute bottom-15 left-1/2 transform -translate-1/2 p-2 bg-[#2f4858] text-white rounded-full shadow-lg hover:bg-[#1c2f3b] transition duration-300 z-10 cursor-pointer"
+              className="absolute bottom-10 left-1/2 transform -translate-1/2 p-2 bg-[#006e5e] text-white rounded-full shadow-lg hover:bg-[#1c2f3b] transition duration-300 z-10 cursor-pointer"
             >
               <FaAngleDoubleDown size={19} />
             </button>
@@ -140,12 +158,15 @@ const Messages = (): JSX.Element => {
         </div>
       )}
 
-      {/* Image Preview Modal */}
-      {openImage && (
-        <PreviewImage src={openImage} onClose={() => setOpenImage("")} />
+      {openPdf && (
+        <PreviewPDF
+          src={openPdf.src}
+          onClose={closePdfPreview}
+          name={openPdf.name}
+        />
       )}
     </div>
   );
 };
 
-export default Messages;
+export default Documents;

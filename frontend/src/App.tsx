@@ -34,6 +34,8 @@ import { useNavStore } from "./store/useNavStore";
 import GetStarted from "./pages/GetStarted";
 import { useMatchStore } from "./store/useMatchStore";
 import { useMessageStore } from "./store/useMessageStore";
+import Test from "./pages/Test";
+import VideoCall from "./pages/VideoCall";
 
 export default function App(): React.ReactElement {
   const { checkAuth, authUser, authType, checkingAuth } = useAuthStore();
@@ -45,7 +47,12 @@ export default function App(): React.ReactElement {
     stopListeningToResponse,
   } = useMatchStore();
 
-  const { listenToMessages, stopListeningToMessages } = useMessageStore();
+  const {
+    listenToMessages,
+    stopListeningToMessages,
+    listenToVideoCall,
+    stopListeningToVideoCall,
+  } = useMessageStore();
 
   useEffect(() => {
     checkAuth();
@@ -63,6 +70,15 @@ export default function App(): React.ReactElement {
       };
     }
   }, [listenToMessages, stopListeningToMessages, authUser]);
+
+  useEffect(() => {
+    if (authUser) {
+      listenToVideoCall();
+      return () => {
+        stopListeningToVideoCall();
+      };
+    }
+  }, [listenToVideoCall, stopListeningToVideoCall, authUser]);
 
   useEffect(() => {
     if (authUser && authType === "therapist") {
@@ -93,25 +109,16 @@ export default function App(): React.ReactElement {
       </div>
     );
 
+  const hideNavbar = location.pathname.startsWith("/video-call");
+
   return (
     <div>
       <Toaster />
-      <Navbar />
+      {!hideNavbar && <Navbar />}
 
       <Routes>
         {/* Default Nav Routes  */}
-        <Route
-          path="/"
-          element={
-            !authUser ? (
-              <Home />
-            ) : authType === "user" ? (
-              <Navigate to={"/user/home"} />
-            ) : (
-              <Navigate to={"/therapist/home"} />
-            )
-          }
-        />
+        <Route path="/" element={<Home />} />
         <Route path="/about" element={<About />} />
 
         <Route path="/therapist-list" element={<TherapistList />} />
@@ -219,6 +226,12 @@ export default function App(): React.ReactElement {
 
         {/* Admin Route */}
         <Route path="/admin" element={<Admin />} />
+
+        <Route path="/test" element={<Test />} />
+        <Route
+          path="/video-call/:receiverId"
+          element={authUser ? <VideoCall /> : <Navigate to="/user/login" />}
+        />
 
         {/* Wrong Route */}
         <Route path="*" element={<NotFound />} />

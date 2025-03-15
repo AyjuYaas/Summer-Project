@@ -230,14 +230,13 @@ export const useMatchStore = create<MatchState>((set) => ({
         if (responseData.success)
           toast.success(`${responseData.name} Accepted Your Request`);
         else toast.error(`${responseData.name} Rejected Your Request`);
+        useMatchStore.getState().getMatches();
+        useMatchStore.getState().getPendingRequest();
       });
-      useMatchStore.getState().getMatches();
-      useMatchStore.getState().getPendingRequest();
     } catch (error) {
       console.log(error);
     }
   },
-
   stopListeningToResponse: () => {
     try {
       const socket = getSocket();

@@ -44,9 +44,6 @@ const userSchema = new mongoose.Schema(
     },
     problemText: { type: String, default: "" },
     problems: { type: mongoose.Schema.Types.Array, default: [] },
-    selected_therapists: [
-      { type: mongoose.Schema.Types.ObjectId, ref: "Therapist" },
-    ],
   },
   { timestamps: true }
 );

@@ -1,4 +1,8 @@
 import cloudinary from "../config/cloudinary.js";
+import Document from "../models/document.model.js";
+import Match from "../models/match.model.js";
+import Message from "../models/message.model.js";
+import Therapist from "../models/therapist.model.js";
 import User from "../models/user.model.js";
 import axios from "axios";
 import { validate } from "email-validator";
@@ -17,6 +21,7 @@ export const updateProfile = async (req, res) => {
           // Incase it is their first upload
           if (!req.user.imagePublicId) {
             const uploadResponse = await cloudinary.uploader.upload(image, {
+              folder: "TheraFind/UserProfilePictures",
               crop: "auto",
               width: 500,
               height: 500,
@@ -151,3 +156,127 @@ export const problem = async (req, res) => {
     });
   }
 };
+
+// Function to extract the public ID from the URL
+function extractPublicIdFromUrl(url) {
+  // Regex to match the public ID, handling multiple image formats (jpg, png, jpeg, etc.)
+  const regex =
+    /\/image\/upload\/(?:v\d+\/)?(.*?)\.(jpg|png|jpeg|gif|bmp|webp)$/i;
+  const match = url.match(regex);
+
+  if (match && match[1]) {
+    return match[1]; // This gives you 'ChatImages/ysfrd3g7thtldtfagub5'
+  }
+
+  return null; // If no match is found, return null
+}
+
+export async function removeTherapist(req, res) {
+  const { therapistId } = req.params;
+
+  if (req.role === "user") {
+    try {
+      // Find the current user and the therapist to be removed
+      const currentUser = await User.findById(req.user._id);
+      const therapistToBeRemoved = await Therapist.findById(therapistId);
+
+      if (!therapistToBeRemoved) {
+        return res
+          .status(404)
+          .json({ success: false, message: "Therapist not found" });
+      }
+
+      const userTherapistMatch = await Match.find({
+        user: currentUser._id,
+        therapist: therapistToBeRemoved._id,
+        status: "Accept",
+      });
+
+      // Check if the therapist is in the user's selected_therapists list using .includes()
+      if (userTherapistMatch === 0) {
+        return res.status(400).json({
+          success: false,
+          message: "Therapist is not connected with the user",
+        });
+      }
+
+      // Find all messages related to the therapist
+      const messages = await Message.find({
+        $or: [
+          { sender: therapistId, receiver: req.user._id },
+          { receiver: therapistId, sender: req.user._id },
+        ],
+      });
+
+      // Extract public IDs of images from the messages
+      const publicIds = messages
+        .filter((message) => message.image) // Only include messages with an image
+        .map((message) => extractPublicIdFromUrl(message.image))
+        .filter((publicId) => publicId); // Remove null/undefined public IDs
+
+      // If there are images, delete them from Cloudinary in batch
+      if (publicIds.length > 0) {
+        await cloudinary.api.delete_resources(publicIds);
+      }
+
+      // Delete all messages related to the therapist in a single batch
+      await Message.deleteMany({
+        $or: [
+          { sender: therapistId, receiver: req.user._id },
+          { receiver: therapistId, sender: req.user._id },
+        ],
+      });
+
+      const documents = await Document.find({
+        $or: [
+          { sender: therapistId, receiver: req.user._id },
+          { receiver: therapistId, sender: req.user._id },
+        ],
+      });
+
+      if (documents.length > 0) {
+        const publicIdsDocument = documents
+          .filter((doc) => doc.publicId)
+          .map((doc) => doc.publicId);
+
+        await cloudinary.api.delete_resources(publicIdsDocument, {
+          resource_type: "raw",
+        });
+
+        await Document.deleteMany({
+          $or: [
+            { sender: therapistId, receiver: req.user._id },
+            { receiver: therapistId, sender: req.user._id },
+          ],
+        });
+      }
+
+      await Match.deleteMany({
+        user: currentUser._id,
+        therapist: therapistToBeRemoved._id,
+        status: "Accept",
+      });
+
+      // Return success message
+      return res.status(200).json({
+        success: true,
+        message: "Therapist removed successfully",
+      });
+    } catch (error) {
+      console.error(
+        "Error removing therapist and deleting images/messages:",
+        error
+      );
+      return res.status(500).json({
+        success: false,
+        message:
+          "An error occurred while removing the therapist and deleting images/messages",
+      });
+    }
+  } else {
+    return res.status(403).json({
+      success: false,
+      message: "Forbidden: You do not have permission to perform this action",
+    });
+  }
+}

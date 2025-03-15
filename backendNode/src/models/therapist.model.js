@@ -59,7 +59,6 @@ const therapistSchema = new mongoose.Schema(
       type: Boolean,
       default: true,
     },
-    matched_user: [{ type: mongoose.Schema.Types.ObjectId, ref: "User" }],
     rating: {
       type: Number,
       min: 0,

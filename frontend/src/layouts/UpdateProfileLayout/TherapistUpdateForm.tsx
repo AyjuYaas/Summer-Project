@@ -110,7 +110,7 @@ const TherapistUpdateForm = (): JSX.Element => {
         <button
           type="button"
           onClick={() => fileInputRef.current?.click()}
-          className={`absolute bottom-4 right-4 text-center size-10 flex items-center justify-center bg-[#2f4858] text-[white] hover:bg-[#565b70] duration-100 rounded-full p-1 min-w-max border-0 font-medium cursor-pointer`}
+          className={`absolute bottom-7 right-1 text-center size-10 flex items-center justify-center bg-[#2f4858] text-[white] hover:bg-[#565b70] duration-100 rounded-full p-1 min-w-max border-0 font-medium cursor-pointer`}
         >
           <FaCamera />
         </button>

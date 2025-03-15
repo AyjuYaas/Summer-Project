@@ -23,14 +23,14 @@ const PreviewImage = ({ src, onClose }: Props): JSX.Element => {
     };
   }, [onClose]);
   return (
-    <div className="fixed z-100 top-0 bottom-0 left-0 right-0 h-screen w-full backdrop-blur-xs flex justify-center items-center">
+    <div className="fixed z-100 top-0 bottom-0 left-0 right-0 w-full backdrop-blur-xs flex justify-center items-center">
       <div
-        className="relative w-auto h-auto rounded-4xl flex flex-col gap-5 items-center bg-gray-300"
+        className="relative w-max h-auto rounded-4xl flex flex-col gap-5 items-center"
         ref={menuRef}
       >
-        <img src={src} alt="image" className="size-120 object-contain" />
+        <img src={src} alt="image" className="w-120 object-contain bg-white" />
         <button
-          className="absolute top-4 right-4 bg-red-400 text-white size-8 text-2xl flex justify-center items-center rounded-full cursor-pointer hover:bg-red-500 transition-colors"
+          className="absolute top-2 right-2 bg-red-600 text-white size-8 text-2xl flex justify-center items-center rounded-full cursor-pointer hover:bg-red-500 transition-colors"
           onClick={onClose}
         >
           <IoMdClose />

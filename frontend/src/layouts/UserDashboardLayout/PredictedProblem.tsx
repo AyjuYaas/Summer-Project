@@ -56,12 +56,10 @@ const PredictedProblem = ({ problems, problemText }: Props): JSX.Element => {
                 {problems.map(({ problem, score }, index: number) => (
                   <span
                     key={index}
-                    className={`bg-red-300 p-3 min-w-max rounded-2xl`}
+                    className={`bg-[#758abb] p-3 min-w-max rounded-2xl text-white`}
                     style={{ width: `${Math.round(score * 100)}%` }}
                   >
-                    <span className="font-semibold text-[var(--highlight)]">
-                      {problem}:{" "}
-                    </span>
+                    <span className="font-semibold">{problem}: </span>
                     <span>{(score * 100).toPrecision(4)}% likely</span>
                   </span>
                 ))}
@@ -79,13 +77,12 @@ const PredictedProblem = ({ problems, problemText }: Props): JSX.Element => {
         {isOpen ? (
           <ProblemBar
             problemText={problemText}
-            direction="prediction"
             toggleProblemBar={toggleProblemBar}
           />
         ) : (
           <button
             onClick={toggleProblemBar}
-            className="bg-amber-200 hover:bg-amber-300 p-4 font-semibold text-[var(--text)] rounded-2xl cursor-pointer duration-100 text-xl"
+            className="bg-[#83699d] hover:bg-[#894971] p-4 font-semibold text-white rounded-2xl cursor-pointer duration-100 text-xl"
           >
             Edit Your Problem
           </button>

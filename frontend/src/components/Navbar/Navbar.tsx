@@ -8,6 +8,7 @@ import NavLogin from "./items/NavLogin";
 import { IoMdMenu } from "react-icons/io";
 import { MdClose } from "react-icons/md";
 import { Link } from "react-router-dom";
+import { useAuthStore } from "../../store/useAuthStore";
 
 export default function Navbar(): JSX.Element {
   // =========== To stop body from scrolling when navbar is pulled ===========
@@ -17,6 +18,8 @@ export default function Navbar(): JSX.Element {
   const navRef = useRef<HTMLDivElement | null>(null);
 
   const menuRef = useRef<HTMLDivElement | null>(null);
+
+  const { authType } = useAuthStore();
 
   useEffect(() => {
     if (openNavbar) {
@@ -51,7 +54,13 @@ export default function Navbar(): JSX.Element {
   return (
     <div className="nav" ref={menuRef}>
       <Link
-        to="/"
+        to={
+          !authType
+            ? "/"
+            : authType === "user"
+            ? "/user/home"
+            : "/therapist/home"
+        }
         className="nav-logo"
         onClick={openNavbar ? toggleNavbar : () => setOpenNavbar(false)}
       >
