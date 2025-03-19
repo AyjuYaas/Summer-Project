@@ -1,55 +1,3 @@
-// import { JSX, useEffect, useRef } from "react";
-// import { IoMdClose } from "react-icons/io";
-
-// interface Props {
-//   src: string;
-//   onClose: () => void;
-// }
-
-// const PreviewPDF = ({ src, onClose }: Props): JSX.Element => {
-//   const menuRef = useRef<HTMLDivElement | null>(null);
-
-//   useEffect(() => {
-//     const handleCLickOutside = (e: MouseEvent) => {
-//       if (!menuRef.current?.contains(e.target as Element)) {
-//         onClose();
-//       }
-//     };
-
-//     document.addEventListener("mousedown", handleCLickOutside);
-
-//     return () => {
-//       document.removeEventListener("mousedown", handleCLickOutside);
-//     };
-//   }, [onClose]);
-//   return (
-//     <div className="fixed z-100 top-0 bottom-0 left-0 right-0 w-full backdrop-blur-xs flex justify-center items-center">
-//       <div
-//         className="relative w-full h-full flex flex-col gap-5 items-center bg-[var(--footer-bg)] p-10"
-//         ref={menuRef}
-//       >
-//         <div className="flex w-full justify-between items-center mb-4">
-//           <h2 className="text-xl font-bold text-white">PDF Preview</h2>
-//           <button
-//             onClick={onClose}
-//             className="p-1 bg-red-500 text-white rounded-full hover:bg-red-600 cursor-pointer"
-//           >
-//             <IoMdClose className="text-lg" />
-//           </button>
-//         </div>
-//         <iframe
-//           src={`https://docs.google.com/viewer?url=${encodeURIComponent(
-//             src
-//           )}&embedded=true`}
-//           className="w-full h-full rounded-lg"
-//           title="PDF Preview"
-//         />
-//       </div>
-//     </div>
-//   );
-// };
-// export default PreviewPDF;
-
 import { JSX, useEffect, useRef, useState } from "react";
 import { IoMdClose } from "react-icons/io";
 import { FaFileDownload } from "react-icons/fa";
@@ -104,7 +52,7 @@ const PreviewPDF = ({ src, onClose, name }: Props): JSX.Element => {
   return (
     <div className="fixed z-100 inset-0 w-full backdrop-blur-sm flex justify-center items-center">
       <div
-        className="relative w-full h-full flex flex-col gap-5 items-center bg-[var(--footer-bg)] p-10"
+        className="relative w-full h-full flex flex-col gap-5 items-center bg-footer-bg p-10"
         ref={menuRef}
       >
         {/* Header with Close and Download */}

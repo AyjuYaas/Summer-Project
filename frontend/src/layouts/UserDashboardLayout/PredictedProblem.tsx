@@ -28,7 +28,7 @@ const PredictedProblem = ({ problems, problemText }: Props): JSX.Element => {
   };
 
   return (
-    <div className="bg-[var(--cbg-one)] rounded-2xl p-10 flex flex-col gap-5 flex-2/3 h-max shadow-xl hover:shadow-2xl">
+    <div className="bg-cbg-one rounded-2xl p-10 flex flex-col gap-5 flex-2/3 h-max shadow-xl hover:shadow-2xl">
       <div className="flex flex-col gap-1">
         <span className="font-fancy text-2xl md:text-3xl lg:text-4xl tracking-wider">
           Predicted Problem Category

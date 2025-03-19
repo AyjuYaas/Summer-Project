@@ -45,11 +45,11 @@ const OpenTherapist = ({ therapist, onClose }: Props): JSX.Element => {
   return (
     <div className="fixed z-100 top-0 bottom-0 left-0 right-0 h-screen w-full backdrop-blur-xs flex justify-center items-center self-center justify-self-center">
       <div
-        className="relative w-max h-auto bg-[var(--cbg-two)] px-8 py-10 rounded-4xl flex flex-col gap-5 items-center"
+        className="relative w-max h-auto bg-cbg-two px-8 py-10 rounded-4xl flex flex-col gap-5 items-center"
         ref={menuRef}
       >
         {/* Name and Image gender rating */}
-        <div className="flex gap-12 text-xl font-bold text-[var(--text)] justify-center items-center">
+        <div className="flex gap-12 text-xl font-bold text-main-text justify-center items-center">
           <div className="flex flex-col gap-2 items-center">
             {/* image  */}
             <img
@@ -59,9 +59,7 @@ const OpenTherapist = ({ therapist, onClose }: Props): JSX.Element => {
             />
 
             {/* Name */}
-            <span className="text-center text-[var(--highlight)]">
-              {therapist.name}
-            </span>
+            <span className="text-center text-highlight">{therapist.name}</span>
 
             {/* Gender */}
             <span className="font-medium">{therapist.gender}</span>
@@ -76,13 +74,13 @@ const OpenTherapist = ({ therapist, onClose }: Props): JSX.Element => {
           <div className="flex flex-col gap-4">
             {/* Experience */}
             <div className="flex flex-col">
-              <span className="text-[var(--highlight)]">Experience</span>{" "}
+              <span className="text-highlight">Experience</span>{" "}
               <span className="font-medium">{therapist.experience} years</span>
             </div>
 
             {/* Specialization */}
             <div>
-              <span className="text-[var(--highlight)]">Specialization</span>
+              <span className="text-highlight">Specialization</span>
               <ul className="font-medium list-disc ml-6">
                 {therapist.specialization.map((field, index: number) => (
                   <li key={index}>{field}</li>
@@ -92,7 +90,7 @@ const OpenTherapist = ({ therapist, onClose }: Props): JSX.Element => {
 
             {/* Qualification */}
             <div>
-              <span className="text-[var(--highlight)]">Qualification</span>
+              <span className="text-highlight">Qualification</span>
               <ul className="font-medium list-disc ml-6">
                 {therapist.qualification.map((field, index: number) => (
                   <li key={index}>{field}</li>
@@ -115,7 +113,7 @@ const OpenTherapist = ({ therapist, onClose }: Props): JSX.Element => {
           </button>
         </div>
         <button
-          className="absolute top-4 right-4 bg-[var(--text)] text-white size-8 text-2xl flex justify-center items-center rounded-full cursor-pointer"
+          className="absolute top-4 right-4 bg-main-text text-white size-8 text-2xl flex justify-center items-center rounded-full cursor-pointer"
           onClick={onClose}
         >
           <IoMdClose />

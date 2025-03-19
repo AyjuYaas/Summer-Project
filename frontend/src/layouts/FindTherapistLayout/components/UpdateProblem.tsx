@@ -46,7 +46,7 @@ const UpdateProblem = (): JSX.Element => {
       ) : (
         <button
           onClick={toggleProblemBar}
-          className="bg-[var(--footer-bg)] text-white hover:bg-[#42604c] p-4 font-semibold rounded-2xl cursor-pointer duration-100 text-xl fixed bottom-4 right-4 w-max"
+          className="bg-footer-bg text-white hover:bg-[#42604c] p-4 font-semibold rounded-2xl cursor-pointer duration-100 text-xl fixed bottom-4 right-4 w-max"
         >
           Edit Your Problem
         </button>

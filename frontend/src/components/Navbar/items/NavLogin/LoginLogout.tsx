@@ -58,4 +58,5 @@ const LoginLogout = (): JSX.Element => {
     </>
   );
 };
+
 export default LoginLogout;

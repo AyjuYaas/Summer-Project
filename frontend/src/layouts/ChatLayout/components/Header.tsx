@@ -34,9 +34,9 @@ const Header = (): JSX.Element => {
           />
           <span className="font-bold text-[#45646d]">{match?.name}</span>
         </div>
-        <div className="flex gap-5 text-3xl items-center text-[var(--text)]">
+        <div className="flex gap-5 text-3xl items-center text-main-text">
           <span
-            className="cursor-pointer hover:text-[var(--highlight)]"
+            className="cursor-pointer hover:text-highlight"
             onClick={openVideoCall}
           >
             <IoVideocam />

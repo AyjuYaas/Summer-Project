@@ -8,11 +8,8 @@ interface Reason {
 
 const WhyTheraFind = (): JSX.Element => {
   return (
-    <div
-      className="mx-auto p-10 flex flex-col gap-10 justify-center items-center h-[600px]"
-      style={{ backgroundColor: "var(--third-bg)" }}
-    >
-      <h1 className="font-bold text-center text-[1.9rem] md:text-[3vw] tracking-wider text-[var(--text)]">
+    <div className="mx-auto p-10 flex flex-col gap-10 justify-center items-center h-[600px] bg-third-bg">
+      <h1 className="font-bold text-center text-[1.9rem] md:text-[3vw] tracking-wider text-main-text">
         With{" "}
         <span style={{ color: "var(--highlight)" }} className="font-fancy">
           TheraFind
@@ -27,13 +24,7 @@ const WhyTheraFind = (): JSX.Element => {
       <div className="flex flex-col gap-10 justify-center items-start text-sm md:text-lg lg:text-2xl xl:text-3xl">
         {reasons.map((reason: Reason, index: number) => (
           <div key={index} className="flex gap-5 items-center">
-            <div
-              className="rounded-lg flex items-center justify-center p-2"
-              style={{
-                backgroundColor: "var(--footer-bg)",
-                color: "var(--white-text)",
-              }}
-            >
+            <div className="rounded-lg flex items-center justify-center p-2 bg-footer-bg text-white-text">
               <reason.icon className="text-lg md:text-3xl" />
             </div>
             <p>{reason.content}</p>

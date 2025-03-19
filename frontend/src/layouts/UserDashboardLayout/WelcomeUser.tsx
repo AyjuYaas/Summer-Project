@@ -7,7 +7,7 @@ interface Props {
 
 const WelcomeUser = ({ image, name }: Props): JSX.Element => {
   return (
-    <div className="text-3xl lg:text-4xl flex flex-col md:flex-row justify-center text-[var(--text)] font-semibold items-center gap-5">
+    <div className="text-3xl lg:text-4xl flex flex-col md:flex-row justify-center text-main-text font-semibold items-center gap-5">
       <img
         src={image}
         alt="profile-pic"

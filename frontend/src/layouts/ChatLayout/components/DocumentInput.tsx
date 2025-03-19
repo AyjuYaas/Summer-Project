@@ -95,7 +95,7 @@ const DocumentInput = (): JSX.Element => {
               className={`rounded-full size-10 flex justify-center items-center duration-100 ${
                 !text.trim() && !pdfPreview
                   ? "cursor-not-allowed text-zinc-400"
-                  : "text-[var(--text)] hover:bg-[#2f4858] hover:text-white cursor-pointer"
+                  : "text-main-text hover:bg-[#2f4858] hover:text-white cursor-pointer"
               }`}
               disabled={!text.trim() && !pdfPreview}
               onClick={handleSubmit}

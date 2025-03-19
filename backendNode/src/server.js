@@ -46,6 +46,13 @@ app.use("/api/matches", matchRoutes);
 app.use("/api/messages", messageRoutes);
 app.get("/api/all-therapist", allTherapist);
 
+app.get("/testing", () => {
+  res.status(200).json({
+    success: true,
+    message: "Hey How are you!!",
+  });
+});
+
 // When the user checks if they are authenticated or not -
 // The middleware protectRoute is called -
 app.get("/api/auth/me", protectRoute, async (req, res) => {

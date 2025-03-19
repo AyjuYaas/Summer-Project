@@ -91,7 +91,7 @@ const MessageInput = (): JSX.Element => {
         <button
           type="button"
           className={`sm:flex rounded-full size-10 p-1 justify-center items-center cursor-pointer hover:bg-[#2f4858] hover:text-white duration-100 text-center ${
-            imagePreview ? "text-emerald-500" : "text-[var(--text)]"
+            imagePreview ? "text-emerald-500" : "text-main-text"
           }`}
           onClick={() => fileInputRef.current?.click()}
         >
@@ -103,7 +103,7 @@ const MessageInput = (): JSX.Element => {
           className={`rounded-full size-10 flex justify-center items-center duration-100 ${
             !text.trim() && !imagePreview
               ? "cursor-not-allowed text-zinc-400"
-              : "text-[var(--text)] hover:bg-[#2f4858] hover:text-white cursor-pointer"
+              : "text-main-text hover:bg-[#2f4858] hover:text-white cursor-pointer"
           }`}
           disabled={!text.trim() && !imagePreview}
         >

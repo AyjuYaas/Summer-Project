@@ -31,7 +31,7 @@ const UserDashboardLayout = () => {
   const { authUser } = useAuthStore();
 
   return (
-    <div className="flex flex-col px-5 md:px-20 py-5 gap-10 text-[var(--text)] relative">
+    <div className="flex flex-col px-5 md:px-20 py-5 gap-10 text-main-text relative">
       <div className="flex flex-col gap-10 md:flex-row justify-between items-center">
         <WelcomeUser
           image={authUser?.image || ""}
@@ -40,7 +40,7 @@ const UserDashboardLayout = () => {
 
         <Link
           to="/user/find-therapist"
-          className="w-max h-max p-5 rounded-2xl bg-[var(--cbg-two)] hover:bg-[#8b4969] hover:text-white text-xl font-semibold transition-colors duration-150 text-center"
+          className="w-max h-max p-5 rounded-2xl bg-cbg-two hover:bg-[#8b4969] hover:text-white text-xl font-semibold transition-colors duration-150 text-center"
         >
           Start Exploring Therapists
         </Link>

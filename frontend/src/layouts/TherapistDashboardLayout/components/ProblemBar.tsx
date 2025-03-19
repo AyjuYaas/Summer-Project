@@ -38,7 +38,7 @@ const ProblemBar = ({ problemText, toggleProblemBar }: Props): JSX.Element => {
   return (
     <div className="fixed z-100 top-0 bottom-0 left-0 right-0 h-screen w-full backdrop-blur-xs flex justify-center items-center self-center justify-self-center">
       <div
-        className="relative w-200 min-h-100 h-auto bg-[var(--cbg-two)] px-8 py-10 rounded-4xl"
+        className="relative w-200 min-h-100 h-auto bg-cbg-two px-8 py-10 rounded-4xl"
         ref={menuRef}
       >
         <form onSubmit={handleSubmit}>
@@ -75,7 +75,7 @@ const ProblemBar = ({ problemText, toggleProblemBar }: Props): JSX.Element => {
           </button>
         </form>
         <button
-          className="absolute top-10 right-6 bg-[var(--text)] text-white size-8 text-2xl flex justify-center items-center rounded-full cursor-pointer"
+          className="absolute top-10 right-6 bg-main-text text-white size-8 text-2xl flex justify-center items-center rounded-full cursor-pointer"
           onClick={toggleProblemBar}
         >
           <IoMdClose />

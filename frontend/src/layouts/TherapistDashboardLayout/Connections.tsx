@@ -12,7 +12,7 @@ const Connections = (): JSX.Element => {
   }, [getMatches]);
 
   return (
-    <div className="bg-[var(--cbg-four)] rounded-2xl p-10 flex flex-col h-max shadow-xl hover:shadow-2xl flex-2/3">
+    <div className="bg-cbg-four rounded-2xl p-10 flex flex-col h-max shadow-xl hover:shadow-2xl flex-2/3">
       <div className="flex flex-col gap-1">
         <span className="font-fancy text-2xl md:text-3xl lg:text-4xl tracking-wider">
           Your Connections

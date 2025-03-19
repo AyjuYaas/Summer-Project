@@ -44,7 +44,7 @@ const IndividualTherapist = memo(
               <span className="text-[#00927f] text-lg sm:text-xl xl:text-2xl">
                 Experience
               </span>
-              <span className="font-medium text-xl md:text-2xl text-[var(--text)]">
+              <span className="font-medium text-xl md:text-2xl text-main-text">
                 {therapist.experience} years
               </span>
             </p>
@@ -54,7 +54,7 @@ const IndividualTherapist = memo(
               <span className="text-[#00927f] text-lg sm:text-xl xl:text-2xl">
                 Specialization
               </span>{" "}
-              <ul className="flex flex-col justify-center items-center font-extrabold text-lg md:text-xl text-[var(--text)]">
+              <ul className="flex flex-col justify-center items-center font-extrabold text-lg md:text-xl text-main-text">
                 {therapist.specialization
                   .slice(0, 2)
                   .map((content: string, index: number) => (

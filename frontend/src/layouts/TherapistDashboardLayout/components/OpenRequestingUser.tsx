@@ -44,10 +44,10 @@ const OpenRequestingUser = ({ user, onClose }: Props): JSX.Element => {
   return (
     <div className="fixed z-100 top-0 bottom-0 left-0 right-0 h-screen w-full backdrop-blur-xs flex justify-center items-center self-center justify-self-center">
       <div
-        className="relative w-max h-auto bg-[var(--cbg-two)] px-8 py-10 rounded-4xl flex flex-col gap-5 items-center"
+        className="relative w-max h-auto bg-cbg-two px-8 py-10 rounded-4xl flex flex-col gap-5 items-center"
         ref={menuRef}
       >
-        <div className="flex gap-12 text-xl font-bold text-[var(--text)] justify-center items-center">
+        <div className="flex gap-12 text-xl font-bold text-main-text justify-center items-center">
           <div className="flex flex-col gap-2 items-center ">
             {/* image  */}
             <img
@@ -57,9 +57,7 @@ const OpenRequestingUser = ({ user, onClose }: Props): JSX.Element => {
             />
 
             {/* Name */}
-            <span className="text-center text-[var(--highlight)]">
-              {user.name}
-            </span>
+            <span className="text-center text-highlight">{user.name}</span>
 
             {/* Gender */}
             <span className="font-medium">{user.gender}</span>
@@ -67,9 +65,7 @@ const OpenRequestingUser = ({ user, onClose }: Props): JSX.Element => {
 
           {/* Problem Statement */}
           <div className="flex flex-col p-3">
-            <span className="text-[var(--highlight)]">
-              Their Problem Description
-            </span>{" "}
+            <span className="text-highlight">Their Problem Description</span>{" "}
             <span className="font-medium bg-white p-2 rounded-xl min-h-20">
               {user.problemText}
             </span>
@@ -92,7 +88,7 @@ const OpenRequestingUser = ({ user, onClose }: Props): JSX.Element => {
         </div>
       </div>
       <button
-        className="absolute top-4 right-4 bg-[var(--text)] text-white size-8 text-2xl flex justify-center items-center rounded-full cursor-pointer"
+        className="absolute top-4 right-4 bg-main-text text-white size-8 text-2xl flex justify-center items-center rounded-full cursor-pointer"
         onClick={onClose}
       >
         <IoMdClose />

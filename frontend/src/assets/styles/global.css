@@ -4,10 +4,31 @@
 
 @theme {
   --font-fancy: "Chewy", system-ui;
+
+  --color-primary-bg: #e5e5e5;
+  --color-third-bg: #d1d8c7;
+  --color-footer-bg: #303b36;
+
+  --color-cbg-one: #a3dcd5;
+  --color-cbg-two: #bddffa;
+  --color-cbg-three: #e7b89c;
+  --color-cbg-four: #d1d8c7;
+  --color-cbg-five: #d5bdaf;
+
+  --color-main-text: #3a4344;
+  --color-highlight: #015950;
+  --color-highlight-two: #a98467;
+  --color-white-text: #f6f8ee;
+  --color-link-text: #c2c5aa;
+
+  --color-button: #81f18e;
+  --color-button-border: #4a5a4d;
+
+  --color-gradient: #addfff;
 }
 
 :root {
-  --primary-bg: #e5e5e5;
+  --primary-bg: ;
   --secondary-bg: #e5e5e5;
   --third-bg: #d1d8c7;
   --footer-bg: #303b36;
@@ -17,7 +38,6 @@
   --cbg-three: #e7b89c;
   --cbg-four: #d1d8c7;
   --cbg-five: #d5bdaf;
-  /* --cbg-five: #a9927d; */
 
   --text: #3a4344;
   --highlight: #015950;
@@ -45,14 +65,15 @@ html {
 }
 body {
   min-width: 300px;
-  background-color: var(--primary-bg);
+  /* Primary Color */
+  background-color: #e5e5e5;
 }
 
 .btn {
   text-decoration: none;
   text-transform: capitalize;
   text-align: center;
-  color: var(--text);
+  color: white;
   padding: 7px 30px;
   border-radius: 40px;
   width: 100%;
@@ -63,22 +84,28 @@ body {
 
 .outline-btn {
   background-color: transparent;
-  border: 2px solid var(--button-border);
+
+  /* --button-border */
+  border: 2px solid #4a5a4d;
+  font-weight: bolder;
+  color: #3a4344;
 }
 .outline-btn:hover {
-  color: var(--highlight);
-  border-color: var(--highlight);
+  color: #015950;
+  border-color: #015950;
 }
 
 .filled-btn {
   /* background-color: var(--button); */
-  background-color: #b2c7b4;
-  border: 3px solid #b2c7b4;
+  background-color: #45646d;
+  color: white;
+  border: 3px solid #45646d;
   transition: background 0.3s ease-in-out;
 }
 .filled-btn:hover {
-  background-color: #90ada1;
+  background-color: #2f4858;
   background-position: right top;
+  border-color: #2f4858;
 }
 
 /* Targeting WebKit-based browsers (Chrome, Edge, Safari) */

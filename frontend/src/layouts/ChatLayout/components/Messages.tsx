@@ -20,7 +20,7 @@ const Messages = (): JSX.Element => {
     if (id && hasMore) {
       getMessages(id, useMessageStore.getState().cursor);
     }
-  }, [id, loadMore]);
+  }, [getMessages, hasMore, id, loadMore]);
 
   // Smooth scroll to the bottom
   const scrollToBottom = (smooth: boolean = true) => {
@@ -36,7 +36,7 @@ const Messages = (): JSX.Element => {
   useEffect(() => {
     if (loadMore === 1) scrollToBottom(false);
     if (!showScrollButton) scrollToBottom(true);
-  }, [messages]);
+  }, [loadMore, messages, showScrollButton]);
 
   useEffect(() => {
     scrollToBottom(true); // Smooth scroll on message sent
@@ -83,7 +83,7 @@ const Messages = (): JSX.Element => {
         </div>
       ) : messages.length === 0 ? (
         <div className="self-center my-auto flex flex-col gap-2 items-center justify-center text-xl">
-          <PiEmptyFill className="text-4xl text-[var(--text)]" />
+          <PiEmptyFill className="text-4xl text-main-text" />
           <span>No messages yet. Start a conversation!</span>
         </div>
       ) : (

@@ -16,7 +16,7 @@ const IndividualMessage = ({ id, image, name }: Props): JSX.Element => {
           alt={`${name}'s avatar`}
           className="size-12 object-cover rounded-full border-2 bg-white"
         />
-        <h2 className="font-semibold text-[var(--text)] text-xl">{name}</h2>
+        <h2 className="font-semibold text-main-text text-xl">{name}</h2>
       </div>
     </Link>
   );

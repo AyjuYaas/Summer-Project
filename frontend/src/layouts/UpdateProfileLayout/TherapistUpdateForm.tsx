@@ -3,7 +3,7 @@ import { useAuthStore } from "../../store/useAuthStore";
 import { useUserStore } from "../../store/useUserStore";
 import genderData from "../TherapistAuthLayout/data/gender-data";
 import specializationData from "../TherapistAuthLayout/data/specializations-data";
-import { MultiSelect } from "primereact/multiselect";
+import { MultiSelect, MultiSelectChangeEvent } from "primereact/multiselect";
 import Switch from "react-switch";
 import qualificationData from "../TherapistAuthLayout/data/qualification-data";
 import QualificationLabel from "../TherapistAuthLayout/data/QualificationLabel";
@@ -64,7 +64,7 @@ const TherapistUpdateForm = (): JSX.Element => {
     }));
   };
 
-  const handleQualificationChange = (e: any) => {
+  const handleQualificationChange = (e: MultiSelectChangeEvent) => {
     setFormData((prevFormData) => ({
       ...prevFormData,
       qualification: e.value,
@@ -119,7 +119,7 @@ const TherapistUpdateForm = (): JSX.Element => {
       <div className="mb-1">
         <label
           htmlFor="Availability"
-          className="block text-md font-medium text-[var(--highlight)] ml-0.5"
+          className="block text-md font-medium text-highlight ml-0.5"
         >
           Availability
         </label>
@@ -136,7 +136,7 @@ const TherapistUpdateForm = (): JSX.Element => {
       <div>
         <label
           htmlFor="name"
-          className="block text-md font-medium text-[var(--highlight)] ml-0.5"
+          className="block text-md font-medium text-highlight ml-0.5"
         >
           Name
         </label>
@@ -149,7 +149,7 @@ const TherapistUpdateForm = (): JSX.Element => {
           value={formData.name}
           onChange={handleChange}
           placeholder="Your New Name"
-          className="block w-full px-3 py-4 border border-[var(--button-border)] rounded-lg focus:outline-1"
+          className="block w-full px-3 py-4 border border-button-border rounded-lg focus:outline-1"
         />
       </div>
 
@@ -157,7 +157,7 @@ const TherapistUpdateForm = (): JSX.Element => {
       <div>
         <label
           htmlFor="email"
-          className="block text-md font-medium ml-0.5 text-[var(--highlight)]"
+          className="block text-md font-medium ml-0.5 text-highlight"
         >
           Email
         </label>
@@ -170,7 +170,7 @@ const TherapistUpdateForm = (): JSX.Element => {
           value={formData.email}
           onChange={handleChange}
           placeholder="Your New email"
-          className="block w-full px-3 py-4 border border-[var(--button-border)] rounded-lg focus:outline-1"
+          className="block w-full px-3 py-4 border border-button-border rounded-lg focus:outline-1"
         />
       </div>
 
@@ -178,7 +178,7 @@ const TherapistUpdateForm = (): JSX.Element => {
       <div>
         <label
           htmlFor="phone"
-          className="block text-md font-medium ml-0.5 text-[var(--highlight)]"
+          className="block text-md font-medium ml-0.5 text-highlight"
         >
           Phone
         </label>
@@ -193,7 +193,7 @@ const TherapistUpdateForm = (): JSX.Element => {
           placeholder="Your New Phone"
           pattern="\d{10}"
           maxLength={10}
-          className="block w-full px-3 py-4 border border-[var(--button-border)] rounded-lg focus:outline-1"
+          className="block w-full px-3 py-4 border border-button-border rounded-lg focus:outline-1"
         />
       </div>
 
@@ -201,7 +201,7 @@ const TherapistUpdateForm = (): JSX.Element => {
       <div>
         <label
           htmlFor="gender"
-          className="block text-md font-medium text-[var(--highlight)] ml-0.5"
+          className="block text-md font-medium text-highlight ml-0.5"
         >
           Gender
         </label>
@@ -227,7 +227,7 @@ const TherapistUpdateForm = (): JSX.Element => {
       <div>
         <label
           htmlFor="specialization"
-          className="block text-md font-medium text-[var(--highlight)] ml-0.5"
+          className="block text-md font-medium text-highlight ml-0.5"
         >
           Specialization (Check all that apply)
         </label>
@@ -245,7 +245,7 @@ const TherapistUpdateForm = (): JSX.Element => {
               value={specialization}
               checked={formData.specialization.includes(specialization)}
               onChange={handleSpecializationChange}
-              className="border border-[var(--button-border)] rounded-lg h-4 w-4"
+              className="border border-button-border rounded-lg h-4 w-4"
             />
             <label htmlFor={`${index}`}>{specialization}</label>
           </div>
@@ -256,7 +256,7 @@ const TherapistUpdateForm = (): JSX.Element => {
       <div>
         <label
           htmlFor="experience"
-          className="block text-md font-medium text-[var(--highlight)] ml-0.5"
+          className="block text-md font-medium text-highlight ml-0.5"
         >
           Experience (in Years)
         </label>
@@ -270,7 +270,7 @@ const TherapistUpdateForm = (): JSX.Element => {
           onChange={handleChange}
           placeholder="Year/s of experience"
           required
-          className="block w-full px-3 py-4 border border-[var(--button-border)] rounded-lg focus:outline-1"
+          className="block w-full px-3 py-4 border border-button-border rounded-lg focus:outline-1"
         />
       </div>
 
@@ -278,7 +278,7 @@ const TherapistUpdateForm = (): JSX.Element => {
       <div>
         <label
           htmlFor="qualification"
-          className="block text-md font-medium text-[var(--highlight)] ml-0.5"
+          className="block text-md font-medium text-highlight ml-0.5"
         >
           Qualification
         </label>
@@ -297,7 +297,7 @@ const TherapistUpdateForm = (): JSX.Element => {
             )}
             placeholder="Select Qualifications"
             display="chip"
-            className="w-full md:w-20rem px-3 py-4 border border-[var(--button-border)] rounded-lg relative focus:outline-1"
+            className="w-full md:w-20rem px-3 py-4 border border-button-border rounded-lg relative focus:outline-1"
           />
         </div>
       </div>

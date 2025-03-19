@@ -6,7 +6,7 @@ import ReactLoading from "react-loading";
 const Therapists = (): JSX.Element => {
   const { loading, therapists } = useNavStore();
   return (
-    <div className="relative bg-[var(--cbg-three)] rounded-[40px] sm:rounded-[80px] text-[var(--text)] shadow-2xl gap-2 min-w-70 pr-10 md:pr-15 max-w-300">
+    <div className="relative bg-cbg-three rounded-[40px] sm:rounded-[80px] text-main-text shadow-2xl gap-2 min-w-70 pr-10 md:pr-15 max-w-300">
       <div className=" flex justify-end pt-10 pl-10 md:pt-10 md:pl-15">
         <h1 className="flex flex-col text-3xl sm:text-4xl lg:text-5xl items-end">
           <span className="text-2xl sm:text-3xl lg:text-4xl">Meet Our</span>

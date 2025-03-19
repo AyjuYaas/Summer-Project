@@ -36,7 +36,7 @@ const OtherTherapist = (): JSX.Element => {
   }, [getTherapists]);
 
   return (
-    <div className="w-full rounded-4xl p-10 bg-[var(--cbg-four)] flex flex-col gap-4 self-end">
+    <div className="w-full rounded-4xl p-10 bg-cbg-four flex flex-col gap-4 self-end">
       <div className="flex flex-col text-2xl md:text-4xl">
         <span>Other</span>
         <span className="font-fancy tracking-widest">Therapists</span>

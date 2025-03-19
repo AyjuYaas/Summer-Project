@@ -4,7 +4,7 @@ import { Link } from "react-router-dom";
 
 const NoMatches = (): JSX.Element => {
   return (
-    <div className="flex flex-col h-full w-full items-center justify-center  text-center text-xl gap-2 text-[var(--text)] justify-self-center self-center mt-5">
+    <div className="flex flex-col h-full w-full items-center justify-center  text-center text-xl gap-2 text-main-text justify-self-center self-center mt-5">
       <SiFonoma className="text-3xl" />
       <h1 className="font-bold">No Conversations Here</h1>
       <h2>Begin searching for a therapist to start a session</h2>

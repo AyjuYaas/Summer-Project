@@ -47,9 +47,7 @@
 
 .landing .content :nth-child(2) {
   width: 100%;
-  /* font-size: 1.6vw; */
   font-weight: 700;
-  color: var(--footer-bg);
 }
 
 .landing img {

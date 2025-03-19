@@ -7,8 +7,8 @@ const AuthFormTherapist = (): JSX.Element => {
   const [isLogin, setIsLogin] = useState(true);
   return (
     <div className="min-h-[80vh] flex flex-col justify-center items-center p-4">
-      <div className="w-full max-w-120 lg:max-w-160 bg-[var(--cbg-four)] p-10 md:p-15 rounded-2xl flex flex-col items-center justify-between shadow-2xl xl:text-xl">
-        <h2 className="text-3xl font-bold text-[var(--text)] my-3 mb-10 w-full">
+      <div className="w-full max-w-120 lg:max-w-160 bg-cbg-four p-10 md:p-15 rounded-2xl flex flex-col items-center justify-between shadow-2xl xl:text-xl">
+        <h2 className="text-3xl font-bold text-main-text my-3 mb-10 w-full">
           <p className="xl:text-4xl flex flex-col justify-start items-start gap-1">
             {isLogin ? (
               <>
@@ -35,7 +35,7 @@ const AuthFormTherapist = (): JSX.Element => {
             </p>
             <button
               onClick={() => setIsLogin((prev) => !prev)}
-              className="cursor-pointer text-[var(--highlight)] mt-2 hover:text-yellow-800 font-medium transition-colors duration-200"
+              className="cursor-pointer text-highlight mt-2 hover:text-yellow-800 font-medium transition-colors duration-200"
             >
               {isLogin ? "Register Yourself Here" : "Login as Therapist"}
             </button>
@@ -44,7 +44,7 @@ const AuthFormTherapist = (): JSX.Element => {
       </div>
       <Link
         to="/user/login"
-        className="text-[var(--highlight)] text-center font-bold hover:text-[var(--highlight-two)] transition-colors duration-200 underline underline-offset-2 mt-10 xl:text-2xl"
+        className="text-highlight text-center font-bold hover:text-highlight-two transition-colors duration-200 underline underline-offset-2 mt-10 xl:text-2xl"
       >
         Switch to User Mode?
       </Link>

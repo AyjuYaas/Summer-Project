@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import { create } from "zustand";
 import { axiosInstance } from "../lib/Axios";
 import toast from "react-hot-toast";
@@ -18,7 +19,7 @@ interface Pending {
     image: string;
     problemText: string;
   };
-  therapist: { _id: string; name: String; image: string };
+  therapist: { _id: string; name: string; image: string };
   status: string;
 }
 

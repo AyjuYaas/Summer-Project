@@ -19,9 +19,9 @@ const GetStartedLayout = (): JSX.Element => {
 
   return (
     <div>
-      <div className="flex flex-col gap-5 justify-center items-center text-[var(--text)] py-10">
+      <div className="flex flex-col gap-5 justify-center items-center text-main-text py-10">
         {/* Welcome */}
-        <div className={`${componentDiv} bg-[var(--cbg-two)]`}>
+        <div className={`${componentDiv} bg-cbg-two`}>
           <div className={`${nonImage}`}>
             <div className={`${headerDiv}`}>
               <span>Welcome to</span>
@@ -37,11 +37,11 @@ const GetStartedLayout = (): JSX.Element => {
           </div>
         </div>
 
-        <FaArrowDown className="size-10 text-[var(--highlight)]" />
+        <FaArrowDown className="size-10 text-highlight" />
 
         {/* Step 1 */}
         <Link to="/user/login">
-          <div className={`${componentDiv} bg-[var(--cbg-one)]`}>
+          <div className={`${componentDiv} bg-cbg-one`}>
             <div>
               <IoEnterSharp className={`${imageDiv}`} />
             </div>
@@ -58,10 +58,10 @@ const GetStartedLayout = (): JSX.Element => {
           </div>
         </Link>
 
-        <FaArrowDown className="size-10 text-[var(--highlight)]" />
+        <FaArrowDown className="size-10 text-highlight" />
 
         {/* Step 2 */}
-        <div className={`${componentDiv} bg-[var(--cbg-two)]`}>
+        <div className={`${componentDiv} bg-cbg-t`}>
           <div className={`${nonImage}`}>
             <div className={`${headerDiv}`}>
               <span>Step 2:</span>
@@ -78,10 +78,10 @@ const GetStartedLayout = (): JSX.Element => {
           </div>
         </div>
 
-        <FaArrowDown className="size-10 text-[var(--highlight)]" />
+        <FaArrowDown className="size-10 text-highlight" />
 
         {/* Step 3 */}
-        <div className={`${componentDiv} bg-[var(--cbg-one)]`}>
+        <div className={`${componentDiv} bg-cbg-one`}>
           <div>
             <GrSelect className={`${imageDiv}`} />
           </div>
@@ -97,10 +97,10 @@ const GetStartedLayout = (): JSX.Element => {
           </div>
         </div>
 
-        <FaArrowDown className="size-10 text-[var(--highlight)]" />
+        <FaArrowDown className="size-10 text-highlight" />
 
         {/* Step 4 */}
-        <div className={`${componentDiv} bg-[var(--cbg-two)]`}>
+        <div className={`${componentDiv} bg-cbg-one`}>
           <div className={`${nonImage}`}>
             <div className={`${headerDiv}`}>
               <span>Step 4:</span>

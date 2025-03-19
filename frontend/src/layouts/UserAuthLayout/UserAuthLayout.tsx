@@ -12,7 +12,7 @@ const UserAuthLayout = (): JSX.Element => {
     if (message) {
       toast.error(message);
     }
-  }, []);
+  }, [message]);
 
   return (
     <>

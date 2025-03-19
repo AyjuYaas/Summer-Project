@@ -28,7 +28,7 @@ const FindTherapistLayout = (): JSX.Element => {
   return (
     <>
       {!(authUser as unknown as User).problemText ? (
-        <div className="flex min-h-[calc(100vh-6rem)] justify-center items-center text-xl text-[var(--text)]">
+        <div className="flex min-h-[calc(100vh-6rem)] justify-center items-center text-xl text-main-text">
           Update your Problem field to Start Finding Therapist.
         </div>
       ) : (

@@ -1,16 +1,19 @@
 import { useState } from "react";
 
 const Test = () => {
-  const [count, setCount] = useState(1);
+  const [loginStatus, setLoginStatus] = useState(false);
 
-  function increaseValue() {
-    setCount(count + 1);
-    console.log(count);
+  function changeLoginStatus() {
+    setLoginStatus(!loginStatus);
   }
+
   return (
-    <div className="text-2xl">
-      <nav className="fixed bg-red-300 w-full text-center">This is Navbar</nav>
-      <div className="h-800 w-full bg-amber-300"></div>
+    <div className="p-10 text-3xl font-bold flex flex-col gap-5">
+      <p>{loginStatus ? "Welcome User" : "Please Login"}</p>
+      <p>{loginStatus && "How are You?"}</p>
+      <button onClick={changeLoginStatus} className="bg-red-200">
+        {loginStatus ? "logout" : "login"}
+      </button>
     </div>
   );
 };

@@ -7,6 +7,8 @@ import { useParams } from "react-router-dom";
 import { HiDocumentRemove } from "react-icons/hi";
 import { BsFileEarmarkPdfFill } from "react-icons/bs";
 import PreviewPDF from "./PreviewPDF";
+import { MdDelete } from "react-icons/md";
+import ConfirmDeletePrompt from "./ConfirmDeletePrompt";
 
 interface PDF {
   src: string;
@@ -28,12 +30,14 @@ const Documents = (): JSX.Element => {
   const [openPdf, setOpenPdf] = useState<PDF | null>(null);
   const [showScrollButton, setShowScrollButton] = useState<boolean>(false);
 
+  const [deleteDocumentOpen, setDeleteDocumentOpen] = useState<boolean>(false);
+
   // Fetch messages on mount and when loadMore changes
   useEffect(() => {
     if (id && hasMoreDocument) {
       getDocuments(id, useMessageStore.getState().cursor);
     }
-  }, [id, loadMore]);
+  }, [getDocuments, hasMoreDocument, id, loadMore]);
 
   // Smooth scroll to the bottom
   const scrollToBottom = (smooth: boolean = true) => {
@@ -49,7 +53,7 @@ const Documents = (): JSX.Element => {
   useEffect(() => {
     if (loadMore === 1) scrollToBottom(false);
     if (!showScrollButton) scrollToBottom(true);
-  }, [documents]);
+  }, [documents, loadMore, showScrollButton]);
 
   useEffect(() => {
     scrollToBottom(true); // Smooth scroll on message sent
@@ -104,7 +108,7 @@ const Documents = (): JSX.Element => {
         </div>
       ) : documents.length === 0 ? (
         <div className="self-center my-auto flex flex-col gap-2 items-center justify-center text-xl">
-          <HiDocumentRemove className="text-4xl text-[var(--text)]" />
+          <HiDocumentRemove className="text-4xl text-main-text" />
           <span>No Shared Documents yet.</span>
         </div>
       ) : (
@@ -112,37 +116,55 @@ const Documents = (): JSX.Element => {
           {documents.map((document, index: number) => (
             <div
               key={index}
-              className={`flex flex-col px-4 bg-[#545b74] rounded-2xl p-2 text-white hover:bg-[#816d89] cursor-pointer`}
-              onClick={() =>
-                handlePdfClick(document.document, document.fileName)
-              }
+              className={`flex  rounded-2xl bg-[#545b74] text-white  cursor-pointer relative justify-between`}
             >
-              <div className="flex items-center gap-2">
-                {document.document && (
-                  <BsFileEarmarkPdfFill className="size-5 text-red-400" />
-                )}
+              <div
+                className="p-2 px-4 flex flex-col gap-2  hover:bg-[#816d89] w-full rounded-l-2xl"
+                onClick={() =>
+                  handlePdfClick(document.document, document.fileName)
+                }
+              >
+                <div className="flex items-center gap-2">
+                  {document.document && (
+                    <BsFileEarmarkPdfFill className="size-5 text-red-400" />
+                  )}
 
-                {/* Text Message */}
-                {document.fileName ? (
-                  <span
-                    className={`rounded-xl w-max max-w-50 sm:max-w-80 md:max-w-100 lg:max-w-120 text-base`}
-                  >
-                    {document.fileName}
+                  {/* Text Message */}
+                  {document.fileName ? (
+                    <span
+                      className={`rounded-xl w-max max-w-50 sm:max-w-80 md:max-w-100 lg:max-w-120 text-base`}
+                    >
+                      {document.fileName}
+                    </span>
+                  ) : (
+                    <span>document.pdf</span>
+                  )}
+                </div>
+
+                {document.description && (
+                  <span className="text-xs line-clamp-3">
+                    {document.description}
                   </span>
-                ) : (
-                  <span>document.pdf</span>
                 )}
+                {/* Message Timestamp */}
+                <span className="text-[0.7rem]">
+                  {format(new Date(document.createdAt), "MMM d, yyyy h:mm a")}
+                </span>
               </div>
 
-              {document.description && (
-                <span className="text-xs line-clamp-3">
-                  {document.description}
-                </span>
+              <button
+                className="rounded-r-2xl bg-red-600 right-0 top-0 my-auto h-full p-2 hover:bg-red-500 cursor-pointer"
+                onClick={() => setDeleteDocumentOpen(true)}
+              >
+                <MdDelete />
+              </button>
+
+              {deleteDocumentOpen && (
+                <ConfirmDeletePrompt
+                  id={document._id}
+                  toggleRemoveOption={() => setDeleteDocumentOpen(false)}
+                />
               )}
-              {/* Message Timestamp */}
-              <span className="text-[0.7rem]">
-                {format(new Date(document.createdAt), "MMM d, yyyy h:mm a")}
-              </span>
             </div>
           ))}
           {/* Scroll to Bottom Button */}

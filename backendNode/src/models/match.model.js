@@ -17,6 +17,10 @@ const matchesSchema = new mongoose.Schema(
       enum: ["Accept", "Declined", "Pending", "Removed"],
       default: "Pending",
     },
+    rated: {
+      type: Boolean,
+      default: false,
+    },
   },
   { timestamps: true }
 );

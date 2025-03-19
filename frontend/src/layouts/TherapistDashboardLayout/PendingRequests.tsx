@@ -32,7 +32,7 @@ const PendingRequests = (): JSX.Element => {
   }, [getPendingRequest]);
 
   return (
-    <div className="bg-[var(--cbg-three)] rounded-2xl p-10 flex flex-col h-max shadow-xl hover:shadow-2xl flex-1/3">
+    <div className="bg-cbg-three rounded-2xl p-10 flex flex-col h-max shadow-xl hover:shadow-2xl flex-1/3">
       <div className="flex flex-col gap-1">
         <span className="font-fancy text-2xl md:text-3xl lg:text-4xl tracking-wider">
           Your Requests

@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import { create } from "zustand";
 import { axiosInstance } from "../lib/Axios";
 import toast from "react-hot-toast";
@@ -16,6 +17,7 @@ interface Message {
   createdAt: string;
 }
 interface Document {
+  _id: string;
   sender: string;
   senderType: string;
   receiver: string;
@@ -48,6 +50,7 @@ interface MessageState {
 
   sent: boolean;
   sentDocument: boolean;
+  deletingDocument: boolean;
 
   sendMessage: (text: string, image: string, receiverId: string) => void;
   getMessages: (receiverId: string, cursor: string) => void;
@@ -60,6 +63,8 @@ interface MessageState {
   getDocuments: (receiverId: string, cursor: string) => void;
 
   getVideoToken: (receiverId: string) => void;
+
+  deleteDocument: (id: string) => void;
 
   listenToMessages: () => void;
   stopListeningToMessages: () => void;
@@ -89,6 +94,8 @@ export const useMessageStore = create<MessageState>((set) => ({
   loadSendingDocument: false,
   loadingDocuments: false,
   loadToken: false,
+
+  deletingDocument: false,
 
   sent: true,
   sentDocument: true,
@@ -151,7 +158,6 @@ export const useMessageStore = create<MessageState>((set) => ({
       const res = await axiosInstance.get(
         `/messages/conversation/${receiverId}?cursor=${cursor}`
       );
-      console.log(res.data.messages);
       set((state) => ({
         messages: cursor
           ? [...res.data.messages, ...state.messages]
@@ -214,7 +220,6 @@ export const useMessageStore = create<MessageState>((set) => ({
       const res = await axiosInstance.get(
         `/messages/get-documents/${receiverId}?cursor=${cursor}`
       );
-      console.log(res.data.documents);
       set((state) => ({
         documents: cursor
           ? [...res.data.documents, ...state.documents]
@@ -269,6 +274,34 @@ export const useMessageStore = create<MessageState>((set) => ({
     }
   },
 
+  deleteDocument: async (id) => {
+    try {
+      set({ deletingDocument: true });
+      const res = await axiosInstance.post("/messages/delete-document", {
+        documentId: id,
+      });
+      set((state) => ({
+        documents: state.documents.filter((doc) => doc._id !== id), // Remove document by id
+      }));
+      toast.success(res.data.message);
+    } catch (error: any) {
+      if (error.response) {
+        // Handle API response errors (e.g., validation errors, unauthorized access)
+        const errorMessage =
+          error.response.data.message || "Something went wrong.";
+        toast.error(errorMessage);
+      } else if (error.request) {
+        // Handle network errors (e.g., no response from the server)
+        toast.error("Network error. Please check your internet connection.");
+      } else {
+        // Handle other errors
+        toast.error("Something went wrong. Please try again.");
+      }
+    } finally {
+      set({ deletingDocument: false });
+    }
+  },
+
   listenToMessages: async () => {
     try {
       const socket = getSocket();
@@ -288,7 +321,7 @@ export const useMessageStore = create<MessageState>((set) => ({
         toast.success(`New Document Uploaded by ${match?.name}`);
       });
     } catch (error: any) {
-      console.log("error");
+      console.log(error);
     }
   },
   stopListeningToMessages: async () => {
@@ -306,7 +339,6 @@ export const useMessageStore = create<MessageState>((set) => ({
   listenToVideoCall: async () => {
     try {
       const socket = getSocket();
-      console.log("Start Listen Video Call");
 
       socket.on(
         "IncomingVideoCall",
@@ -332,12 +364,11 @@ export const useMessageStore = create<MessageState>((set) => ({
         }
       );
     } catch (error: any) {
-      console.log("error");
+      console.log(error);
     }
   },
   stopListeningToVideoCall: async () => {
     try {
-      console.log("Stop Video Call");
       const socket = getSocket();
       if (socket) {
         socket.off("IncomingVideoCall");

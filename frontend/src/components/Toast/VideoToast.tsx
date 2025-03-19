@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import "./VideoToast.css";
 import toast from "react-hot-toast";
 import { useNavigate } from "react-router-dom";
@@ -40,7 +41,7 @@ const VideoToast: React.FC<CustomToastProps> = ({
     <div
       className={`${
         t.visible ? "animate-enter" : "animate-leave"
-      } max-w-md w-full bg-[var(--cbg-two)] shadow-lg rounded-lg pointer-events-auto flex ring-1 ring-black ring-opacity-5`}
+      } max-w-md w-full bg-cbg-two shadow-lg rounded-lg pointer-events-auto flex ring-1 ring-black ring-opacity-5`}
     >
       <div
         className="flex-1 w-0 p-4 cursor-pointer flex items-center"

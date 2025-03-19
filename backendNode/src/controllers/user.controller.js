@@ -157,6 +157,79 @@ export const problem = async (req, res) => {
   }
 };
 
+export const reviewTherapist = async (req, res) => {
+  try {
+    const { rating, reviewText, therapistId } = req.body;
+    const userId = req.user._id;
+    const userType = req.role;
+
+    if (userType !== "user") {
+      return res.status(400).json({
+        success: false,
+        message: "Not Authorized for Reviewing",
+      });
+    }
+
+    const match = await Match.findOne({
+      user: userId,
+      therapist: therapistId,
+      status: "Accept",
+    });
+
+    if (!match) {
+      return res.status(400).json({
+        success: false,
+        message: "Not matched with the Therapist",
+      });
+    }
+
+    if (match.rated) {
+      return res.status(400).json({
+        success: false,
+        message: "Therapist Already Reviewed",
+      });
+    }
+
+    const therapist = await Therapist.findById(therapistId);
+
+    if (!therapist) {
+      return res.status(400).json({
+        success: false,
+        message: "Therapist Not Found",
+      });
+    }
+
+    therapist.reviews = therapist.reviews || [];
+    const totalReviews = therapist.reviews.length;
+
+    const newAverageRating =
+      (therapist.rating * totalReviews + rating) / (totalReviews + 1);
+
+    therapist.rating = newAverageRating;
+    therapist.reviews.push({
+      user: userId,
+      reviewText: reviewText,
+      rating: rating,
+    });
+
+    await therapist.save();
+
+    match.rated = true;
+    await match.save();
+
+    return res.status(200).json({
+      success: true,
+      message: "Therapist Rated Successfully",
+    });
+  } catch (error) {
+    console.error(error);
+    return res.status(500).json({
+      success: false,
+      message: "Internal Server Error",
+    });
+  }
+};
+
 // Function to extract the public ID from the URL
 function extractPublicIdFromUrl(url) {
   // Regex to match the public ID, handling multiple image formats (jpg, png, jpeg, etc.)
@@ -170,7 +243,6 @@ function extractPublicIdFromUrl(url) {
 
   return null; // If no match is found, return null
 }
-
 export async function removeTherapist(req, res) {
   const { therapistId } = req.params;
 

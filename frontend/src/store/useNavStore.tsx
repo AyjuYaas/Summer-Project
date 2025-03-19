@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import { create } from "zustand";
 import { axiosInstance } from "../lib/Axios";
 
@@ -24,7 +25,7 @@ export const useNavStore = create<StoreInterface>((set) => ({
       const response = await axiosInstance.get("/all-therapist");
       set({ therapists: response.data.therapist });
     } catch (error: any) {
-      console.log("Network Error");
+      console.log("Network Error" + error);
     } finally {
       set({ loading: false });
     }

@@ -2,7 +2,7 @@ import React, { JSX, useState } from "react";
 import { useAuthStore } from "../../store/useAuthStore";
 import specializationData from "./data/specializations-data";
 import genderData from "./data/gender-data";
-import { MultiSelect } from "primereact/multiselect";
+import { MultiSelect, MultiSelectChangeEvent } from "primereact/multiselect";
 import qualificationData from "./data/qualification-data";
 import QualificationLabel from "./data/QualificationLabel";
 import "./qualification.css";
@@ -46,7 +46,7 @@ const SignupForm = (): JSX.Element => {
     }));
   };
 
-  const handleQualificationChange = (e: any) => {
+  const handleQualificationChange = (e: MultiSelectChangeEvent) => {
     setFormData((prevFormData) => ({
       ...prevFormData,
       qualification: e.value,
@@ -66,7 +66,7 @@ const SignupForm = (): JSX.Element => {
       <div>
         <label
           htmlFor="name"
-          className="block text-md font-medium text-[var(--highlight)] ml-0.5"
+          className="block text-md font-medium text-highlight ml-0.5"
         >
           Name
         </label>
@@ -80,7 +80,7 @@ const SignupForm = (): JSX.Element => {
           onChange={handleChange}
           placeholder="Your Name"
           required
-          className="block w-full px-3 py-4 border border-[var(--button-border)] rounded-lg focus:outline-1"
+          className="block w-full px-3 py-4 border border-button-border rounded-lg focus:outline-1"
         />
       </div>
 
@@ -88,7 +88,7 @@ const SignupForm = (): JSX.Element => {
       <div>
         <label
           htmlFor="email"
-          className="block text-md font-medium text-[var(--highlight)] ml-0.5"
+          className="block text-md font-medium text-highlight ml-0.5"
         >
           Email
         </label>
@@ -102,7 +102,7 @@ const SignupForm = (): JSX.Element => {
           onChange={handleChange}
           placeholder="Your email"
           required
-          className="block w-full px-3 py-4 border border-[var(--button-border)] rounded-lg focus:outline-1"
+          className="block w-full px-3 py-4 border border-button-border rounded-lg focus:outline-1"
         />
       </div>
 
@@ -110,7 +110,7 @@ const SignupForm = (): JSX.Element => {
       <div>
         <label
           htmlFor="password"
-          className="block text-md font-medium text-[var(--highlight)] ml-0.5"
+          className="block text-md font-medium text-highlight ml-0.5"
         >
           Password
         </label>
@@ -125,7 +125,7 @@ const SignupForm = (): JSX.Element => {
           placeholder="Your password"
           minLength={6}
           required
-          className="block w-full px-3 py-4 border border-[var(--button-border)] rounded-lg focus:outline-1"
+          className="block w-full px-3 py-4 border border-button-border rounded-lg focus:outline-1"
         />
       </div>
 
@@ -133,7 +133,7 @@ const SignupForm = (): JSX.Element => {
       <div>
         <label
           htmlFor="phone"
-          className="block text-md font-medium text-[var(--highlight)] ml-0.5"
+          className="block text-md font-medium text-highlight ml-0.5"
         >
           Phone
         </label>
@@ -149,7 +149,7 @@ const SignupForm = (): JSX.Element => {
           pattern="\d{10}" // Ensures exactly 10 digits
           maxLength={10} // Prevents more than 10 digits
           required
-          className="block w-full px-3 py-4 border border-[var(--button-border)] rounded-lg focus:outline-1"
+          className="block w-full px-3 py-4 border border-button-border rounded-lg focus:outline-1"
         />
       </div>
 
@@ -157,7 +157,7 @@ const SignupForm = (): JSX.Element => {
       <div>
         <label
           htmlFor="gender"
-          className="block text-md font-medium text-[var(--highlight)] ml-0.5"
+          className="block text-md font-medium text-highlight ml-0.5"
         >
           Gender
         </label>
@@ -182,7 +182,7 @@ const SignupForm = (): JSX.Element => {
       <div>
         <label
           htmlFor="specialization"
-          className="block text-md font-medium text-[var(--highlight)] ml-0.5"
+          className="block text-md font-medium text-highlight ml-0.5"
         >
           Specialization (Check all that apply)
         </label>
@@ -200,7 +200,7 @@ const SignupForm = (): JSX.Element => {
               value={specialization}
               checked={formData.specialization.includes(specialization)}
               onChange={handleSpecializationChange}
-              className="border border-[var(--button-border)] rounded-lg h-4 w-4"
+              className="border border-button-border rounded-lg h-4 w-4"
             />
             <label htmlFor={`${index}`}>{specialization}</label>
           </div>
@@ -211,7 +211,7 @@ const SignupForm = (): JSX.Element => {
       <div>
         <label
           htmlFor="experience"
-          className="block text-md font-medium text-[var(--highlight)] ml-0.5"
+          className="block text-md font-medium text-highlight ml-0.5"
         >
           Experience (in Years)
         </label>
@@ -225,7 +225,7 @@ const SignupForm = (): JSX.Element => {
           onChange={handleChange}
           placeholder="Year/s of experience"
           required
-          className="block w-full px-3 py-4 border border-[var(--button-border)] rounded-lg focus:outline-1"
+          className="block w-full px-3 py-4 border border-button-border rounded-lg focus:outline-1"
         />
       </div>
 
@@ -233,7 +233,7 @@ const SignupForm = (): JSX.Element => {
       <div>
         <label
           htmlFor="qualification"
-          className="block text-md font-medium text-[var(--highlight)] ml-0.5"
+          className="block text-md font-medium text-highlight ml-0.5"
         >
           Qualification
         </label>
@@ -252,7 +252,7 @@ const SignupForm = (): JSX.Element => {
             )}
             placeholder="Select Qualifications"
             display="chip"
-            className="w-full md:w-20rem px-3 py-4 border border-[var(--button-border)] rounded-lg relative focus:outline-1"
+            className="w-full md:w-20rem px-3 py-4 border border-button-border rounded-lg relative focus:outline-1"
           />
         </div>
       </div>

@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import { create } from "zustand";
 import { axiosInstance } from "../lib/Axios";
 import toast from "react-hot-toast";
@@ -28,17 +29,20 @@ interface FormDataTherapist {
 interface AuthState {
   loading: boolean;
   loadingRemove: boolean;
+  loadingReview: boolean;
   updateProfile: (
     params: FormDataUser | FormDataTherapist,
     type: string
   ) => void;
   updateProblem: (problem: string) => void;
   removeTherapist: (id: string) => void;
+  reviewTherapist: (id: string, rating: number, reviewText: string) => void;
 }
 
 export const useUserStore = create<AuthState>((set) => ({
   loading: false,
   loadingRemove: false,
+  loadingReview: false,
 
   updateProfile: async (data, type) => {
     try {
@@ -103,6 +107,30 @@ export const useUserStore = create<AuthState>((set) => ({
     } finally {
       set({ loadingRemove: false });
       useMatchStore.getState().getMatches();
+    }
+  },
+
+  reviewTherapist: async (id, rating, reviewText) => {
+    try {
+      set({ loadingReview: true });
+      await axiosInstance.post("/users/reviewTherapist", {
+        therapistId: id,
+        rating: rating,
+        reviewText: reviewText,
+      });
+      toast.success("Review Successful");
+    } catch (error: any) {
+      if (error.response) {
+        const errorMessage =
+          error.response.data.message || "Something went wrong.";
+        toast.error(errorMessage);
+      } else if (error.request) {
+        toast.error("Network error. Please check your internet connection.");
+      } else {
+        toast.error("Something went wrong. Please try again.");
+      }
+    } finally {
+      set({ loadingReview: false });
     }
   },
 }));

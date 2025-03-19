@@ -12,7 +12,7 @@ const ReviewLayout = (): JSX.Element => {
   };
 
   return (
-    <div className="bg-[var(--cbg-four)] rounded-[40px] sm:rounded-[80px] text-[var(--text)] gap-2 pb-10 md:pb-15 max-w-300 shadow-2xl">
+    <div className="bg-cbg-four rounded-[40px] sm:rounded-[80px] text-main-text gap-2 pb-10 md:pb-15 max-w-300 shadow-2xl">
       <div className="flex justify-start px-10 pt-10 md:px-15 md:pt-15">
         <h1 className="flex flex-col text-3xl sm:text-4xl lg:text-5xl items-start">
           <span className="text-2xl sm:text-3xl lg:text-4xl">Hear from</span>

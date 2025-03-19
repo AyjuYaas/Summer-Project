@@ -14,7 +14,7 @@ const Connections = (): JSX.Element => {
   }, [getMatches, getPendingRequest]);
 
   return (
-    <div className="bg-[var(--cbg-four)] rounded-2xl p-10 flex flex-col h-max shadow-xl hover:shadow-2xl flex-2/4">
+    <div className="bg-cbg-four rounded-2xl p-10 flex flex-col h-max shadow-xl hover:shadow-2xl flex-2/4">
       <div className="flex flex-col gap-1">
         <span className="font-fancy text-2xl md:text-3xl lg:text-4xl tracking-wider">
           Your Connections
@@ -43,7 +43,7 @@ const Connections = (): JSX.Element => {
                       alt={`${name}'s avatar`}
                       className="size-12 object-cover rounded-full border-2 bg-white"
                     />
-                    <h2 className="font-semibold text-[var(--text)] text-xl">
+                    <h2 className="font-semibold text-main-text text-xl">
                       {req.therapist.name}
                     </h2>
                   </div>

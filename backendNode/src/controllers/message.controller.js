@@ -389,6 +389,7 @@ export const getDocuments = async (req, res) => {
   }
 };
 
+// For Video Call
 export const getToken = async (req, res) => {
   try {
     const { receiverId, name } = req.query;
@@ -437,5 +438,53 @@ export const getToken = async (req, res) => {
     res.send(await createToken(match[0]._id.toString(), name));
   } catch (error) {
     console.log(error);
+  }
+};
+
+export const deleteDocument = async (req, res) => {
+  try {
+    const { documentId } = req.body;
+
+    if (!documentId) {
+      return res.status(400).json({
+        success: false,
+        message: "No document id provided",
+      });
+    }
+
+    const document = await Document.findById(documentId);
+
+    if (!document.sender.equals(req.user._id)) {
+      return res.status(400).json({
+        success: false,
+        message: "Only sender can delete the document",
+      });
+    }
+
+    if (document) {
+      const documentPublicId = document.publicId;
+
+      await cloudinary.api.delete_resources(documentPublicId, {
+        resource_type: "raw",
+      });
+
+      await Document.findByIdAndDelete(documentId);
+
+      return res.status(200).json({
+        success: true,
+        message: "Deleted Document Successfully",
+      });
+    }
+
+    res.status(400).json({
+      success: false,
+      message: "Could not find the document",
+    });
+  } catch (error) {
+    console.log(error);
+    res.status(500).json({
+      success: false,
+      message: "Internal Server Error",
+    });
   }
 };

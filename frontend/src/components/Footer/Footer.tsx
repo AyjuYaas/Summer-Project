@@ -7,9 +7,9 @@ import Break from "../Break";
 
 const Footer = (): JSX.Element => {
   return (
-    <div className="w-full bg-[var(--footer-bg)] p-5">
+    <div className="w-full bg-footer-bg p-5">
       <div className="flex flex-col gap-9 justify-around items-center my-15 relative md:flex-row">
-        <h1 className="text-xl lg:text-3xl font-extrabold text-[var(--white-text)] text-center md:text-start">
+        <h1 className="text-xl lg:text-3xl font-extrabold text-white-text text-center md:text-start">
           FIND YOUR MENTAL HEALTH SOLUTION AT THERAFIND
         </h1>
         <Link

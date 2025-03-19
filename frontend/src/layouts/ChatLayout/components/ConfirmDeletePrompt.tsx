@@ -1,13 +1,16 @@
 import { JSX, useEffect, useRef } from "react";
-import { useUserStore } from "../../../store/useUserStore";
+import { useMessageStore } from "../../../store/useMessageStore";
 
 interface Props {
   toggleRemoveOption: () => void;
   id: string;
 }
 
-const RemoveTherapist = ({ toggleRemoveOption, id }: Props): JSX.Element => {
-  const { removeTherapist, loadingRemove } = useUserStore();
+const ConfirmDeletePrompt = ({
+  toggleRemoveOption,
+  id,
+}: Props): JSX.Element => {
+  const { deletingDocument, deleteDocument } = useMessageStore();
 
   const menuRef = useRef<HTMLDivElement | null>(null);
 
@@ -25,8 +28,8 @@ const RemoveTherapist = ({ toggleRemoveOption, id }: Props): JSX.Element => {
     };
   }, [toggleRemoveOption]);
 
-  const sendTherapistQuery = () => {
-    removeTherapist(id);
+  const sendDeleteQuery = () => {
+    deleteDocument(id);
   };
 
   return (
@@ -36,10 +39,10 @@ const RemoveTherapist = ({ toggleRemoveOption, id }: Props): JSX.Element => {
         ref={menuRef}
       >
         <div className="text-2xl text-center mb-2 px-7 pt-7">
-          <h1 className="font-bold text-main-text">Remove Therapist</h1>
+          <h1 className="font-bold text-main-text">Delete the Document?</h1>
           <p className="text-sm">Are you sure you want to do this?</p>
           <p className="text-sm">
-            The message and documents will all be permanently deleted
+            The document will all be permanently deleted
           </p>
         </div>
         <div className="flex gap-2 bg-gray-200 justify-around p-4 rounded-b-xl">
@@ -51,17 +54,17 @@ const RemoveTherapist = ({ toggleRemoveOption, id }: Props): JSX.Element => {
           </button>
           <button
             className={`rounded-xl p-2 px-5 text-white ${
-              loadingRemove
+              deletingDocument
                 ? "bg-zinc-500 cursor-not-allowed"
                 : "bg-red-700 hover:bg-red-600 cursor-pointer"
             } `}
-            onClick={sendTherapistQuery}
+            onClick={sendDeleteQuery}
           >
-            {loadingRemove ? "Removing.." : "Remove"}
+            {deletingDocument ? "Removing.." : "Remove"}
           </button>
         </div>
       </div>
     </div>
   );
 };
-export default RemoveTherapist;
+export default ConfirmDeletePrompt;

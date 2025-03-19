@@ -86,7 +86,7 @@ const UserUpdateForm = (): JSX.Element => {
       <div>
         <label
           htmlFor="name"
-          className="block text-md font-medium text-[var(--highlight)] ml-0.5"
+          className="block text-md font-medium text-highlight ml-0.5"
         >
           Name
         </label>
@@ -99,7 +99,7 @@ const UserUpdateForm = (): JSX.Element => {
           value={formData.name}
           onChange={handleChange}
           placeholder="Your New Name"
-          className="block w-full px-3 py-4 border border-[var(--button-border)] rounded-lg focus:outline-1"
+          className="block w-full px-3 py-4 border border-button-border rounded-lg focus:outline-1"
         />
       </div>
 
@@ -107,7 +107,7 @@ const UserUpdateForm = (): JSX.Element => {
       <div>
         <label
           htmlFor="email"
-          className="block text-md font-medium text-[var(--highlight)] ml-0.5"
+          className="block text-md font-medium text-highlight ml-0.5"
         >
           Email
         </label>
@@ -120,7 +120,7 @@ const UserUpdateForm = (): JSX.Element => {
           value={formData.email}
           onChange={handleChange}
           placeholder="Your New email"
-          className="block w-full px-3 py-4 border border-[var(--button-border)] rounded-lg focus:outline-1"
+          className="block w-full px-3 py-4 border border-button-border rounded-lg focus:outline-1"
         />
       </div>
 
@@ -128,7 +128,7 @@ const UserUpdateForm = (): JSX.Element => {
       <div>
         <label
           htmlFor="phone"
-          className="block text-md font-medium text-[var(--highlight)] ml-0.5"
+          className="block text-md font-medium text-highlight ml-0.5"
         >
           Phone
         </label>
@@ -143,7 +143,7 @@ const UserUpdateForm = (): JSX.Element => {
           placeholder="Your New Phone"
           pattern="\d{10}"
           maxLength={10}
-          className="block w-full px-3 py-4 border border-[var(--button-border)] rounded-lg focus:outline-1"
+          className="block w-full px-3 py-4 border border-button-border rounded-lg focus:outline-1"
         />
       </div>
 
@@ -151,7 +151,7 @@ const UserUpdateForm = (): JSX.Element => {
       <div>
         <label
           htmlFor="age"
-          className="block text-md font-medium text-[var(--highlight)] ml-0.5"
+          className="block text-md font-medium text-highlight ml-0.5"
         >
           Age
         </label>
@@ -164,7 +164,7 @@ const UserUpdateForm = (): JSX.Element => {
           value={formData.age}
           onChange={handleChange}
           placeholder="Enter New your Age"
-          className="block w-full px-3 py-4 border border-[var(--button-border)] rounded-lg focus:outline-1"
+          className="block w-full px-3 py-4 border border-button-border rounded-lg focus:outline-1"
         />
       </div>
 
@@ -172,7 +172,7 @@ const UserUpdateForm = (): JSX.Element => {
       <div>
         <label
           htmlFor="gender"
-          className="block text-md font-medium text-[var(--text)] ml-0.5"
+          className="block text-md font-medium text-main-text ml-0.5"
         >
           Gender
         </label>
@@ -198,10 +198,10 @@ const UserUpdateForm = (): JSX.Element => {
         <input
           type="submit"
           value={loading ? "Updating..." : "Update"}
-          className={`text-center px-8 py-3 rounded-4xl text-[var(--text)] w-full min-w-max font-medium mt-5 ${
+          className={`text-center px-8 py-3 rounded-4xl text-main-text w-full min-w-max font-medium mt-5 ${
             loading
               ? "cursor-not-allowed bg-[#a18691]"
-              : "cursor-pointer bg-[#2f4858] text-[white] hover:bg-[#565b70] duration-100"
+              : "cursor-pointer bg-[#2f4858] text-white hover:bg-[#565b70] duration-100"
           }`}
           disabled={loading}
         />
