@@ -30,7 +30,6 @@ import NotFound from "./pages/NotFound";
 import { useAuthStore } from "./store/useAuthStore";
 import { Toaster } from "react-hot-toast";
 import Chat from "./pages/Chat";
-import { useNavStore } from "./store/useNavStore";
 import GetStarted from "./pages/GetStarted";
 import { useMatchStore } from "./store/useMatchStore";
 import { useMessageStore } from "./store/useMessageStore";
@@ -39,7 +38,7 @@ import VideoCall from "./pages/VideoCall";
 
 export default function App(): React.ReactElement {
   const { checkAuth, authUser, authType, checkingAuth } = useAuthStore();
-  const { getTherapists } = useNavStore();
+
   const {
     listenToNewRequest,
     stopListeningToRequest,
@@ -57,10 +56,6 @@ export default function App(): React.ReactElement {
   useEffect(() => {
     checkAuth();
   }, [checkAuth]);
-
-  useEffect(() => {
-    getTherapists();
-  }, [getTherapists]);
 
   useEffect(() => {
     if (authUser) {

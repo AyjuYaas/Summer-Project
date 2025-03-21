@@ -62,7 +62,7 @@ interface Therapist {
   availability: boolean;
   matched_user: string[];
   rating: number;
-  reviews: string[];
+  reviewCount: number;
   createdAt: string;
   updatedAt: string;
   __v?: number;

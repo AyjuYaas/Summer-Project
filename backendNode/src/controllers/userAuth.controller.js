@@ -128,6 +128,23 @@ export const login = async (req, res) => {
       user: userWithoutPassword,
     });
   } catch (err) {
+    if (err.code === 11000) {
+      if (err.keyPattern && err.keyPattern.phone) {
+        return res.status(400).json({
+          success: false,
+          message:
+            "Phone number already exists. Please use a different phone number.",
+        });
+      }
+
+      if (err.keyPattern && err.keyPattern.email) {
+        return res.status(400).json({
+          success: false,
+          message:
+            "Email already exists. Please use a different email address.",
+        });
+      }
+    }
     console.log(`Error in user login controller: ${err}`);
     res.status(500).json({ success: false, message: "Internal Server Error" });
   }

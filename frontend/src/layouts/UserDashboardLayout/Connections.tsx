@@ -1,8 +1,15 @@
-import { JSX, useEffect } from "react";
+import { JSX, useEffect, useState } from "react";
 import { useMatchStore } from "../../store/useMatchStore";
 import LoadingMessage from "./components/LoadingMessage";
 import NoMatches from "./components/NoMatches";
 import IndividualMessage from "./components/IndividualMessage";
+import { MdDelete } from "react-icons/md";
+import ConfirmRemoveRequestPrompt from "./components/ConfirmRemoveRequestPrompt";
+
+interface DeleteRequest {
+  id: string;
+  name: string;
+}
 
 const Connections = (): JSX.Element => {
   const { matches, getMatches, loading, getPendingRequest, request } =
@@ -12,6 +19,10 @@ const Connections = (): JSX.Element => {
     getMatches();
     getPendingRequest();
   }, [getMatches, getPendingRequest]);
+
+  const [deleteRequest, setDeleteRequest] = useState<DeleteRequest | null>(
+    null
+  );
 
   return (
     <div className="bg-cbg-four rounded-2xl p-10 flex flex-col h-max shadow-xl hover:shadow-2xl flex-2/4">
@@ -36,16 +47,31 @@ const Connections = (): JSX.Element => {
                 request.map((req, index: number) => (
                   <div
                     key={index}
-                    className="flex gap-3 items-center mb-5 p-2 rounded-xl bg-gray-300 text-gray-500 cursor-not-allowed opacity-70 "
+                    className="flex justify-between mb-5 rounded-xl relative"
                   >
-                    <img
-                      src={req.therapist.image}
-                      alt={`${name}'s avatar`}
-                      className="size-12 object-cover rounded-full border-2 bg-white"
-                    />
-                    <h2 className="font-semibold text-main-text text-xl">
-                      {req.therapist.name}
-                    </h2>
+                    <div className="flex gap-3 items-center cursor-not-allowed opacity-70 py-2 pl-2 w-full bg-gray-300 text-gray-500">
+                      <img
+                        src={req.therapist.image}
+                        alt={`${req.therapist.name}'s avatar`}
+                        className="size-12 object-cover rounded-full border-2 bg-white"
+                      />
+                      <h2 className="font-semibold text-main-text text-xl">
+                        {req.therapist.name}
+                      </h2>
+                    </div>
+                    <div>
+                      <button
+                        className="rounded-r-2xl bg-red-900 right-0 top-0 my-auto h-full p-2 hover:bg-red-800 cursor-pointer text-white-text"
+                        onClick={() =>
+                          setDeleteRequest({
+                            id: req._id,
+                            name: req.therapist.name,
+                          })
+                        }
+                      >
+                        <MdDelete />
+                      </button>
+                    </div>
                   </div>
                 ))
               )}
@@ -71,6 +97,14 @@ const Connections = (): JSX.Element => {
           )}
         </div>
       </div>
+
+      {deleteRequest && (
+        <ConfirmRemoveRequestPrompt
+          id={deleteRequest?.id || ""}
+          toggleRemoveOption={() => setDeleteRequest(null)}
+          name={deleteRequest?.name || ""}
+        />
+      )}
     </div>
   );
 };

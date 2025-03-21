@@ -1,5 +1,5 @@
 import { JSX } from "react";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 
 import "../../styles/navlogin.css";
 import { useAuthStore } from "../../../../store/useAuthStore";
@@ -10,6 +10,12 @@ import defaultImage from "../../../../assets/images/default-profile.jpg";
 const LoginLogout = (): JSX.Element => {
   // ============ Handle Login of User ===============
   const { authUser, authType, logout } = useAuthStore();
+  const navigate = useNavigate();
+
+  const handleLogout = () => {
+    logout();
+    navigate("/");
+  };
   return (
     <>
       {authUser ? (
@@ -38,7 +44,7 @@ const LoginLogout = (): JSX.Element => {
             </Link>
             <button
               className="btn outline-btn"
-              onClick={logout}
+              onClick={handleLogout}
               aria-label="Logout"
             >
               <IoLogOut />

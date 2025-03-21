@@ -28,7 +28,6 @@
 }
 
 :root {
-  --primary-bg: ;
   --secondary-bg: #e5e5e5;
   --third-bg: #d1d8c7;
   --footer-bg: #303b36;
@@ -108,28 +107,35 @@ body {
   border-color: #2f4858;
 }
 
-/* Targeting WebKit-based browsers (Chrome, Edge, Safari) */
 .scrollbar::-webkit-scrollbar {
-  width: 8px; /* Scrollbar width */
-  height: 8px; /* Scrollbar height (for horizontal scrollbars) */
+  width: 8px;
+  height: 8px;
   align-self: center;
 }
-
-/* Track (background) */
 .scrollbar::-webkit-scrollbar-track {
   border-radius: 10px;
-  margin-left: 5rem;
-  margin-right: 5rem;
 }
-
-/* Thumb (draggable part) */
 .scrollbar::-webkit-scrollbar-thumb {
-  background: #2f4858; /* Thumb color */
-  border-radius: 10px;
-  height: 30px; /* Adjust the thumb length */
+  background: #2f4858;
+  border-radius: 30px;
+}
+.scrollbar::-webkit-scrollbar-thumb:hover {
+  background: #2b5876;
 }
 
-/* Hover effect */
-.scrollbar::-webkit-scrollbar-thumb:hover {
+.scrollbar-horizontal::-webkit-scrollbar {
+  width: 8px;
+  height: 10px;
+  align-self: center;
+}
+.scrollbar-horizontal::-webkit-scrollbar-track {
+  border-radius: 10px;
+  margin-left: 3.8rem;
+}
+.scrollbar-horizontal::-webkit-scrollbar-thumb {
+  background: #2f4858;
+  border-radius: 30px;
+}
+.scrollbar-horizontal::-webkit-scrollbar-thumb:hover {
   background: #2b5876;
 }

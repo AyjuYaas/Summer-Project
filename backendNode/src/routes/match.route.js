@@ -7,6 +7,7 @@ import {
   getTherapist,
   selectTherapist,
   getPendingRequest,
+  getReviews,
 } from "../controllers/match.controller.js";
 
 const router = express.Router();
@@ -18,5 +19,6 @@ router.get("/get-requests", getPendingRequest);
 router.get("/", getMatches);
 router.get("/get-therapist", getTherapist);
 router.get("/get-recommendation", getRecommendation);
+router.get("/get-reviews/:therapistId", getReviews);
 
 export default router;

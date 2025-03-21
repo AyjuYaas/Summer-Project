@@ -8,6 +8,7 @@ interface Therapist {
   experience: number;
   rating: number;
   specialization: string[];
+  reviewCount: number;
 }
 
 interface StoreInterface {

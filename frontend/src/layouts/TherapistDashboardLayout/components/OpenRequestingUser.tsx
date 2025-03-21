@@ -44,29 +44,34 @@ const OpenRequestingUser = ({ user, onClose }: Props): JSX.Element => {
   return (
     <div className="fixed z-100 top-0 bottom-0 left-0 right-0 h-screen w-full backdrop-blur-xs flex justify-center items-center self-center justify-self-center">
       <div
-        className="relative w-max h-auto bg-cbg-two px-8 py-10 rounded-4xl flex flex-col gap-5 items-center"
+        className="relative w-auto sm:w-max h-auto bg-cbg-one px-2 py-10 rounded-lg shadow-2xl flex flex-col gap-3 items-center"
         ref={menuRef}
       >
-        <div className="flex gap-12 text-xl font-bold text-main-text justify-center items-center">
-          <div className="flex flex-col gap-2 items-center ">
+        <div className="flex flex-col  gap-2 text-xl font-bold text-main-text justify-center items-center">
+          <div className="flex flex-col gap-2 items-center min-w-50 w-auto">
             {/* image  */}
             <img
               src={user.image}
               alt={`${user.name}-img`}
-              className="size-19 md:size-30 rounded-full object-"
+              className="size-19 md:size-30 rounded-full object-cover bg-white border-3 border-main-text"
             />
 
             {/* Name */}
-            <span className="text-center text-highlight">{user.name}</span>
+            <span className="text-center text-highlight">
+              {user.name} sent you a request
+            </span>
 
             {/* Gender */}
-            <span className="font-medium">{user.gender}</span>
+            <div className="font-medium">
+              <span className="font-bold">Gender: </span>
+              {user.gender}
+            </div>
           </div>
 
           {/* Problem Statement */}
-          <div className="flex flex-col p-3">
+          <div className="flex flex-col p-3 max-w-180 w-auto">
             <span className="text-highlight">Their Problem Description</span>{" "}
-            <span className="font-medium bg-white p-2 rounded-xl min-h-20">
+            <span className="font-medium bg-white p-2 rounded-xl min-h-20 w-full  h-50 overflow-y-auto">
               {user.problemText}
             </span>
           </div>
@@ -74,7 +79,7 @@ const OpenRequestingUser = ({ user, onClose }: Props): JSX.Element => {
 
         <div className="w-full flex justify-around">
           <button
-            className={`text-white font-bold px-10 py-3 rounded-4xl duration-150 cursor-pointer bg-green-600 hover:bg-green-500`}
+            className={`text-white font-bold px-10 py-3 rounded-4xl duration-150 cursor-pointer bg-[#45646d] hover:bg-[#628182]`}
             onClick={() => handleResponse("Accept")}
           >
             Accept
@@ -88,7 +93,7 @@ const OpenRequestingUser = ({ user, onClose }: Props): JSX.Element => {
         </div>
       </div>
       <button
-        className="absolute top-4 right-4 bg-main-text text-white size-8 text-2xl flex justify-center items-center rounded-full cursor-pointer"
+        className="absolute top-4 right-4 bg-main-text text-white size-8 text-2xl flex justify-center items-center rounded-full cursor-pointer hover:bg-red-700 duration-75"
         onClick={onClose}
       >
         <IoMdClose />

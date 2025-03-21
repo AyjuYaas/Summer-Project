@@ -2,11 +2,15 @@ import { JSX, memo } from "react";
 import StarRating from "./StarRating";
 
 interface Therapist {
+  _id?: string;
   name: string;
   image: string;
-  experience: number;
-  rating: number;
   specialization: string[];
+  experience: number;
+  qualification?: string[];
+  gender?: string;
+  rating: number;
+  reviewCount: number;
 }
 
 interface IndividualTherapist {
@@ -16,7 +20,7 @@ interface IndividualTherapist {
 const IndividualTherapist = memo(
   ({ therapist }: IndividualTherapist): JSX.Element => {
     return (
-      <section className="w-60 h-auto sm:w-80 lg:h-120 flex flex-col hover:shadow-2xl rounded-4xl shadow-2xs duration-75 cursor-pointer text-xl overflow-hidden">
+      <section className="w-60 h-125 sm:w-80 lg:h-120 flex flex-col hover:shadow-2xl rounded-4xl shadow-2xs cursor-pointer text-xl overflow-hidden hover:-translate-y-1 transition-all duration-250 ease-in-out">
         <div className="flex flex-col rounded-2xl h-full">
           <div className=" bg-[#1d2b36] p-10 flex flex-col justify-between items-center lg:flex-row w-full">
             {/* Image of Therapist */}
@@ -32,8 +36,9 @@ const IndividualTherapist = memo(
                 {`${therapist.name.split(" ").slice(0, 1)} 
                 ${therapist.name.split(" ").slice(1, 2)}`}
               </h1>
-              <div className="lg:self-end">
+              <div className="lg:self-end flex gap-1 items-center">
                 <StarRating rating={therapist.rating} color="text-yellow-300" />
+                <span className="text-white">({therapist.reviewCount})</span>
               </div>
             </div>
           </div>

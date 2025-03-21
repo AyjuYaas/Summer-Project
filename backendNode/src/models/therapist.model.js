@@ -63,15 +63,12 @@ const therapistSchema = new mongoose.Schema(
       type: Number,
       min: 0,
       max: 5,
-      default: 5,
+      default: 0,
     },
-    reviews: [
-      {
-        user: { type: mongoose.Schema.Types.ObjectId, ref: "User" },
-        reviewText: { type: String, trim: true },
-        rating: { type: Number, min: 0, max: 5 },
-      },
-    ],
+    reviewCount: {
+      type: Number,
+      default: 0,
+    },
   },
   { timestamps: true }
 );

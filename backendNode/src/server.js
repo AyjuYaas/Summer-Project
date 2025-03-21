@@ -20,8 +20,6 @@ import { allTherapist } from "./routes/allTherapist.route.js";
 import { connectDB } from "./config/database.js";
 import { initializeSocket } from "./socket/socket.server.js";
 
-import { testMessage } from "./routes/testMessage.js";
-
 const app = express();
 const httpServer = createServer(app);
 
@@ -93,8 +91,6 @@ app.post("/api/auth/logout", async (req, res) => {
     });
   }
 });
-
-app.get("/test", testMessage);
 
 const PORT = process.env.PORT;
 httpServer.listen(PORT, () => {

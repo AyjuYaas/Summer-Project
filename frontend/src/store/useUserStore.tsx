@@ -30,6 +30,8 @@ interface AuthState {
   loading: boolean;
   loadingRemove: boolean;
   loadingReview: boolean;
+  existingReview: { rating: number; reviewText: string } | null;
+
   updateProfile: (
     params: FormDataUser | FormDataTherapist,
     type: string
@@ -37,12 +39,16 @@ interface AuthState {
   updateProblem: (problem: string) => void;
   removeTherapist: (id: string) => void;
   reviewTherapist: (id: string, rating: number, reviewText: string) => void;
+  getExistingReview: (id: string) => void;
 }
 
 export const useUserStore = create<AuthState>((set) => ({
   loading: false,
   loadingRemove: false,
   loadingReview: false,
+  loadingRemoveRequest: false,
+
+  existingReview: null,
 
   updateProfile: async (data, type) => {
     try {
@@ -131,6 +137,28 @@ export const useUserStore = create<AuthState>((set) => ({
       }
     } finally {
       set({ loadingReview: false });
+    }
+  },
+
+  getExistingReview: async (id) => {
+    try {
+      const res = await axiosInstance.get(`/users/existing-review/${id}`);
+      set({
+        existingReview: {
+          rating: res.data.rating,
+          reviewText: res.data.reviewText,
+        },
+      });
+    } catch (error: any) {
+      if (error.response) {
+        const errorMessage =
+          error.response.data.message || "Something went wrong.";
+        toast.error(errorMessage);
+      } else if (error.request) {
+        toast.error("Network error. Please check your internet connection.");
+      } else {
+        toast.error("Something went wrong. Please try again.");
+      }
     }
   },
 }));

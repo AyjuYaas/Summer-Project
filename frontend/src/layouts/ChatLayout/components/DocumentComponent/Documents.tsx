@@ -2,7 +2,7 @@ import ReactLoading from "react-loading";
 import { FaAngleDoubleDown } from "react-icons/fa";
 import { format } from "date-fns";
 import { JSX, useEffect, useRef, useState } from "react";
-import { useMessageStore } from "../../../store/useMessageStore";
+import { useMessageStore } from "../../../../store/useMessageStore";
 import { useParams } from "react-router-dom";
 import { HiDocumentRemove } from "react-icons/hi";
 import { BsFileEarmarkPdfFill } from "react-icons/bs";
@@ -12,6 +12,11 @@ import ConfirmDeletePrompt from "./ConfirmDeletePrompt";
 
 interface PDF {
   src: string;
+  name: string;
+}
+
+interface DocumentDelete {
+  id: string;
   name: string;
 }
 
@@ -30,7 +35,9 @@ const Documents = (): JSX.Element => {
   const [openPdf, setOpenPdf] = useState<PDF | null>(null);
   const [showScrollButton, setShowScrollButton] = useState<boolean>(false);
 
-  const [deleteDocumentOpen, setDeleteDocumentOpen] = useState<boolean>(false);
+  const [deleteDocument, setDeleteDocument] = useState<DocumentDelete | null>(
+    null
+  );
 
   // Fetch messages on mount and when loadMore changes
   useEffect(() => {
@@ -96,7 +103,7 @@ const Documents = (): JSX.Element => {
 
   return (
     <div
-      className="h-full min-h-40 flex flex-col overflow-y-auto scrollbar pb-2 pr-2"
+      className="h-full min-h-40 flex flex-col overflow-y-auto scrollbar pb-2 pr-2 w-full"
       ref={messagesContainerRef}
       onScroll={handleScroll}
     >
@@ -112,11 +119,11 @@ const Documents = (): JSX.Element => {
           <span>No Shared Documents yet.</span>
         </div>
       ) : (
-        <div className="flex flex-col gap-2">
+        <div className="flex flex-col gap-2 w-full">
           {documents.map((document, index: number) => (
             <div
               key={index}
-              className={`flex  rounded-2xl bg-[#545b74] text-white  cursor-pointer relative justify-between`}
+              className={`flex rounded-2xl bg-[#545b74] text-white cursor-pointer relative justify-between w-full`}
             >
               <div
                 className="p-2 px-4 flex flex-col gap-2  hover:bg-[#816d89] w-full rounded-l-2xl"
@@ -124,15 +131,15 @@ const Documents = (): JSX.Element => {
                   handlePdfClick(document.document, document.fileName)
                 }
               >
-                <div className="flex items-center gap-2">
-                  {document.document && (
+                <div className="flex items-center gap-2 w-full">
+                  <div>
                     <BsFileEarmarkPdfFill className="size-5 text-red-400" />
-                  )}
+                  </div>
 
                   {/* Text Message */}
                   {document.fileName ? (
                     <span
-                      className={`rounded-xl w-max max-w-50 sm:max-w-80 md:max-w-100 lg:max-w-120 text-base`}
+                      className={`rounded-xl max-w-50 sm:max-w-80 md:max-w-100 lg:max-w-120 text-base break-words`}
                     >
                       {document.fileName}
                     </span>
@@ -153,18 +160,16 @@ const Documents = (): JSX.Element => {
               </div>
 
               <button
-                className="rounded-r-2xl bg-red-600 right-0 top-0 my-auto h-full p-2 hover:bg-red-500 cursor-pointer"
-                onClick={() => setDeleteDocumentOpen(true)}
+                className="rounded-r-2xl bg-red-600 right-0 top-0 my-auto h-full p-2 hover:bg-red-500 w-10 cursor-pointer "
+                onClick={() =>
+                  setDeleteDocument({
+                    id: document._id,
+                    name: document.fileName,
+                  })
+                }
               >
                 <MdDelete />
               </button>
-
-              {deleteDocumentOpen && (
-                <ConfirmDeletePrompt
-                  id={document._id}
-                  toggleRemoveOption={() => setDeleteDocumentOpen(false)}
-                />
-              )}
             </div>
           ))}
           {/* Scroll to Bottom Button */}
@@ -185,6 +190,14 @@ const Documents = (): JSX.Element => {
           src={openPdf.src}
           onClose={closePdfPreview}
           name={openPdf.name}
+        />
+      )}
+
+      {deleteDocument && (
+        <ConfirmDeletePrompt
+          id={deleteDocument.id}
+          toggleRemoveOption={() => setDeleteDocument(null)}
+          name={deleteDocument.name || ""}
         />
       )}
     </div>

@@ -23,6 +23,15 @@ interface Pending {
   status: string;
 }
 
+interface Review {
+  _id: string;
+  user: { name: string; image: string };
+  therapist: string;
+  rating: number;
+  reviewText: string;
+  createdAt: string;
+}
+
 interface Therapists {
   _id: string;
   name: string;
@@ -32,26 +41,35 @@ interface Therapists {
   qualification: string[];
   gender: string;
   rating: number;
+  reviewCount: number;
 }
 
 interface MatchState {
   matches: Match[];
   request: Pending[];
+  reviews: Review[];
 
   loading: boolean;
   loadingRecommendations: boolean;
   loadingTherapists: boolean;
   loadingSelection: boolean;
   loadingPending: boolean;
+  loadingRemoveRequest: boolean;
+  loadingReview: boolean;
 
   recommendations: Therapists[];
   therapists: Therapists[];
+  hasMore: boolean;
+
   getMatches: () => void;
   getRecommendations: () => void;
-  getTherapists: () => void;
+  getTherapists: (page: number) => void;
   selectTherapist: (therapistId: string) => void;
   getPendingRequest: () => void;
   respondRequest: (userId: string, response: string) => void;
+  deleteRequest: (id: string) => void;
+  getReviews: (id: string) => void;
+
   listenToNewRequest: () => void;
   stopListeningToRequest: () => void;
   listenToRespondRequest: () => void;
@@ -61,15 +79,19 @@ interface MatchState {
 export const useMatchStore = create<MatchState>((set) => ({
   matches: [],
   request: [],
+  reviews: [],
 
   loading: false,
   loadingRecommendations: false,
   loadingTherapists: false,
   loadingSelection: false,
   loadingPending: false,
+  loadingRemoveRequest: false,
+  loadingReview: false,
 
   recommendations: [],
   therapists: [],
+  hasMore: true,
 
   getMatches: async () => {
     try {
@@ -117,11 +139,20 @@ export const useMatchStore = create<MatchState>((set) => ({
     }
   },
 
-  getTherapists: async () => {
+  getTherapists: async (page) => {
     try {
       set({ loadingTherapists: true });
-      const res = await axiosInstance.get("/matches/get-therapist");
-      set({ therapists: res.data.therapists });
+      const res = await axiosInstance.get(
+        `/matches/get-therapist?page=${page}`
+      );
+      set((state) => ({
+        therapists:
+          page === 1
+            ? res.data.therapists
+            : [...state.therapists, ...res.data.therapists],
+
+        hasMore: res.data.hasMore,
+      }));
     } catch (error: any) {
       if (error.response) {
         const errorMessage =
@@ -142,6 +173,12 @@ export const useMatchStore = create<MatchState>((set) => ({
     try {
       set({ loadingSelection: true });
       await axiosInstance.post(`matches/selectTherapist/${therapistId}`);
+      set((state) => ({
+        recommendations: state.recommendations.filter(
+          (rec) => rec._id !== therapistId
+        ),
+        therapists: state.therapists.filter((rec) => rec._id !== therapistId),
+      }));
       toast.success("Request sent to the Therapist");
     } catch (error: any) {
       if (error.response) {
@@ -197,6 +234,52 @@ export const useMatchStore = create<MatchState>((set) => ({
       } else {
         toast.error("Something went wrong. Please try again.");
       }
+    }
+  },
+
+  deleteRequest: async (id) => {
+    try {
+      set({ loadingRemoveRequest: true });
+      await axiosInstance.post("/users/removeRequest", {
+        requestId: id,
+      });
+      set((state) => ({
+        request: state.request.filter((req) => req._id !== id), // Remove document by id
+      }));
+      toast.success("Removed Request Successfully");
+    } catch (error: any) {
+      if (error.response) {
+        const errorMessage =
+          error.response.data.message || "Something went wrong.";
+        toast.error(errorMessage);
+      } else if (error.request) {
+        toast.error("Network error. Please check your internet connection.");
+      } else {
+        toast.error("Something went wrong. Please try again.");
+      }
+    } finally {
+      set({ loadingRemoveRequest: false });
+    }
+  },
+
+  getReviews: async (id) => {
+    try {
+      set({ loadingReview: true });
+      const res = await axiosInstance.get(`/matches/get-reviews/${id}`);
+      set({ reviews: res.data.reviews });
+    } catch (error: any) {
+      console.log(error);
+      if (error.response) {
+        const errorMessage =
+          error.response.data.message || "Something went wrong.";
+        toast.error(errorMessage);
+      } else if (error.request) {
+        toast.error("Network error. Please check your internet connection.");
+      } else {
+        toast.error("Something went wrong. Please try again.");
+      }
+    } finally {
+      set({ loadingReview: false });
     }
   },
 

@@ -5,8 +5,6 @@ import { getConnectedUsers, getIo } from "../socket/socket.server.js";
 import cloudinary from "./../config/cloudinary.js";
 import { AccessToken } from "livekit-server-sdk";
 
-const onVideoCallParticipant = [];
-
 const createToken = async (match, name) => {
   // If this room doesn't exist, it'll be automatically created when the first
   // participant joins
@@ -468,7 +466,7 @@ export const deleteDocument = async (req, res) => {
         resource_type: "raw",
       });
 
-      await Document.findByIdAndDelete(documentId);
+      await document.deleteOne();
 
       return res.status(200).json({
         success: true,

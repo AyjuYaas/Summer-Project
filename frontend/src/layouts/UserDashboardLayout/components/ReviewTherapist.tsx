@@ -25,10 +25,26 @@ const ReviewTherapist = ({
   id,
   name,
 }: Props): JSX.Element => {
+  const { existingReview, getExistingReview } = useUserStore();
+
   const [formData, setFormData] = useState<FormData>({
-    rating: 0,
-    reviewText: "",
+    rating: existingReview?.rating || 0,
+    reviewText: existingReview?.reviewText || "",
   });
+
+  useEffect(() => {
+    getExistingReview(id);
+  }, [getExistingReview, id]);
+
+  // Update formData when existingReview changes
+  useEffect(() => {
+    if (existingReview) {
+      setFormData({
+        rating: existingReview.rating,
+        reviewText: existingReview.reviewText,
+      });
+    }
+  }, [existingReview]);
 
   const { reviewTherapist, loadingReview } = useUserStore();
 

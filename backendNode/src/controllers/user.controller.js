@@ -2,6 +2,7 @@ import cloudinary from "../config/cloudinary.js";
 import Document from "../models/document.model.js";
 import Match from "../models/match.model.js";
 import Message from "../models/message.model.js";
+import Review from "../models/review.model.js";
 import Therapist from "../models/therapist.model.js";
 import User from "../models/user.model.js";
 import axios from "axios";
@@ -163,6 +164,7 @@ export const reviewTherapist = async (req, res) => {
     const userId = req.user._id;
     const userType = req.role;
 
+    // Check if the user is authorized to review
     if (userType !== "user") {
       return res.status(400).json({
         success: false,
@@ -170,6 +172,7 @@ export const reviewTherapist = async (req, res) => {
       });
     }
 
+    // Check if the user is matched with the therapist
     const match = await Match.findOne({
       user: userId,
       therapist: therapistId,
@@ -183,13 +186,7 @@ export const reviewTherapist = async (req, res) => {
       });
     }
 
-    if (match.rated) {
-      return res.status(400).json({
-        success: false,
-        message: "Therapist Already Reviewed",
-      });
-    }
-
+    // Find the therapist
     const therapist = await Therapist.findById(therapistId);
 
     if (!therapist) {
@@ -199,30 +196,84 @@ export const reviewTherapist = async (req, res) => {
       });
     }
 
-    therapist.reviews = therapist.reviews || [];
-    const totalReviews = therapist.reviews.length;
-
-    const newAverageRating =
-      (therapist.rating * totalReviews + rating) / (totalReviews + 1);
-
-    therapist.rating = newAverageRating;
-    therapist.reviews.push({
+    // Check if the user has already reviewed the therapist
+    const existingReview = await Review.findOne({
       user: userId,
-      reviewText: reviewText,
-      rating: rating,
+      therapist: therapistId,
     });
 
-    await therapist.save();
+    if (existingReview) {
+      // Update the existing review
+      const previousRating = existingReview.rating;
 
-    match.rated = true;
-    await match.save();
+      // Update the therapist's average rating
+      const totalReviews = therapist.reviewCount;
+      const newAverageRating =
+        (therapist.rating * totalReviews - previousRating + rating) /
+        totalReviews;
+
+      therapist.rating = newAverageRating;
+      existingReview.rating = rating;
+      existingReview.reviewText = reviewText;
+
+      await existingReview.save();
+    } else {
+      // Create a new review
+      const totalReviews = therapist.reviewCount;
+
+      // Calculate the new average rating
+      const newAverageRating =
+        (therapist.rating * totalReviews + rating) / (totalReviews + 1);
+
+      therapist.rating = newAverageRating;
+      therapist.reviewCount += 1;
+
+      const review = {
+        user: userId,
+        therapist: therapistId,
+        rating: rating,
+        reviewText: reviewText,
+      };
+
+      await Review.create(review);
+    }
+
+    // Save the updated therapist data
+    await therapist.save();
 
     return res.status(200).json({
       success: true,
-      message: "Therapist Rated Successfully",
+      message: existingReview
+        ? "Review Updated Successfully"
+        : "Therapist Rated Successfully",
     });
   } catch (error) {
-    console.error(error);
+    console.error("Error at Review Therapist: " + error);
+    return res.status(500).json({
+      success: false,
+      message: "Internal Server Error",
+    });
+  }
+};
+
+export const getExistingReview = async (req, res) => {
+  try {
+    const { therapistId } = req.params;
+
+    const existingReview = await Review.findOne({
+      user: req.user._id,
+      therapist: therapistId,
+    });
+
+    if (existingReview) {
+      res.status(200).json({
+        success: true,
+        rating: existingReview.rating,
+        reviewText: existingReview.reviewText,
+      });
+    }
+  } catch (error) {
+    console.error("Error at Get Existing Review:  " + error);
     return res.status(500).json({
       success: false,
       message: "Internal Server Error",
@@ -349,6 +400,55 @@ export async function removeTherapist(req, res) {
     return res.status(403).json({
       success: false,
       message: "Forbidden: You do not have permission to perform this action",
+    });
+  }
+}
+
+export async function removeRequest(req, res) {
+  try {
+    const { requestId } = req.body;
+
+    if (req.role !== "user") {
+      return res.status(400).json({
+        success: false,
+        message: "Therapist cannot delete the Request",
+      });
+    }
+
+    if (!requestId) {
+      return res.status(400).json({
+        success: false,
+        message: "No request Id provided",
+      });
+    }
+
+    const request = await Match.findById(requestId);
+
+    if (!request) {
+      return res.status(400).json({
+        success: false,
+        message: "No request found",
+      });
+    }
+
+    if (!request.user.equals(req.user._id)) {
+      return res.status(400).json({
+        success: false,
+        message: "Not authorized to delete this request",
+      });
+    }
+
+    await request.deleteOne();
+
+    return res.status(200).json({
+      success: true,
+      message: "Request Deleted Successfully",
+    });
+  } catch (error) {
+    console.log(error);
+    res.status(500).json({
+      success: false,
+      message: "Internal Server Error",
     });
   }
 }

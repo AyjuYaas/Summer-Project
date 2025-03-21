@@ -171,7 +171,7 @@ export async function respondRequest(req, res) {
     // If therapist rejected the request
     if (response === "reject") {
       // ======= Set the status to decline ===========
-      requestByUser.status = "Decline";
+      requestByUser.status = "Declined";
 
       // ======= Save the changes to db ===========
       await requestByUser.save();

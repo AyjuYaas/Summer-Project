@@ -51,7 +51,7 @@ const IndividualMessage = ({ id, image, name }: Props): JSX.Element => {
           <div className="absolute right-0 top-8 w-45 bg-gray-100 text-white rounded-lg shadow-xl z-10 text-lg ">
             <ul>
               <button
-                className="p-2 bg-[#088F8F] hover:bg-green-600 cursor-pointer rounded-t-lg w-full text-start"
+                className="p-2 bg-[#45646d] hover:bg-[#628182] cursor-pointer rounded-t-lg w-full text-start"
                 onClick={toggleReviewOption}
               >
                 Review Therapist
@@ -72,6 +72,7 @@ const IndividualMessage = ({ id, image, name }: Props): JSX.Element => {
           id={id}
         />
       )}
+
       {reviewOpen && (
         <ReviewTherapist
           toggleRemoveOption={() => setReviewOpen(false)}

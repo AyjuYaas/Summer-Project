@@ -4,8 +4,8 @@ import { useParams } from "react-router-dom";
 import { IoMdSend, IoMdClose } from "react-icons/io";
 import { PiFilePdfFill } from "react-icons/pi";
 import toast from "react-hot-toast";
-import { useMessageStore } from "../../../store/useMessageStore";
 import { MdOutlineScheduleSend } from "react-icons/md";
+import { useMessageStore } from "../../../../store/useMessageStore";
 
 const DocumentInput = (): JSX.Element => {
   const { id } = useParams<{ id?: string }>();

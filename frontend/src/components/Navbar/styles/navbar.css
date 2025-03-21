@@ -85,3 +85,12 @@
     right: 2rem;
   }
 }
+
+@media (max-width: 360px) {
+  .nav {
+    background-color: var(--third-bg);
+  }
+  .nav:hover {
+    background-color: var(--third-bg);
+  }
+}

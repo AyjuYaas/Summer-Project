@@ -1,6 +1,6 @@
 import mongoose from "mongoose";
 
-const matchesSchema = new mongoose.Schema(
+const reviewSchema = new mongoose.Schema(
   {
     user: {
       type: mongoose.Schema.Types.ObjectId,
@@ -12,15 +12,20 @@ const matchesSchema = new mongoose.Schema(
       ref: "Therapist",
       required: true,
     },
-    status: {
+    rating: {
+      type: Number,
+      required: true,
+      min: 0,
+      max: 5,
+    },
+    reviewText: {
       type: String,
-      enum: ["Accept", "Declined", "Pending", "Removed"],
-      default: "Pending",
+      required: true,
     },
   },
   { timestamps: true }
 );
 
-const Match = mongoose.model("Match", matchesSchema);
+const Review = mongoose.model("Review", reviewSchema);
 
-export default Match;
+export default Review;

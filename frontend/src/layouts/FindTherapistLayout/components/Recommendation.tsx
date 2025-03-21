@@ -14,6 +14,7 @@ interface Therapist {
   qualification: string[];
   gender: string;
   rating: number;
+  reviewCount: number;
 }
 
 const Recommendation = (): JSX.Element => {
@@ -32,12 +33,23 @@ const Recommendation = (): JSX.Element => {
   };
 
   useEffect(() => {
+    if (selectedTherapist) {
+      document.body.style.overflowY = "hidden";
+    } else {
+      document.body.style.overflowY = "visible";
+    }
+    return () => {
+      document.body.style.overflowY = "visible"; // Reset overflow when component unmounts
+    };
+  }, [selectedTherapist]);
+
+  useEffect(() => {
     getRecommendations();
   }, [getRecommendations]);
 
   return (
     <div className=" w-full rounded-4xl p-10 bg-cbg-three flex flex-col gap-4 self-end">
-      <div className="flex flex-col text-2xl md:text-4xl">
+      <div className="flex flex-col text-4xl">
         <span>Recommended</span>
         <span className="font-fancy tracking-widest">Therapists</span>
         <span className="text-lg">

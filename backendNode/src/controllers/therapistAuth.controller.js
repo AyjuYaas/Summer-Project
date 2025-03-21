@@ -95,6 +95,23 @@ export const signup = async (req, res) => {
       therapist: therapistWithoutPassword,
     });
   } catch (err) {
+    if (err.code === 11000) {
+      if (err.keyPattern && err.keyPattern.phone) {
+        return res.status(400).json({
+          success: false,
+          message:
+            "Phone number already exists. Please use a different phone number.",
+        });
+      }
+
+      if (err.keyPattern && err.keyPattern.email) {
+        return res.status(400).json({
+          success: false,
+          message:
+            "Email already exists. Please use a different email address.",
+        });
+      }
+    }
     console.log(`Error in therapist signup controller: ${err}`);
     res.status(500).json({ success: false, message: "Internal Server Error" });
   }

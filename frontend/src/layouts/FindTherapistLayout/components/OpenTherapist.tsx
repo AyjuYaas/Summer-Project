@@ -1,7 +1,11 @@
 import { JSX, useEffect, useRef } from "react";
 import { IoMdClose } from "react-icons/io";
-import StarRating from "../../../components/StarRating";
 import { useMatchStore } from "../../../store/useMatchStore";
+import IndividualReview from "./IndividualReview";
+import Masonry from "react-masonry-css";
+import TherapistDetails from "./TherapistDetails";
+import { FaChevronCircleDown } from "react-icons/fa";
+import { FaRegFrownOpen } from "react-icons/fa";
 
 interface Therapist {
   _id: string;
@@ -12,6 +16,7 @@ interface Therapist {
   qualification: string[];
   gender: string;
   rating: number;
+  reviewCount: number;
 }
 interface Props {
   therapist: Therapist;
@@ -19,101 +24,109 @@ interface Props {
 }
 
 const OpenTherapist = ({ therapist, onClose }: Props): JSX.Element => {
-  const { selectTherapist, loadingSelection } = useMatchStore();
+  const {
+    selectTherapist,
+    loadingSelection,
+    reviews,
+    getReviews,
+    loadingReview,
+  } = useMatchStore();
+
+  const masonryRef = useRef<HTMLDivElement | null>(null);
+
+  useEffect(() => {
+    getReviews(therapist._id);
+  }, [getReviews, therapist._id]);
+
+  const scrollToMasonry = () => {
+    masonryRef.current?.scrollIntoView({
+      behavior: "smooth",
+      block: "start",
+    });
+  };
 
   const handleConnection = async () => {
-    selectTherapist(therapist._id);
+    await selectTherapist(therapist._id);
     onClose();
   };
 
-  const menuRef = useRef<HTMLDivElement | null>(null);
-
-  useEffect(() => {
-    const handleCLickOutside = (e: MouseEvent) => {
-      if (!menuRef.current?.contains(e.target as Element)) {
-        onClose();
-      }
-    };
-
-    document.addEventListener("mousedown", handleCLickOutside);
-
-    return () => {
-      document.removeEventListener("mousedown", handleCLickOutside);
-    };
-  }, [onClose]);
+  const breakpointColumns =
+    reviews.length < 4
+      ? {
+          default: reviews.length,
+          1500: reviews.length,
+          900: 2,
+          600: 1,
+        }
+      : {
+          default: 4,
+          1500: 3,
+          900: 2,
+          600: 1,
+        };
 
   return (
-    <div className="fixed z-100 top-0 bottom-0 left-0 right-0 h-screen w-full backdrop-blur-xs flex justify-center items-center self-center justify-self-center">
-      <div
-        className="relative w-max h-auto bg-cbg-two px-8 py-10 rounded-4xl flex flex-col gap-5 items-center"
-        ref={menuRef}
-      >
-        {/* Name and Image gender rating */}
-        <div className="flex gap-12 text-xl font-bold text-main-text justify-center items-center">
-          <div className="flex flex-col gap-2 items-center">
-            {/* image  */}
-            <img
-              src={therapist.image}
-              alt={`${therapist.name}-img`}
-              className="size-30 rounded-full"
-            />
-
-            {/* Name */}
-            <span className="text-center text-highlight">{therapist.name}</span>
-
-            {/* Gender */}
-            <span className="font-medium">{therapist.gender}</span>
-
-            {/* Rating */}
-            <span>
-              <StarRating rating={therapist.rating} color="text-yellow-500" />
-            </span>
+    <div className="fixed z-100 top-0 bottom-0 left-0 right-0 h-screen w-full flex justify-center items-center self-center justify-self-center overflow-y-auto scrollbar">
+      <div className="absolute top-0 w-full h-max min-h-screen bg-[#e5e5e5] px-8 py-10 flex flex-col justify-center">
+        <div className="flex flex-col justify-center items-center gap-10">
+          {/* Therapist Details */}
+          <div>
+            <TherapistDetails {...therapist} />
           </div>
 
-          {/* Experience Specialization Qualification */}
-          <div className="flex flex-col gap-4">
-            {/* Experience */}
-            <div className="flex flex-col">
-              <span className="text-highlight">Experience</span>{" "}
-              <span className="font-medium">{therapist.experience} years</span>
-            </div>
-
-            {/* Specialization */}
-            <div>
-              <span className="text-highlight">Specialization</span>
-              <ul className="font-medium list-disc ml-6">
-                {therapist.specialization.map((field, index: number) => (
-                  <li key={index}>{field}</li>
-                ))}
-              </ul>
-            </div>
-
-            {/* Qualification */}
-            <div>
-              <span className="text-highlight">Qualification</span>
-              <ul className="font-medium list-disc ml-6">
-                {therapist.qualification.map((field, index: number) => (
-                  <li key={index}>{field}</li>
-                ))}
-              </ul>
+          <div className="flex gap-5">
+            <button
+              className={`text-white font-bold px-10 py-3 rounded-4xl duration-150 ${
+                loadingSelection
+                  ? "cursor-not-allowed bg-[#87a8c1]"
+                  : "cursor-pointer bg-[#8b4969] hover:bg-[#2f4858]"
+              }`}
+              onClick={handleConnection}
+            >
+              Connect Now
+            </button>
+            <div
+              className="text-2xl flex items-center gap-2 font-bold text-highlight hover:text-green-600 cursor-pointer"
+              onClick={scrollToMasonry}
+            >
+              Reviews <FaChevronCircleDown />
             </div>
           </div>
-        </div>
 
-        <div>
-          <button
-            className={`text-white font-bold px-10 py-3 rounded-4xl duration-150 ${
-              loadingSelection
-                ? "cursor-not-allowed bg-[#87a8c1]"
-                : "cursor-pointer bg-[#8b4969] hover:bg-[#2f4858]"
-            }`}
-            onClick={handleConnection}
-          >
-            Connect Now
-          </button>
+          <div className="bg-cbg-three rounded-2xl text-main-text gap-2 max-w-400 shadow-2xl">
+            <div className="flex justify-start px-10 pt-10 pb-5 md:px-15">
+              <h1 className="flex flex-col text-3xl sm:text-4xl lg:text-5xl items-start w-full">
+                <span className="text-2xl sm:text-3xl lg:text-4xl">User</span>
+                <span
+                  className="font-bold font-fancy tracking-wider"
+                  ref={masonryRef}
+                >
+                  Reviews
+                </span>
+              </h1>
+            </div>
+            {loadingReview ? (
+              "Loading..."
+            ) : reviews.length > 0 ? (
+              <Masonry
+                breakpointCols={breakpointColumns}
+                className="flex gap-8 px-10 relative max-h-120 h-auto overflow-y-auto scrollbar"
+                columnClassName="bg-clip-padding "
+              >
+                {reviews.map((review, index: number) => (
+                  <IndividualReview key={index} {...review} />
+                ))}
+              </Masonry>
+            ) : (
+              <div className="text-xl px-10 pb-10 md:px-15 flex items-center gap-3">
+                <FaRegFrownOpen size={30} />
+                Sorry No Reviews for this Therapist Yet
+              </div>
+            )}
+          </div>
         </div>
         <button
-          className="absolute top-4 right-4 bg-main-text text-white size-8 text-2xl flex justify-center items-center rounded-full cursor-pointer"
+          className="fixed top-4 right-7 bg-main-text text-white size-8 text-2xl flex justify-center items-center rounded-full cursor-pointer hover:bg-red-800"
           onClick={onClose}
         >
           <IoMdClose />

@@ -1,6 +1,6 @@
 import { JSX } from "react";
 import ChatDiv from "./components/ChatDiv";
-import DocumentSection from "./components/DocumentSection";
+import DocumentSection from "./components/DocumentComponent/DocumentSection";
 
 const ChatLayout = (): JSX.Element => {
   return (

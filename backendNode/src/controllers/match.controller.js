@@ -2,9 +2,14 @@ import Therapist from "../models/therapist.model.js";
 import User from "../models/user.model.js";
 import Match from "../models/match.model.js";
 import { getConnectedUsers, getIo } from "../socket/socket.server.js";
+import Review from "../models/review.model.js";
 
 export async function getTherapist(req, res) {
   try {
+    const { page } = req.query; // Default to page 1 if no page is provided
+    const limit = 3; // Number of therapists per page
+    const skip = (page - 1) * limit; // Calculate the number of documents to skip
+
     if (req.role === "user") {
       const requestedTherapist = await Match.find({
         user: req.user._id,
@@ -16,16 +21,39 @@ export async function getTherapist(req, res) {
         (match) => match.therapist
       );
 
-      // Get the therapist
+      // Get the therapist with pagination and sorting by experience and rating
       const unmatchedTherapists = await Therapist.find({
-        $and: [{ _id: { $nin: matchedTherapistIds } }, { availability: true }], // Those that are not selected by the user and those are available
-      }).select(
-        "_id name image specialization experience qualification gender rating"
-      );
+        $and: [{ _id: { $nin: matchedTherapistIds } }, { availability: true }], // Those that are not selected by the user and those who are available
+      })
+        .select(
+          "_id name image specialization experience qualification gender rating reviewCount"
+        )
+        .skip(skip) // Skip the documents based on the page number
+        .limit(limit) // Limit the number of documents per page
+        .sort({ experience: -1, rating: -1 }); // Sort by experience (descending) and by rating (descending)
+
+      // Sort reviews by rating (highest first)
+      unmatchedTherapists.forEach((therapist) => {
+        if (therapist.reviews) {
+          therapist.reviews.sort((a, b) => b.rating - a.rating); // Sort reviews by rating in descending order
+        }
+      });
+
+      // Get the total count of therapists matching the filter
+      const totalTherapists = await Therapist.countDocuments({
+        $and: [{ _id: { $nin: matchedTherapistIds } }, { availability: true }],
+      });
+
+      // Calculate the total number of pages
+      const totalPages = Math.ceil(totalTherapists / limit);
+
+      // Determine if there are more therapists for the next page
+      const hasMore = page < totalPages;
 
       return res.status(200).json({
         success: true,
         therapists: unmatchedTherapists,
+        hasMore,
       });
     } else {
       return res.status(400).json({
@@ -68,9 +96,11 @@ export async function getRecommendation(req, res) {
           { _id: { $nin: matchedTherapistIds } },
           { availability: true },
         ], // That specialize in the users problems
-      }).select(
-        "_id name image specialization experience qualification gender rating"
-      );
+      })
+        .select(
+          "_id name image specialization experience qualification gender rating reviewCount"
+        )
+        .limit(10);
 
       return res.status(200).json({
         success: true,
@@ -242,4 +272,29 @@ export async function getMatches(req, res) {
       message: "Server error while fetching matches.",
     });
   }
+}
+
+export async function getReviews(req, res) {
+  try {
+    const { therapistId } = req.params;
+
+    if (!therapistId) {
+      return res.status(400).json({
+        success: false,
+        message: "No therapist Id",
+      });
+    }
+
+    const reviews = await Review.find({
+      therapist: therapistId,
+    }).populate({
+      path: "user",
+      select: "name image",
+    });
+
+    res.status(200).json({
+      success: true,
+      reviews: reviews,
+    });
+  } catch (error) {}
 }

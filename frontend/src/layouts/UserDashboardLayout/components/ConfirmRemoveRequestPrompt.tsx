@@ -1,35 +1,38 @@
 import { JSX, useEffect, useRef } from "react";
-import { useMessageStore } from "../../../store/useMessageStore";
+import { useMatchStore } from "../../../store/useMatchStore";
 
 interface Props {
   toggleRemoveOption: () => void;
   id: string;
+  name: string;
 }
 
-const ConfirmDeletePrompt = ({
+const ConfirmRemoveRequestPrompt = ({
   toggleRemoveOption,
   id,
+  name,
 }: Props): JSX.Element => {
-  const { deletingDocument, deleteDocument } = useMessageStore();
+  const { loadingRemoveRequest, deleteRequest } = useMatchStore();
 
   const menuRef = useRef<HTMLDivElement | null>(null);
 
   useEffect(() => {
-    const handleCLickOutside = (e: MouseEvent) => {
-      if (!menuRef.current?.contains(e.target as Element)) {
+    const handleClickOutside = (e: MouseEvent) => {
+      if (menuRef.current && !menuRef.current.contains(e.target as Node)) {
         toggleRemoveOption();
       }
     };
 
-    document.addEventListener("mousedown", handleCLickOutside);
+    document.addEventListener("mousedown", handleClickOutside);
 
     return () => {
-      document.removeEventListener("mousedown", handleCLickOutside);
+      document.removeEventListener("mousedown", handleClickOutside);
     };
   }, [toggleRemoveOption]);
 
   const sendDeleteQuery = () => {
-    deleteDocument(id);
+    deleteRequest(id);
+    toggleRemoveOption();
   };
 
   return (
@@ -38,12 +41,9 @@ const ConfirmDeletePrompt = ({
         className="relative w-max h-auto bg-white rounded-xl shadow-2xl flex flex-col gap-4"
         ref={menuRef}
       >
-        <div className="text-2xl text-center mb-2 px-7 pt-7">
-          <h1 className="font-bold text-main-text">Delete the Document?</h1>
-          <p className="text-sm">Are you sure you want to do this?</p>
-          <p className="text-sm">
-            The document will all be permanently deleted
-          </p>
+        <div className="text-2xl text-center mb-2 px-7 pt-7 text-main-text">
+          <h1 className="font-bold ">Remove {name}?</h1>
+          <p className="text-sm">Are you sure you remove the request?</p>
         </div>
         <div className="flex gap-2 bg-gray-200 justify-around p-4 rounded-b-xl">
           <button
@@ -54,17 +54,18 @@ const ConfirmDeletePrompt = ({
           </button>
           <button
             className={`rounded-xl p-2 px-5 text-white ${
-              deletingDocument
+              loadingRemoveRequest
                 ? "bg-zinc-500 cursor-not-allowed"
                 : "bg-red-700 hover:bg-red-600 cursor-pointer"
             } `}
             onClick={sendDeleteQuery}
           >
-            {deletingDocument ? "Removing.." : "Remove"}
+            {loadingRemoveRequest ? "Removing.." : "Remove"}
           </button>
         </div>
       </div>
     </div>
   );
 };
-export default ConfirmDeletePrompt;
+
+export default ConfirmRemoveRequestPrompt;
