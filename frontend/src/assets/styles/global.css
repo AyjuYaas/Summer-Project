@@ -54,6 +54,7 @@ html {
   scroll-behavior: smooth;
   overflow-x: hidden;
   height: 100%;
+  scroll-behavior: smooth;
 }
 
 * {
@@ -62,7 +63,6 @@ html {
   text-rendering: optimizeLegibility;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
-  scroll-behavior: smooth;
 }
 body {
   min-width: 300px;
