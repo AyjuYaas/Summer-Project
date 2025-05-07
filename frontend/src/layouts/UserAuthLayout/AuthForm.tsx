@@ -8,7 +8,7 @@ const AuthForm = (): JSX.Element => {
   return (
     <div className="min-h-[80vh] flex flex-col justify-center items-center p-4">
       <div className="w-full max-w-120 lg:max-w-160 bg-cbg-five p-10 md:p-15 rounded-2xl flex flex-col items-center justify-between shadow-2xl xl:text-xl">
-        <div className="text-4xl font-bold text-main-text my-3 mb-10 w-full">
+        <div className="text-4xl font-bold text-main-text my-3 mb-3 w-full">
           <p className="flex flex-col justify-start items-start gap-1">
             {isLogin ? (
               <>
@@ -42,7 +42,7 @@ const AuthForm = (): JSX.Element => {
       </div>
       <Link
         to="/therapist/login"
-        className="text-highlight text-center font-bold hover:text-emerald-500 transition-colors duration-200 underline underline-offset-2 mt-10 xl:text-2xl"
+        className="text-highlight text-center font-bold hover:text-emerald-500 transition-colors duration-200 underline underline-offset-2 mt-5 xl:text-lg"
       >
         Switch to Therapist Mode?
       </Link>

@@ -5,13 +5,13 @@ import validator from "email-validator";
 // =========== Creates a token fot the user ===============
 const signToken = (id) => {
   //jwt token
-  return jwt.sign({ id }, process.env.JWT_SECRET, {
+  return jwt.sign({ id, role: "user" }, process.env.JWT_SECRET, {
     expiresIn: "7d",
   });
 };
 
 // ============== User Signup Function ==============
-export const signup = async (req, res) => {
+export const userSignup = async (req, res) => {
   // ============= get these fields from the client ===========
   const { name, email, password, phone, age, gender } = req.body;
 
@@ -85,7 +85,7 @@ export const signup = async (req, res) => {
 };
 
 // ============== User Login Function ==============
-export const login = async (req, res) => {
+export const userLogin = async (req, res) => {
   const { email, password } = req.body;
 
   try {
@@ -128,23 +128,6 @@ export const login = async (req, res) => {
       user: userWithoutPassword,
     });
   } catch (err) {
-    if (err.code === 11000) {
-      if (err.keyPattern && err.keyPattern.phone) {
-        return res.status(400).json({
-          success: false,
-          message:
-            "Phone number already exists. Please use a different phone number.",
-        });
-      }
-
-      if (err.keyPattern && err.keyPattern.email) {
-        return res.status(400).json({
-          success: false,
-          message:
-            "Email already exists. Please use a different email address.",
-        });
-      }
-    }
     console.log(`Error in user login controller: ${err}`);
     res.status(500).json({ success: false, message: "Internal Server Error" });
   }

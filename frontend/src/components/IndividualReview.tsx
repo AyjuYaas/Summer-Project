@@ -1,4 +1,4 @@
-import StarRating from "../../../components/StarRating";
+import StarRating from "./StarRating";
 
 interface Review {
   _id: string;
@@ -11,7 +11,7 @@ interface Review {
 
 const IndividualReview = (review: Review) => {
   return (
-    <div className="bg-[#2f4858] w-70 max-w-70 h-max overflow-hidden relative p-5 rounded-2xl gap-3 shadow-xl text-md md:text-xl flex flex-col justify-center cursor-pointer duration-75 my-7 hover:shadow-2xl">
+    <div className="bg-[#2f4858] md:w-70 max-w-70 h-max overflow-hidden relative p-5 rounded-2xl gap-3 shadow-xl text-base md:text-xl flex flex-col justify-center cursor-pointer duration-75 my-7 hover:shadow-2xl">
       <div className="flex items-center justify-start gap-3">
         <img
           src={review.user.image}

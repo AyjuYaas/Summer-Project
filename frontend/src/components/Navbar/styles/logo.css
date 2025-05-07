@@ -39,7 +39,7 @@
 
 @media (max-width: 360px) {
   .logo-holder {
-    background-color: var(--third-bg);
+    background-color: #e5e5e5;
 
     padding: 20px 0px;
     width: 79vw;

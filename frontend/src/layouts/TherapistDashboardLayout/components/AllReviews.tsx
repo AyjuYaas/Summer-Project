@@ -3,7 +3,7 @@ import { IoMdClose } from "react-icons/io";
 import { useMatchStore } from "../../../store/useMatchStore";
 import Masonry from "react-masonry-css";
 import { FaRegFrownOpen } from "react-icons/fa";
-import IndividualReview from "../../FindTherapistLayout/components/IndividualReview";
+import IndividualReview from "../../../components/IndividualReview";
 
 interface Props {
   id: string;

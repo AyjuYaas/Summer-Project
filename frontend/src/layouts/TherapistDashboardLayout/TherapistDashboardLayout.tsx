@@ -38,7 +38,7 @@ const TherapistDashboardLayout = (): JSX.Element => {
           reviewCount={(authUser as unknown as Therapist).reviewCount}
         />
       </div>
-      <div className="flex flex-col lg:flex-row justify-between gap-5">
+      <div className="flex flex-col lg:flex-row justify-between gap-5 pb-10">
         <Connections />
 
         <PendingRequests />

@@ -5,12 +5,12 @@ import validator from "email-validator";
 // Create a new token based on id
 const signToken = (id) => {
   //return jwt token
-  return jwt.sign({ id }, process.env.JWT_SECRET, {
+  return jwt.sign({ id, role: "therapist" }, process.env.JWT_SECRET, {
     expiresIn: "7d",
   });
 };
 
-export const signup = async (req, res) => {
+export const therapistSignup = async (req, res) => {
   const {
     name,
     email,
@@ -117,7 +117,7 @@ export const signup = async (req, res) => {
   }
 };
 
-export const login = async (req, res) => {
+export const therapistLogin = async (req, res) => {
   const { email, password } = req.body;
   try {
     if (!email || !password) {

@@ -1,7 +1,7 @@
 import { JSX, useEffect, useRef } from "react";
 import { IoMdClose } from "react-icons/io";
 import { useMatchStore } from "../../../store/useMatchStore";
-import IndividualReview from "./IndividualReview";
+import IndividualReview from "../../../components/IndividualReview";
 import Masonry from "react-masonry-css";
 import TherapistDetails from "./TherapistDetails";
 import { FaChevronCircleDown } from "react-icons/fa";
@@ -37,6 +37,17 @@ const OpenTherapist = ({ therapist, onClose }: Props): JSX.Element => {
   useEffect(() => {
     getReviews(therapist._id);
   }, [getReviews, therapist._id]);
+
+  useEffect(() => {
+    const handlePopState = () => {
+      onClose();
+    };
+
+    window.addEventListener("popstate", handlePopState);
+    return () => {
+      window.removeEventListener("popstate", handlePopState);
+    };
+  }, [onClose]);
 
   const scrollToMasonry = () => {
     masonryRef.current?.scrollIntoView({

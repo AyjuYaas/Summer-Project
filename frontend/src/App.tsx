@@ -1,4 +1,4 @@
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import { Routes, Route, Navigate } from "react-router-dom";
 import ReactLoading from "react-loading";
 
@@ -38,6 +38,8 @@ import VideoCall from "./pages/VideoCall";
 
 export default function App(): React.ReactElement {
   const { checkAuth, authUser, authType, checkingAuth } = useAuthStore();
+  // =========== To stop body from scrolling when navbar is pulled ===========
+  const [openNavbar, setOpenNavbar] = useState<boolean>(false);
 
   const {
     listenToNewRequest,
@@ -108,8 +110,14 @@ export default function App(): React.ReactElement {
 
   return (
     <div>
+      {/* ✨ BACKDROP OVERLAY */}
+      {openNavbar && (
+        <div className="fixed inset-0 bg-black/30 backdrop-blur-sm z-20 pointer-events-auto transition-opacity duration-300"></div>
+      )}
       <Toaster />
-      {!hideNavbar && <Navbar />}
+      {!hideNavbar && (
+        <Navbar openNavbar={openNavbar} setOpenNavbar={setOpenNavbar} />
+      )}
 
       <Routes>
         {/* Default Nav Routes  */}

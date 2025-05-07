@@ -26,17 +26,17 @@ export const protectRoute = async (req, res, next) => {
       });
     }
 
-    // Finally, if neither, then token is valid, thus find the user
-    let currentUser = await User.findById(decode.id);
-    let role = "user";
+    let currentUser;
 
-    if (!currentUser) {
+    // Finally, if neither, then token is valid, thus find the user
+    if (decode.role === "user") {
+      currentUser = await User.findById(decode.id);
+    } else {
       currentUser = await Therapist.findById(decode.id);
-      role = "therapist";
     }
     // Send the user to the requesting function
     req.user = currentUser;
-    req.role = role;
+    req.role = decode.role;
     next();
   } catch (err) {
     console.log(`Error in auth middleware: ${err}`);

@@ -45,7 +45,7 @@ const UserDashboardLayout = () => {
           Start Exploring Therapists
         </Link>
       </div>
-      <div className="flex flex-col lg:flex-row justify-between gap-5">
+      <div className="flex flex-col lg:flex-row justify-between gap-5 pb-10">
         <Connections />
 
         <PredictedProblem

@@ -1,4 +1,4 @@
-import { JSX, useRef, useState, useEffect } from "react";
+import { JSX, useRef, useEffect } from "react";
 
 import "./styles/navbar.css";
 
@@ -10,10 +10,15 @@ import { MdClose } from "react-icons/md";
 import { Link } from "react-router-dom";
 import { useAuthStore } from "../../store/useAuthStore";
 
-export default function Navbar(): JSX.Element {
-  // =========== To stop body from scrolling when navbar is pulled ===========
-  const [openNavbar, setOpenNavbar] = useState<boolean>(false);
+type NavbarProps = {
+  openNavbar: boolean;
+  setOpenNavbar: React.Dispatch<React.SetStateAction<boolean>>;
+};
 
+export default function Navbar({
+  openNavbar,
+  setOpenNavbar,
+}: NavbarProps): JSX.Element {
   // ======== For Handling responsiveness of navbar =========
   const navRef = useRef<HTMLDivElement | null>(null);
 
@@ -69,7 +74,7 @@ export default function Navbar(): JSX.Element {
 
       <div
         ref={navRef}
-        className={openNavbar ? "nav-inner responsive-nav" : "nav-inner"}
+        className={`${openNavbar ? "nav-inner responsive-nav" : "nav-inner"}`}
       >
         <NavLink setOpenNavbar={setOpenNavbar} />
         <NavLogin setOpenNavbar={setOpenNavbar} />
