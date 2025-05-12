@@ -4,10 +4,11 @@ import ReactLoading from "react-loading";
 
 // ======== Nav Routes =============
 import Navbar from "./components/Navbar";
-const Home = lazy(() => import("./pages/Home"));
-const About = lazy(() => import("./pages/About"));
-const Contact = lazy(() => import("./pages/Contact"));
-const TherapistList = lazy(() => import("./pages/TherapistList"));
+import Home from "./pages/Home";
+import About from "./pages/About";
+import Contact from "./pages/Contact";
+import TherapistList from "./pages/TherapistList";
+
 // ======== General Pages =============
 const GetStarted = lazy(() => import("./pages/GetStarted"));
 const Chat = lazy(() => import("./pages/Chat"));
@@ -38,7 +39,6 @@ import Test from "./pages/Test";
 
 export default function App(): React.ReactElement {
   const { checkAuth, authUser, authType, checkingAuth } = useAuthStore();
-  // =========== To stop body from scrolling when navbar is pulled ===========
   const [openNavbar, setOpenNavbar] = useState<boolean>(false);
 
   const {
@@ -62,40 +62,32 @@ export default function App(): React.ReactElement {
   useEffect(() => {
     if (authUser) {
       listenToMessages();
-      return () => {
-        stopListeningToMessages();
-      };
+      return () => stopListeningToMessages();
     }
-  }, [listenToMessages, stopListeningToMessages, authUser]);
+  }, [authUser, listenToMessages, stopListeningToMessages]);
 
   useEffect(() => {
     if (authUser) {
       listenToVideoCall();
-      return () => {
-        stopListeningToVideoCall();
-      };
+      return () => stopListeningToVideoCall();
     }
-  }, [listenToVideoCall, stopListeningToVideoCall, authUser]);
+  }, [authUser, listenToVideoCall, stopListeningToVideoCall]);
 
   useEffect(() => {
     if (authUser && authType === "therapist") {
       listenToNewRequest();
-      return () => {
-        stopListeningToRequest();
-      };
+      return () => stopListeningToRequest();
     } else if (authUser && authType === "user") {
       listenToRespondRequest();
-      return () => {
-        stopListeningToResponse();
-      };
+      return () => stopListeningToResponse();
     }
   }, [
+    authUser,
+    authType,
     listenToNewRequest,
     stopListeningToRequest,
     listenToRespondRequest,
     stopListeningToResponse,
-    authUser,
-    authType,
   ]);
 
   if (checkingAuth)
@@ -110,7 +102,6 @@ export default function App(): React.ReactElement {
 
   return (
     <div>
-      {/* ✨ BACKDROP OVERLAY */}
       {openNavbar && (
         <div className="fixed inset-0 bg-black/30 backdrop-blur-sm z-20 pointer-events-auto transition-opacity duration-300"></div>
       )}
@@ -129,10 +120,9 @@ export default function App(): React.ReactElement {
         }
       >
         <Routes>
-          {/* Default Nav Routes  */}
+          {/* Default Nav Routes */}
           <Route path="/" element={<Home />} />
           <Route path="/about" element={<About />} />
-
           <Route path="/therapist-list" element={<TherapistList />} />
           <Route path="/contact" element={<Contact />} />
 
@@ -151,7 +141,6 @@ export default function App(): React.ReactElement {
               )
             }
           />
-
           <Route
             path="/get-started"
             element={
@@ -184,7 +173,6 @@ export default function App(): React.ReactElement {
               )
             }
           />
-          {/* <Route path="/user/find-therapist" element={<FindTherapist />} /> */}
           <Route
             path="/user/find-therapist"
             element={
@@ -230,22 +218,21 @@ export default function App(): React.ReactElement {
             }
           />
 
-          {/* Chat Page */}
+          {/* Chat and Call */}
           <Route
-            path="chat/:id"
+            path="/chat/:id"
             element={authUser ? <Chat /> : <Navigate to="/user/login" />}
           />
-
-          {/* Admin Route */}
-          <Route path="/admin" element={<Admin />} />
-
-          <Route path="/test" element={<Test />} />
           <Route
             path="/video-call/:receiverId"
             element={authUser ? <VideoCall /> : <Navigate to="/user/login" />}
           />
 
-          {/* Wrong Route */}
+          {/* Admin and Test */}
+          <Route path="/admin" element={<Admin />} />
+          <Route path="/test" element={<Test />} />
+
+          {/* Catch-all */}
           <Route path="*" element={<NotFound />} />
         </Routes>
       </Suspense>

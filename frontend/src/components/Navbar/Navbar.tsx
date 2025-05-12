@@ -1,7 +1,5 @@
-import { JSX, useRef, useEffect } from "react";
-
+import { memo, useRef, useEffect, useCallback, JSX } from "react";
 import "./styles/navbar.css";
-
 import Logo from "./items/Logo";
 import NavLink from "./items/NavLink";
 import NavLogin from "./items/NavLogin";
@@ -15,46 +13,39 @@ type NavbarProps = {
   setOpenNavbar: React.Dispatch<React.SetStateAction<boolean>>;
 };
 
-export default function Navbar({
+const Navbar = memo(function Navbar({
   openNavbar,
   setOpenNavbar,
 }: NavbarProps): JSX.Element {
-  // ======== For Handling responsiveness of navbar =========
   const navRef = useRef<HTMLDivElement | null>(null);
-
   const menuRef = useRef<HTMLDivElement | null>(null);
+  const authType = useAuthStore((state) => state.authType); // Optimized selector
 
-  const { authType } = useAuthStore();
+  // Memoized toggle function
+  const toggleNavbar = useCallback(
+    (e: React.MouseEvent) => {
+      e.stopPropagation();
+      setOpenNavbar((prev) => !prev);
+    },
+    [setOpenNavbar]
+  );
 
   useEffect(() => {
-    if (openNavbar) {
-      document.body.style.overflowY = "hidden";
-    } else {
-      document.body.style.overflowY = "visible";
-    }
+    document.body.style.overflowY = openNavbar ? "hidden" : "visible";
     return () => {
-      document.body.style.overflowY = "hidden"; // Reset overflow when component unmounts
+      document.body.style.overflowY = "visible";
     };
   }, [openNavbar]);
 
   useEffect(() => {
-    const handleCLickOutside = (e: MouseEvent) => {
+    const handleClickOutside = (e: MouseEvent) => {
       if (!menuRef.current?.contains(e.target as Element)) {
         setOpenNavbar(false);
       }
     };
-
-    document.addEventListener("click", handleCLickOutside);
-
-    return () => {
-      document.removeEventListener("click", handleCLickOutside);
-    };
-  }, []);
-
-  const toggleNavbar = (e: React.MouseEvent) => {
-    e.stopPropagation();
-    setOpenNavbar((prev) => !prev);
-  };
+    document.addEventListener("click", handleClickOutside);
+    return () => document.removeEventListener("click", handleClickOutside);
+  }, [setOpenNavbar]);
 
   return (
     <div className="nav" ref={menuRef}>
@@ -79,11 +70,12 @@ export default function Navbar({
         <NavLink setOpenNavbar={setOpenNavbar} />
         <NavLogin setOpenNavbar={setOpenNavbar} />
       </div>
-      <>
-        <div className="menu-icon" onClick={toggleNavbar}>
-          {openNavbar ? <MdClose /> : <IoMdMenu />}
-        </div>
-      </>
+
+      <div className="menu-icon" onClick={toggleNavbar}>
+        {openNavbar ? <MdClose /> : <IoMdMenu />}
+      </div>
     </div>
   );
-}
+});
+
+export default Navbar;

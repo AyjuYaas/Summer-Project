@@ -51,7 +51,6 @@
 }
 
 html {
-  scroll-behavior: smooth;
   overflow-x: hidden;
   height: 100%;
   scroll-behavior: smooth;
@@ -142,4 +141,9 @@ body {
 }
 .scrollbar-horizontal::-webkit-scrollbar-thumb:hover {
   background: #2b5876;
+}
+
+.scrollbar,
+.scrollbar-horizontal {
+  will-change: scroll-position;
 }
