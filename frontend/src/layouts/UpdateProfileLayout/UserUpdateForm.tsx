@@ -1,32 +1,42 @@
-import { JSX, useRef, useState } from "react";
-import { useAuthStore } from "../../store/useAuthStore";
+import { JSX, useEffect, useRef, useState } from "react";
 import { useUserStore } from "../../store/useUserStore";
 import genderData from "../TherapistAuthLayout/data/gender-data";
 import { FaCamera } from "react-icons/fa";
-
-interface User {
-  name: string;
-  email: string;
-  phone: string;
-  age: string;
-  gender: string;
-  image: string;
-}
+import { updateParamsUser } from "../../types/user.types";
+import { axiosInstance } from "../../lib/Axios";
 
 const UserUpdateForm = (): JSX.Element => {
-  const { authUser } = useAuthStore();
-
   const fileInputRef = useRef<HTMLInputElement | null>(null);
   const { loading, updateProfile } = useUserStore();
 
-  const [formData, setFormData] = useState<User>({
-    name: authUser?.name || "",
-    email: authUser?.email || "",
-    phone: authUser?.phone || "",
-    age: (authUser as unknown as User)?.age || "",
-    gender: (authUser as unknown as User)?.gender || "",
-    image: authUser?.image || "",
+  const [formData, setFormData] = useState<updateParamsUser>({
+    name: "",
+    email: "",
+    phone: "",
+    birthDate: new Date(),
+    gender: "",
+    image: "",
   });
+
+  useEffect(() => {
+    const getUserData = async () => {
+      try {
+        const res = await axiosInstance.get("/users/update-details");
+        if (res.data.success) {
+          const userData = res.data.user;
+          console.log("User data:", userData);
+          setFormData({
+            ...userData,
+            birthDate: new Date(userData.birthDate), // Convert string to Date
+          });
+        }
+      } catch (error) {
+        console.error("Error fetching User data:", error);
+      }
+    };
+
+    getUserData();
+  }, []);
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
@@ -150,20 +160,23 @@ const UserUpdateForm = (): JSX.Element => {
       {/* ========== Age ========= */}
       <div>
         <label
-          htmlFor="age"
+          htmlFor="birthDate"
           className="block text-md font-medium text-highlight ml-0.5"
         >
-          Age
+          Date of Birth (AD)
         </label>
       </div>
       <div className="mb-5">
         <input
-          type="text"
-          name="age"
-          id="age"
-          value={formData.age}
-          onChange={handleChange}
-          placeholder="Enter New your Age"
+          type="date"
+          name="birthDate"
+          id="birthDate"
+          value={formData.birthDate.toISOString().split("T")[0]}
+          onChange={(e) => {
+            const date = new Date(e.target.value);
+            setFormData({ ...formData, birthDate: date });
+          }}
+          required
           className="block w-full px-3 py-4 border border-button-border rounded-lg focus:outline-1"
         />
       </div>

@@ -1,5 +1,5 @@
 import express from "express";
-import { protectRoute } from "./../middleware/auth.middle.js";
+import { isUser } from "./../middleware/auth.middle.js";
 import {
   updateProfile,
   problem,
@@ -7,14 +7,18 @@ import {
   reviewTherapist,
   removeRequest,
   getExistingReview,
+  updateDetails,
+  getPreference,
 } from "../controllers/user.controller.js";
 
 const router = express.Router();
 
-router.use(protectRoute);
+router.use(isUser);
 
+router.get("/update-details", updateDetails);
 router.put("/update", updateProfile);
 
+router.get("/get-preference", getPreference);
 router.put("/problems", problem);
 
 router.post("/reviewTherapist", reviewTherapist);

@@ -4,15 +4,7 @@ import LoadingMessage from "./components/LoadingMessage";
 import IndividualRequest from "./components/IndividualRequest";
 import OpenRequestingUser from "./components/OpenRequestingUser";
 import NoRequest from "./components/NoRequest";
-
-interface RequestingUser {
-  _id: string;
-  name: string;
-  gender: string;
-  image: string;
-  problemText: string;
-  requestId: string;
-}
+import { RequestingUser } from "../../types/match.types";
 
 const PendingRequests = (): JSX.Element => {
   const {

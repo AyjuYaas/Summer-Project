@@ -5,6 +5,41 @@ import User from "../models/user.model.js";
 import { getConnectedUsers, getIo } from "../socket/socket.server.js";
 import Match from "../models/match.model.js";
 
+export async function updateDetails(req, res) {
+  try {
+    const therapist = await Therapist.findById(req.user._id);
+
+    if (!therapist) {
+      return res.status(404).json({
+        success: false,
+        message: "Therapist not found",
+      });
+    }
+
+    return res.status(200).json({
+      success: true,
+      user: {
+        name: therapist.name,
+        image: therapist.image,
+        availability: therapist.availability,
+        email: therapist.email,
+        phone: therapist.phone,
+        gender: therapist.gender,
+        language: therapist.language,
+        specialization: therapist.specialization,
+        experience: therapist.experience,
+        qualification: therapist.qualification,
+      },
+    });
+  } catch (error) {
+    console.log(`Error in update therapist details: ${error}`);
+    res.status(500).json({
+      success: false,
+      message: "Internal Server Error",
+    });
+  }
+}
+
 export async function updateTherapist(req, res) {
   try {
     const { image, ...otherFields } = req.body;
@@ -68,16 +103,27 @@ export async function updateTherapist(req, res) {
       { new: true }
     );
 
-    // ======= Return user data without the password ===========
-    const therapistWithoutPassword = { ...updatedTherapist.toObject() };
-    delete therapistWithoutPassword.password;
-
     res.status(200).json({
       success: true,
-      user: therapistWithoutPassword,
+      user: {
+        _id: updatedTherapist._id,
+        name: updatedTherapist.name,
+        image: updatedTherapist.image,
+        rating: updatedTherapist.rating,
+        reviewCount: updatedTherapist.reviewCount,
+      },
     });
   } catch (error) {
     console.log(`Error in Therapist profile update: ${error}`);
+    if (err.name === "MongoServerError" && err.code === 11000) {
+      const field = Object.keys(err.keyPattern)[0];
+      return res.status(400).json({
+        success: false,
+        message: `${
+          field === "email" ? "Email" : "Phone number"
+        } is already registered`,
+      });
+    }
     res.status(500).json({
       success: false,
       message: "Internal Server Error",
@@ -151,6 +197,10 @@ export async function respondRequest(req, res) {
 
       // ======= Save the changes in the database
       await requestByUser.save();
+
+      await Therapist.findByIdAndUpdate(therapistId, {
+        $inc: { totalMatches: 1 },
+      });
 
       // ====================================================
       // ======= Send the response to the User about the status

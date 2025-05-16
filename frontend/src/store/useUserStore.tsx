@@ -4,51 +4,16 @@ import { axiosInstance } from "../lib/Axios";
 import toast from "react-hot-toast";
 import { useAuthStore } from "./useAuthStore";
 import { useMatchStore } from "./useMatchStore";
+import { UserStore } from "../types/store.types";
 
-interface FormDataUser {
-  name: string;
-  email: string;
-  phone: string;
-  age: string;
-  gender: string;
-  image: string;
-}
-
-interface FormDataTherapist {
-  name: string;
-  email: string;
-  phone: string;
-  specialization: string[];
-  gender: string;
-  image: string;
-  experience: string;
-  qualification: string[];
-  availability: boolean;
-}
-
-interface AuthState {
-  loading: boolean;
-  loadingRemove: boolean;
-  loadingReview: boolean;
-  existingReview: { rating: number; reviewText: string } | null;
-
-  updateProfile: (
-    params: FormDataUser | FormDataTherapist,
-    type: string
-  ) => void;
-  updateProblem: (problem: string) => void;
-  removeTherapist: (id: string) => void;
-  reviewTherapist: (id: string, rating: number, reviewText: string) => void;
-  getExistingReview: (id: string) => void;
-}
-
-export const useUserStore = create<AuthState>((set) => ({
+export const useUserStore = create<UserStore>((set) => ({
   loading: false,
   loadingRemove: false,
   loadingReview: false,
   loadingRemoveRequest: false,
-
+  loadingPreference: false,
   existingReview: null,
+  preference: null,
 
   updateProfile: async (data, type) => {
     try {
@@ -71,13 +36,31 @@ export const useUserStore = create<AuthState>((set) => ({
     }
   },
 
-  updateProblem: async (problem: string) => {
+  getPreference: async () => {
+    try {
+      set({ loadingPreference: true });
+      const res = await axiosInstance.get("/users/get-preference");
+      if (res.data.success) {
+        set({ preference: res.data.preference });
+      }
+    } catch (error: any) {
+      console.error(error);
+    } finally {
+      set({ loadingPreference: false });
+    }
+  },
+
+  updateProblem: async (preference) => {
     try {
       set({ loading: true });
-      const res = await axiosInstance.put("/users/problems", { problem });
-      toast.success("Successfully Posted your Problem");
+      const res = await axiosInstance.put("/users/problems", preference);
 
-      useAuthStore.getState().setAuthUser(res.data.problems);
+      if (res.data.success) {
+        toast.success("Successfully Posted your Problem");
+
+        set({ preference: res.data.preference });
+        return true;
+      }
     } catch (error: any) {
       if (error.response) {
         const errorMessage =
@@ -91,6 +74,7 @@ export const useUserStore = create<AuthState>((set) => ({
     } finally {
       set({ loading: false });
     }
+    return false;
   },
 
   removeTherapist: async (id: string) => {

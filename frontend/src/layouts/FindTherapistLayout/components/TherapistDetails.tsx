@@ -1,16 +1,6 @@
 import { JSX } from "react";
 import StarRating from "../../../components/StarRating";
-
-interface Props {
-  image: string;
-  name: string;
-  gender: string;
-  rating: number;
-  reviewCount: number;
-  experience: number;
-  specialization: string[];
-  qualification: string[];
-}
+import { matchedTherapists } from "../../../types/match.types";
 
 const TherapistDetails = ({
   image,
@@ -18,10 +8,12 @@ const TherapistDetails = ({
   gender,
   rating,
   reviewCount,
+  totalMatches,
   experience,
   specialization,
   qualification,
-}: Props): JSX.Element => {
+  languages,
+}: matchedTherapists): JSX.Element => {
   return (
     <div className="flex flex-col text-xl font-bold text-main-text gap-7 bg-cbg-four max-w-300 w-auto p-6 rounded-2xl shadow-2xl">
       <div className="flex flex-col text-5xl text-start gap-1">
@@ -61,6 +53,11 @@ const TherapistDetails = ({
             <span className="font-bold text-[#2f4858]">Total Reviews:</span>{" "}
             {reviewCount}
           </span>
+
+          <span className="font-medium">
+            <span className="font-bold text-[#2f4858]">Total Matches:</span>{" "}
+            {totalMatches}
+          </span>
         </div>
 
         {/* Experience Specialization Qualification */}
@@ -94,6 +91,20 @@ const TherapistDetails = ({
               {qualification.map((field, index: number) => (
                 <li key={index} className="break-words md:whitespace-nowrap">
                   {field}
+                </li>
+              ))}
+            </ul>
+          </div>
+
+          {/* Languages */}
+          <div className="w-full">
+            <span className="text-[#2f4858] font-extrabold font-fancy text-2xl">
+              Languages
+            </span>
+            <ul className="font-medium list-disc pl-6 w-full">
+              {languages?.map((language, index: number) => (
+                <li key={index} className="break-words md:whitespace-nowrap">
+                  {language}
                 </li>
               ))}
             </ul>

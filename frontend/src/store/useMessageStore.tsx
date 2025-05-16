@@ -6,75 +6,8 @@ import { getSocket } from "../socket/socket.client";
 import { useAuthStore } from "./useAuthStore";
 import { useMatchStore } from "./useMatchStore";
 import VideoToast from "../components/Toast/VideoToast";
-
-interface Message {
-  sender: string;
-  senderType: string;
-  receiver: string;
-  receiverType: string;
-  text?: string;
-  image?: string;
-  createdAt: string;
-}
-interface Document {
-  _id: string;
-  sender: string;
-  senderType: string;
-  receiver: string;
-  receiverType: string;
-  document: string;
-  publicId: string;
-  size: number;
-  description: string;
-  fileName: string;
-  createdAt: string;
-}
-
-interface MessageState {
-  messages: Message[];
-  documents: Document[];
-
-  videoToken: string;
-  callStatus: boolean;
-
-  cursor: string;
-  cursorDocument: string;
-
-  hasMore: boolean;
-  hasMoreDocument: boolean;
-
-  loading: boolean;
-  loadSendingDocument: boolean;
-  loadingDocuments: boolean;
-  loadToken: boolean;
-
-  sent: boolean;
-  sentDocument: boolean;
-  deletingDocument: boolean;
-
-  sendMessage: (text: string, image: string, receiverId: string) => void;
-  getMessages: (receiverId: string, cursor: string) => void;
-  sendDocument: (
-    pdf: string,
-    pdfName: string,
-    description: string,
-    receiverId: string
-  ) => void;
-  getDocuments: (receiverId: string, cursor: string) => void;
-
-  getVideoToken: (receiverId: string) => void;
-
-  deleteDocument: (id: string) => void;
-
-  listenToMessages: () => void;
-  stopListeningToMessages: () => void;
-
-  listenToVideoCall: () => void;
-  stopListeningToVideoCall: () => void;
-
-  resetMessages: () => void;
-  resetDocuments: () => void;
-}
+import { MessageState } from "../types/store.types";
+import { Document, Message } from "../types/chat.types";
 
 export const useMessageStore = create<MessageState>((set) => ({
   messages: [],

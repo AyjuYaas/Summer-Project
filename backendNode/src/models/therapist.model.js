@@ -37,6 +37,13 @@ const therapistSchema = new mongoose.Schema(
       enum: ["Male", "Female", "Other"],
       required: true,
     },
+    languages: [
+      {
+        type: String,
+        required: true,
+        trim: true,
+      },
+    ],
     specialization: [
       {
         type: String,
@@ -66,6 +73,10 @@ const therapistSchema = new mongoose.Schema(
       default: 0,
     },
     reviewCount: {
+      type: Number,
+      default: 0,
+    },
+    totalMatches: {
       type: Number,
       default: 0,
     },

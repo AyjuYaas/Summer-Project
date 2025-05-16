@@ -1,43 +1,46 @@
-import { JSX, useRef, useState } from "react";
-import { useAuthStore } from "../../store/useAuthStore";
+import { JSX, useEffect, useRef, useState } from "react";
 import { useUserStore } from "../../store/useUserStore";
 import genderData from "../TherapistAuthLayout/data/gender-data";
 import specializationData from "../TherapistAuthLayout/data/specializations-data";
-import { MultiSelect, MultiSelectChangeEvent } from "primereact/multiselect";
 import Switch from "react-switch";
-import qualificationData from "../TherapistAuthLayout/data/qualification-data";
-import QualificationLabel from "../TherapistAuthLayout/data/QualificationLabel";
 import { FaCamera } from "react-icons/fa";
-
-interface Therapist {
-  name: string;
-  email: string;
-  phone: string;
-  specialization: string[];
-  gender: string;
-  image: string;
-  experience: string;
-  qualification: string[];
-  availability: boolean;
-}
+import { updateParamsTherapist } from "../../types/therapist.types";
+import { axiosInstance } from "../../lib/Axios";
+import QualificationSelector from "../TherapistAuthLayout/components/QualificationSelector";
+import LanguageSelector from "../TherapistAuthLayout/components/LanguageSelector";
 
 const TherapistUpdateForm = (): JSX.Element => {
-  const { authUser } = useAuthStore();
-
   const fileInputRef = useRef<HTMLInputElement | null>(null);
   const { loading, updateProfile } = useUserStore();
 
-  const [formData, setFormData] = useState<Therapist>({
-    name: authUser?.name || "",
-    email: authUser?.email || "",
-    phone: authUser?.phone || "",
-    specialization: (authUser as unknown as Therapist)?.specialization || [],
-    gender: (authUser as unknown as Therapist)?.gender || "",
-    image: authUser?.image || "",
-    experience: (authUser as unknown as Therapist)?.experience || "",
-    qualification: (authUser as unknown as Therapist)?.qualification || [],
-    availability: (authUser as unknown as Therapist)?.availability || false,
+  const [formData, setFormData] = useState<updateParamsTherapist>({
+    name: "",
+    email: "",
+    phone: "",
+    specialization: [],
+    gender: "",
+    languages: [],
+    image: "",
+    experience: "",
+    qualification: [],
+    availability: false,
   });
+
+  useEffect(() => {
+    const getTherapistData = async () => {
+      try {
+        const res = await axiosInstance.get("/therapists/update-details");
+        if (res.data.success) {
+          const therapistData = res.data.user;
+          setFormData(therapistData);
+        }
+      } catch (error) {
+        console.error("Error fetching therapist data:", error);
+      }
+    };
+
+    getTherapistData();
+  }, []);
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
@@ -64,13 +67,6 @@ const TherapistUpdateForm = (): JSX.Element => {
     }));
   };
 
-  const handleQualificationChange = (e: MultiSelectChangeEvent) => {
-    setFormData((prevFormData) => ({
-      ...prevFormData,
-      qualification: e.value,
-    }));
-  };
-
   const handleImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files ? e.target.files[0] : "";
     if (file) {
@@ -87,7 +83,7 @@ const TherapistUpdateForm = (): JSX.Element => {
 
   return (
     <form onSubmit={handleSubmit}>
-      {/* ========== Image Update =========== */}
+      {/* ========== Image Upload =========== */}
       <div className="mb-5 flex mx-auto relative w-max p-0">
         <input
           ref={fileInputRef}
@@ -110,17 +106,15 @@ const TherapistUpdateForm = (): JSX.Element => {
         <button
           type="button"
           onClick={() => fileInputRef.current?.click()}
-          className={`absolute bottom-7 right-1 text-center size-10 flex items-center justify-center bg-[#2f4858] text-[white] hover:bg-[#565b70] duration-100 rounded-full p-1 min-w-max border-0 font-medium cursor-pointer`}
+          className="absolute bottom-7 right-1 text-center size-10 flex items-center justify-center bg-[#2f4858] text-white hover:bg-[#565b70] duration-100 rounded-full p-1 min-w-max border-0 font-medium cursor-pointer"
         >
           <FaCamera />
         </button>
       </div>
-      {/* ========== Availability ========= */}
+
+      {/* Availability */}
       <div className="mb-1">
-        <label
-          htmlFor="Availability"
-          className="block text-md font-medium text-highlight ml-0.5"
-        >
+        <label className="block text-md font-medium text-highlight ml-0.5">
           Availability
         </label>
       </div>
@@ -132,12 +126,9 @@ const TherapistUpdateForm = (): JSX.Element => {
         />
       </div>
 
-      {/* ========== Name ========= */}
+      {/* Name */}
       <div>
-        <label
-          htmlFor="name"
-          className="block text-md font-medium text-highlight ml-0.5"
-        >
+        <label className="block text-md font-medium text-highlight ml-0.5">
           Name
         </label>
       </div>
@@ -145,7 +136,6 @@ const TherapistUpdateForm = (): JSX.Element => {
         <input
           type="text"
           name="name"
-          id="name"
           value={formData.name}
           onChange={handleChange}
           placeholder="Your New Name"
@@ -153,12 +143,9 @@ const TherapistUpdateForm = (): JSX.Element => {
         />
       </div>
 
-      {/* ================ Email ============ */}
+      {/* Email */}
       <div>
-        <label
-          htmlFor="email"
-          className="block text-md font-medium ml-0.5 text-highlight"
-        >
+        <label className="block text-md font-medium ml-0.5 text-highlight">
           Email
         </label>
       </div>
@@ -166,7 +153,6 @@ const TherapistUpdateForm = (): JSX.Element => {
         <input
           type="email"
           name="email"
-          id="email"
           value={formData.email}
           onChange={handleChange}
           placeholder="Your New email"
@@ -174,12 +160,9 @@ const TherapistUpdateForm = (): JSX.Element => {
         />
       </div>
 
-      {/* ======== Phone =========== */}
+      {/* Phone */}
       <div>
-        <label
-          htmlFor="phone"
-          className="block text-md font-medium ml-0.5 text-highlight"
-        >
+        <label className="block text-md font-medium ml-0.5 text-highlight">
           Phone
         </label>
       </div>
@@ -187,7 +170,6 @@ const TherapistUpdateForm = (): JSX.Element => {
         <input
           type="tel"
           name="phone"
-          id="phone"
           value={formData.phone}
           onChange={handleChange}
           placeholder="Your New Phone"
@@ -197,12 +179,9 @@ const TherapistUpdateForm = (): JSX.Element => {
         />
       </div>
 
-      {/* ========== Gender ========= */}
+      {/* Gender */}
       <div>
-        <label
-          htmlFor="gender"
-          className="block text-md font-medium text-highlight ml-0.5"
-        >
+        <label className="block text-md font-medium text-highlight ml-0.5">
           Gender
         </label>
       </div>
@@ -217,18 +196,33 @@ const TherapistUpdateForm = (): JSX.Element => {
               onChange={handleChange}
               className="mr-1 w-4 h-4"
             />
-
             {gender}
           </label>
         ))}
       </div>
 
-      {/* ========== Specialization ========= */}
+      {/* Language Selector */}
+      <LanguageSelector
+        selectedLanguages={formData.languages || []}
+        onAddLanguage={(value) => {
+          if (!formData.languages?.includes(value)) {
+            setFormData((prev) => ({
+              ...prev,
+              language: [...(prev.languages || []), value],
+            }));
+          }
+        }}
+        onRemoveLanguage={(index) => {
+          setFormData((prev) => ({
+            ...prev,
+            language: prev.languages?.filter((_, i) => i !== index) || [],
+          }));
+        }}
+      />
+
+      {/* Specialization */}
       <div>
-        <label
-          htmlFor="specialization"
-          className="block text-md font-medium text-highlight ml-0.5"
-        >
+        <label className="block text-md font-medium text-highlight ml-0.5">
           Specialization (Check all that apply)
         </label>
       </div>
@@ -241,23 +235,20 @@ const TherapistUpdateForm = (): JSX.Element => {
             <input
               type="checkbox"
               name="specialization"
-              id={`${index}`}
+              id={`spec-${index}`}
               value={specialization}
               checked={formData.specialization.includes(specialization)}
               onChange={handleSpecializationChange}
               className="border border-button-border rounded-lg h-4 w-4"
             />
-            <label htmlFor={`${index}`}>{specialization}</label>
+            <label htmlFor={`spec-${index}`}>{specialization}</label>
           </div>
         ))}
       </div>
 
-      {/* ========== Experience ========= */}
+      {/* Experience */}
       <div>
-        <label
-          htmlFor="experience"
-          className="block text-md font-medium text-highlight ml-0.5"
-        >
+        <label className="block text-md font-medium text-highlight ml-0.5">
           Experience (in Years)
         </label>
       </div>
@@ -265,7 +256,6 @@ const TherapistUpdateForm = (): JSX.Element => {
         <input
           type="text"
           name="experience"
-          id="experience"
           value={formData.experience}
           onChange={handleChange}
           placeholder="Year/s of experience"
@@ -274,35 +264,27 @@ const TherapistUpdateForm = (): JSX.Element => {
         />
       </div>
 
-      {/* ========== Qualification ========= */}
-      <div>
-        <label
-          htmlFor="qualification"
-          className="block text-md font-medium text-highlight ml-0.5"
-        >
-          Qualification
-        </label>
-      </div>
-      <div className="mb-5">
-        <div className="card flex justify-content-center relative">
-          <MultiSelect
-            value={formData.qualification}
-            options={qualificationData}
-            onChange={handleQualificationChange}
-            optionLabel="label"
-            optionGroupLabel="label"
-            optionGroupChildren="items"
-            optionGroupTemplate={(option) => (
-              <QualificationLabel option={option} />
-            )}
-            placeholder="Select Qualifications"
-            display="chip"
-            className="w-full md:w-20rem px-3 py-4 border border-button-border rounded-lg relative focus:outline-1"
-          />
-        </div>
-      </div>
+      {/* Qualification */}
+      <QualificationSelector
+        qualifications={formData.qualification || []}
+        onAddQualification={(value) => {
+          if (!formData.qualification?.includes(value)) {
+            setFormData((prev) => ({
+              ...prev,
+              qualification: [...(prev.qualification || []), value],
+            }));
+          }
+        }}
+        onRemoveQualification={(index) => {
+          setFormData((prev) => ({
+            ...prev,
+            qualification:
+              prev.qualification?.filter((_, i) => i !== index) || [],
+          }));
+        }}
+      />
 
-      {/* ========== Sign up button =========== */}
+      {/* Submit Button */}
       <div>
         <input
           type="submit"
@@ -318,4 +300,5 @@ const TherapistUpdateForm = (): JSX.Element => {
     </form>
   );
 };
+
 export default TherapistUpdateForm;

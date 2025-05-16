@@ -3,78 +3,7 @@ import { create } from "zustand";
 import { axiosInstance } from "../lib/Axios";
 import toast from "react-hot-toast";
 import { getSocket } from "../socket/socket.client";
-
-interface Match {
-  _id: string;
-  name: string;
-  image: string;
-}
-
-interface Pending {
-  _id: string;
-  user: {
-    _id: string;
-    name: string;
-    gender: string;
-    image: string;
-    problemText: string;
-  };
-  therapist: { _id: string; name: string; image: string };
-  status: string;
-}
-
-interface Review {
-  _id: string;
-  user: { name: string; image: string };
-  therapist: string;
-  rating: number;
-  reviewText: string;
-  createdAt: string;
-}
-
-interface Therapists {
-  _id: string;
-  name: string;
-  image: string;
-  specialization: string[];
-  experience: number;
-  qualification: string[];
-  gender: string;
-  rating: number;
-  reviewCount: number;
-}
-
-interface MatchState {
-  matches: Match[];
-  request: Pending[];
-  reviews: Review[];
-
-  loading: boolean;
-  loadingRecommendations: boolean;
-  loadingTherapists: boolean;
-  loadingSelection: boolean;
-  loadingPending: boolean;
-  loadingRemoveRequest: boolean;
-  loadingReview: boolean;
-
-  recommendations: Therapists[];
-  therapists: Therapists[];
-  hasMore: boolean;
-
-  getMatches: () => void;
-  getRecommendations: () => void;
-  getTherapists: (page: number) => void;
-  selectTherapist: (therapistId: string) => void;
-  getPendingRequest: () => void;
-  respondRequest: (userId: string, response: string) => void;
-  deleteRequest: (id: string) => void;
-  getReviews: (id: string) => void;
-
-  listenToNewRequest: () => void;
-  stopListeningToRequest: () => void;
-  listenToRespondRequest: () => void;
-  stopListeningToResponse: () => void;
-}
+import { MatchState } from "../types/store.types";
 
 export const useMatchStore = create<MatchState>((set) => ({
   matches: [],

@@ -3,84 +3,7 @@ import { create } from "zustand";
 import { axiosInstance } from "../lib/Axios";
 import toast from "react-hot-toast";
 import { disconnectSocket, initializeSocket } from "../socket/socket.client";
-
-interface signupParamsUser {
-  name: string;
-  email: string;
-  password: string;
-  phone: string;
-  age: string;
-  gender: string;
-}
-
-interface signupParamsTherapist {
-  name: string;
-  email: string;
-  password: string;
-  phone: string;
-  gender: string;
-  specialization: string[];
-  experience: string;
-  qualification: [];
-}
-
-interface Problems {
-  problem: string;
-  score: number;
-}
-
-interface User {
-  _id: string;
-  name: string;
-  email: string;
-  password: string;
-  phone: string;
-  age: number;
-  gender: string;
-  image: string;
-  imagePublicId: string;
-  problemText: string;
-  problems: Problems[];
-  selected_therapists: string[];
-  createdAt: string;
-  updatedAt: string;
-  __v?: number;
-}
-
-interface Therapist {
-  _id: string;
-  name: string;
-  email: string;
-  password: string;
-  image: string;
-  imagePublicId: string;
-  phone: string;
-  gender: string;
-  specification: string[];
-  experience: number;
-  qualification: string[];
-  availability: boolean;
-  matched_user: string[];
-  rating: number;
-  reviewCount: number;
-  createdAt: string;
-  updatedAt: string;
-  __v?: number;
-}
-
-interface AuthState {
-  authUser: User | Therapist | null;
-  authType: string;
-  checkingAuth: boolean;
-  loading: boolean;
-  setAuthUser: (user: any) => void;
-  signupUser: (params: signupParamsUser) => void;
-  loginUser: (credentials: { email: string; password: string }) => void;
-  signupTherapist: (params: signupParamsTherapist) => void;
-  loginTherapist: (credentials: { email: string; password: string }) => void;
-  logout: () => void;
-  checkAuth: () => void;
-}
+import { AuthState } from "../types/store.types";
 
 export const useAuthStore = create<AuthState>((set) => ({
   authUser: null,
@@ -91,9 +14,9 @@ export const useAuthStore = create<AuthState>((set) => ({
 
   loading: false,
 
-  setAuthUser: (user: any) => set({ authUser: user }),
+  setAuthUser: (user) => set({ authUser: user }),
 
-  signupUser: async (signupData: signupParamsUser) => {
+  signupUser: async (signupData) => {
     try {
       set({ loading: true });
       const response = await axiosInstance.post(
@@ -143,7 +66,7 @@ export const useAuthStore = create<AuthState>((set) => ({
     }
   },
 
-  signupTherapist: async (signupData: signupParamsTherapist) => {
+  signupTherapist: async (signupData) => {
     try {
       set({ loading: true });
       const response = await axiosInstance.post(

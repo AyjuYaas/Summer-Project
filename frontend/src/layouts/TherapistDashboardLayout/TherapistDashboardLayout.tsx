@@ -3,27 +3,7 @@ import WelcomeTherapist from "./WelcomeTherapist";
 import { useAuthStore } from "../../store/useAuthStore";
 import Connections from "./Connections";
 import PendingRequests from "./PendingRequests";
-
-interface Therapist {
-  _id: string;
-  name: string;
-  email: string;
-  password: string;
-  image: string;
-  imagePublicId: string;
-  phone: string;
-  gender: string;
-  specification: string[];
-  experience: number;
-  qualification: string[];
-  availability: boolean;
-  matched_user: string[];
-  rating: number;
-  reviewCount: number;
-  createdAt: string;
-  updatedAt: string;
-  __v?: number;
-}
+import { Therapist } from "../../types/therapist.types";
 
 const TherapistDashboardLayout = (): JSX.Element => {
   const { authUser } = useAuthStore();

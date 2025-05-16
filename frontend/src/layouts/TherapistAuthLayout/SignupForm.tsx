@@ -2,29 +2,18 @@ import React, { JSX, useState } from "react";
 import { useAuthStore } from "../../store/useAuthStore";
 import specializationData from "./data/specializations-data";
 import genderData from "./data/gender-data";
-import { MultiSelect, MultiSelectChangeEvent } from "primereact/multiselect";
-import qualificationData from "./data/qualification-data";
-import QualificationLabel from "./data/QualificationLabel";
-import "./qualification.css";
-
-interface FormDataInterface {
-  name: string;
-  email: string;
-  password: string;
-  phone: string;
-  gender: string;
-  specialization: string[];
-  experience: string;
-  qualification: [];
-}
+import { signupParamsTherapist } from "../../types/therapist.types";
+import QualificationSelector from "./components/QualificationSelector";
+import LanguageSelector from "./components/LanguageSelector";
 
 const SignupForm = (): JSX.Element => {
-  const [formData, setFormData] = useState<FormDataInterface>({
+  const [formData, setFormData] = useState<signupParamsTherapist>({
     name: "",
     email: "",
     password: "",
     phone: "",
     gender: "",
+    languages: [],
     specialization: [],
     experience: "",
     qualification: [],
@@ -43,13 +32,6 @@ const SignupForm = (): JSX.Element => {
       specialization: checked
         ? [...prevFormData.specialization, value]
         : prevFormData.specialization.filter((item) => item !== value),
-    }));
-  };
-
-  const handleQualificationChange = (e: MultiSelectChangeEvent) => {
-    setFormData((prevFormData) => ({
-      ...prevFormData,
-      qualification: e.value,
     }));
   };
 
@@ -178,6 +160,25 @@ const SignupForm = (): JSX.Element => {
         ))}
       </div>
 
+      {/* Language Selector */}
+      <LanguageSelector
+        selectedLanguages={formData.languages || []}
+        onAddLanguage={(value) => {
+          if (!formData.languages?.includes(value)) {
+            setFormData((prev) => ({
+              ...prev,
+              language: [...(prev.languages || []), value],
+            }));
+          }
+        }}
+        onRemoveLanguage={(index) => {
+          setFormData((prev) => ({
+            ...prev,
+            language: prev.languages?.filter((_, i) => i !== index) || [],
+          }));
+        }}
+      />
+
       {/* ========== Specialization ========= */}
       <div>
         <label
@@ -230,32 +231,24 @@ const SignupForm = (): JSX.Element => {
       </div>
 
       {/* ========== Qualification ========= */}
-      <div>
-        <label
-          htmlFor="qualification"
-          className="block text-md font-medium text-highlight ml-0.5"
-        >
-          Qualification
-        </label>
-      </div>
-      <div className="mb-5">
-        <div className="card flex justify-content-center relative">
-          <MultiSelect
-            value={formData.qualification}
-            options={qualificationData}
-            onChange={handleQualificationChange}
-            optionLabel="label"
-            optionGroupLabel="label"
-            optionGroupChildren="items"
-            optionGroupTemplate={(option) => (
-              <QualificationLabel option={option} />
-            )}
-            placeholder="Select Qualifications"
-            display="chip"
-            className="w-full md:w-20rem px-3 py-4 border border-button-border rounded-lg relative focus:outline-1"
-          />
-        </div>
-      </div>
+      <QualificationSelector
+        qualifications={formData.qualification || []}
+        onAddQualification={(value) => {
+          if (!formData.qualification?.includes(value)) {
+            setFormData((prev) => ({
+              ...prev,
+              qualification: [...(prev.qualification || []), value],
+            }));
+          }
+        }}
+        onRemoveQualification={(index) => {
+          setFormData((prev) => ({
+            ...prev,
+            qualification:
+              prev.qualification?.filter((_, i) => i !== index) || [],
+          }));
+        }}
+      />
 
       {/* ========== Sign up button =========== */}
       <div>

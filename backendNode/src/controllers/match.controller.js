@@ -3,6 +3,11 @@ import User from "../models/user.model.js";
 import Match from "../models/match.model.js";
 import { getConnectedUsers, getIo } from "../socket/socket.server.js";
 import Review from "../models/review.model.js";
+import Preference from "../models/userPreferences.model.js";
+import {
+  qualificationWeights,
+  scoringWeights,
+} from "../config/weights.config.js";
 
 export async function getTherapist(req, res) {
   try {
@@ -26,7 +31,7 @@ export async function getTherapist(req, res) {
         $and: [{ _id: { $nin: matchedTherapistIds } }, { availability: true }], // Those that are not selected by the user and those who are available
       })
         .select(
-          "_id name image specialization experience qualification gender rating reviewCount"
+          "_id name image specialization experience qualification gender rating reviewCount language totalMatches"
         )
         .skip(skip) // Skip the documents based on the page number
         .limit(limit) // Limit the number of documents per page
@@ -70,57 +75,89 @@ export async function getTherapist(req, res) {
   }
 }
 
-export async function getRecommendation(req, res) {
+export const getRecommendation = async (req, res) => {
   try {
-    if (req.role === "user") {
-      // Get the current User
-      const currentUser = await User.findById(req.user._id);
+    const userId = req.user._id;
+    const preference = await Preference.findOne({ user: userId });
 
-      // Extract problem names from the user's problems array
-      const problemNames = currentUser.problems.map((p) => p.problem);
-
-      const requestedTherapist = await Match.find({
-        user: req.user._id,
-        status: { $in: ["Pending", "Accept"] },
-      }).select("therapist");
-
-      // Get the Requested Therapist Ids
-      const matchedTherapistIds = requestedTherapist.map(
-        (match) => match.therapist
-      );
-
-      // Get the therapist
-      const recommended = await Therapist.find({
-        $and: [
-          { specialization: { $in: problemNames } },
-          { _id: { $nin: matchedTherapistIds } },
-          { availability: true },
-        ], // That specialize in the users problems
-      })
-        .select(
-          "_id name image specialization experience qualification gender rating reviewCount"
-        )
-        .limit(10);
-
-      return res.status(200).json({
-        success: true,
-        therapists: recommended,
-      });
-    } else {
-      return res.status(400).json({
+    if (!preference) {
+      return res.status(404).json({
         success: false,
-        message: "NOt Authorized",
+        message: "Preference not found.",
       });
     }
-  } catch (error) {
-    console.log(`Error in Recommendation: ${error}`);
 
-    res.status(500).json({
-      success: false,
-      message: "Internal Server Error",
+    const { preferredGender, preferredLanguage, predictedProblems } =
+      preference;
+
+    // Extract only the problem names for MongoDB query
+    const predictedProblemList = predictedProblems.map(
+      ({ problem }) => problem
+    );
+
+    const allTherapists = await Therapist.find({
+      availability: true,
+      specialization: { $in: predictedProblemList },
     });
+
+    const recommendations = allTherapists.map((therapist) => {
+      let score = 0;
+
+      // Language match
+      if (therapist.languages.includes(preferredLanguage)) {
+        score += scoringWeights.languageMatch;
+      }
+
+      // Gender match
+      if (preferredGender !== "Any" && therapist.gender === preferredGender) {
+        score += scoringWeights.genderMatch;
+      }
+
+      // Rating boost
+      score += therapist.rating * scoringWeights.ratingMultiplier;
+
+      // Qualification boost
+      therapist.qualification.forEach((q) => {
+        score += qualificationWeights[q] || 0;
+      });
+
+      // Experience bonus
+      const experienceBoost =
+        Math.log1p(therapist.experience) * scoringWeights.experiencePerYear;
+
+      score += experienceBoost;
+
+      return { therapist, score };
+    });
+
+    // Sort and take top 5
+    const sortedRecommendations = recommendations
+      .sort((a, b) => b.score - a.score)
+      .slice(0, 5)
+      .map(({ therapist, score }) => ({
+        _id: therapist._id,
+        name: therapist.name,
+        image: therapist.image,
+        specialization: therapist.specialization,
+        experience: therapist.experience,
+        qualification: therapist.qualification,
+        gender: therapist.gender,
+        rating: therapist.rating,
+        reviewCount: therapist.reviewCount,
+        totalMatches: therapist.totalMatches,
+        languages: therapist.languages,
+        score: parseFloat(score.toFixed(2)), // Optional
+      }));
+
+    res.status(200).json({
+      success: true,
+      therapists: sortedRecommendations,
+    });
+  } catch (error) {
+    console.error("Error in recommendation system:", error);
+    res.status(500).json({ success: false, message: "Internal Server Error" });
   }
-}
+};
 
 export async function selectTherapist(req, res) {
   try {

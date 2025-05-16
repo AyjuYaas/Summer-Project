@@ -1,6 +1,7 @@
 import User from "../models/user.model.js";
 import jwt from "jsonwebtoken";
 import validator from "email-validator";
+import validatePassword from "../middleware/password.middle.js";
 
 // =========== Creates a token fot the user ===============
 const signToken = (id) => {
@@ -13,11 +14,11 @@ const signToken = (id) => {
 // ============== User Signup Function ==============
 export const userSignup = async (req, res) => {
   // ============= get these fields from the client ===========
-  const { name, email, password, phone, age, gender } = req.body;
+  const { name, email, password, phone, birthDate, gender } = req.body;
 
   try {
     // =========== Check if all the values are provided =============
-    if (!name || !email || !password || !phone || !age || !gender) {
+    if (!name || !email || !password || !phone || !birthDate || !gender) {
       return res.status(400).json({
         success: false,
         message: "All fields are required",
@@ -32,34 +33,52 @@ export const userSignup = async (req, res) => {
       });
     }
 
-    // =========== Check if the password is less than 6 ===========
-    if (password.length < 6) {
+    // =========== Password Validation ===========
+    const passwordValidation = validatePassword(password);
+    if (!passwordValidation.isValid) {
       return res.status(400).json({
         success: false,
-        message: "Password must be at least 6 characters",
+        message: passwordValidation.errors.join(", "),
       });
     }
 
     // ============== Check if the phone-number is 10 digits ============
-    if (phone.length < 10 || phone.length > 10) {
+    if (phone.length !== 10 || !/^\d+$/.test(phone)) {
       return res.status(400).json({
         success: false,
         message: "Phone number should be 10 digits",
       });
     }
 
+    // ============== Validate Date of Birth (DOB) =================
+    const dob = new Date(birthDate); // Parse the birthDate string into a Date object
+    const today = new Date();
+    const age = today.getFullYear() - dob.getFullYear(); // Calculate age based on the year difference
+
+    // Adjust age if the user hasn't had their birthday yet this year
+    const hasHadBirthdayThisYear =
+      today.getMonth() > dob.getMonth() ||
+      (today.getMonth() === dob.getMonth() && today.getDate() >= dob.getDate());
+
+    if (age < 10 || (age === 10 && !hasHadBirthdayThisYear)) {
+      return res.status(400).json({
+        success: false,
+        message: "You must be at least 10 years old to sign up",
+      });
+    }
+
     // ============ If everything okay, create the user ===========
-    const newUser = await User.create({
+    const user = await User.create({
       name,
       email,
       password,
       phone,
-      age,
+      birthDate,
       gender,
     });
 
     // =========== Create a user token =============
-    const token = signToken(newUser._id);
+    const token = signToken(user._id);
 
     // ======= create a jwt token ===========
     res.cookie("jwt", token, {
@@ -69,18 +88,36 @@ export const userSignup = async (req, res) => {
       secure: process.env.NODE_ENV === "production",
     });
 
-    // ======= Return user data without the password ===========
-    const userWithoutPassword = { ...newUser.toObject() };
-    delete userWithoutPassword.password;
-
     // ============= Send Success Message ===========
     res.status(201).json({
       success: true,
-      user: userWithoutPassword,
+      user: {
+        _id: user._id,
+        name: user.name,
+        age: user.age,
+        gender: user.gender,
+        image: user.image,
+      },
     });
   } catch (err) {
-    console.log(`Error in user signup controller: ${err}`);
-    res.status(500).json({ success: false, message: "Internal Server Error" });
+    console.error(`Error in user signup controller: ${err}`);
+
+    // Handle duplicate key errors
+    if (err.name === "MongoServerError" && err.code === 11000) {
+      const field = Object.keys(err.keyPattern)[0];
+      return res.status(400).json({
+        success: false,
+        message: `${
+          field === "email" ? "Email" : "Phone number"
+        } is already registered`,
+      });
+    }
+
+    // Handle other errors
+    return res.status(500).json({
+      success: false,
+      error: "Internal Server Error",
+    });
   }
 };
 
@@ -119,13 +156,15 @@ export const userLogin = async (req, res) => {
       secure: process.env.NODE_ENV === "production",
     });
 
-    // ======= Return user data without the password ===========
-    const userWithoutPassword = { ...user.toObject() };
-    delete userWithoutPassword.password;
-
     res.status(200).json({
       success: true,
-      user: userWithoutPassword,
+      user: {
+        _id: user._id,
+        name: user.name,
+        age: user.age,
+        gender: user.gender,
+        image: user.image,
+      },
     });
   } catch (err) {
     console.log(`Error in user login controller: ${err}`);

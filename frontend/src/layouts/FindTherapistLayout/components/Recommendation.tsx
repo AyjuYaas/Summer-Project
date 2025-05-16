@@ -4,18 +4,7 @@ import IndividualTherapist from "../../../components/IndividualTherapist";
 import ReactLoading from "react-loading";
 import OpenTherapist from "./OpenTherapist";
 import NoTherapists from "./NoTherapists";
-
-interface Therapist {
-  _id: string;
-  name: string;
-  image: string;
-  specialization: string[];
-  experience: number;
-  qualification: string[];
-  gender: string;
-  rating: number;
-  reviewCount: number;
-}
+import { matchedTherapists } from "../../../types/match.types";
 
 const Recommendation = (): JSX.Element => {
   const {
@@ -24,11 +13,10 @@ const Recommendation = (): JSX.Element => {
     loadingRecommendations: loading,
   } = useMatchStore();
 
-  const [selectedTherapist, setSelectedTherapist] = useState<Therapist | null>(
-    null
-  );
+  const [selectedTherapist, setSelectedTherapist] =
+    useState<matchedTherapists | null>(null);
 
-  const handleTherapist = (therapist: Therapist) => {
+  const handleTherapist = (therapist: matchedTherapists) => {
     setSelectedTherapist(therapist);
   };
 

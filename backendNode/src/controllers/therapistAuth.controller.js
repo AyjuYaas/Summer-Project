@@ -1,6 +1,7 @@
 import Therapist from "../models/therapist.model.js";
 import jwt from "jsonwebtoken";
 import validator from "email-validator";
+import validatePassword from "../middleware/password.middle.js";
 
 // Create a new token based on id
 const signToken = (id) => {
@@ -17,6 +18,7 @@ export const therapistSignup = async (req, res) => {
     password,
     phone,
     gender,
+    language,
     specialization,
     experience,
     qualification,
@@ -30,6 +32,7 @@ export const therapistSignup = async (req, res) => {
       !password ||
       !phone ||
       !gender ||
+      !language ||
       !specialization ||
       !experience ||
       !qualification
@@ -46,16 +49,17 @@ export const therapistSignup = async (req, res) => {
         message: "Invalid Email Address",
       });
     }
-    // =========== Check if the password is less than 6 ===========
-    if (password.length < 6) {
+    // =========== Password Validation ===========
+    const passwordValidation = validatePassword(password);
+    if (!passwordValidation.isValid) {
       return res.status(400).json({
         success: false,
-        message: "Password must be at least 6 characters",
+        message: passwordValidation.errors.join(", "),
       });
     }
 
     // ============== Check if the phone-number is 10 digits ============
-    if (phone.length < 10 || phone.length > 10) {
+    if (phone.length !== 10 || !/^\d+$/.test(phone)) {
       return res.status(400).json({
         success: false,
         message: "Phone number should be 10 digits",
@@ -63,19 +67,20 @@ export const therapistSignup = async (req, res) => {
     }
 
     // =========== If everything is okay, create the new Therapist
-    const newTherapist = await Therapist.create({
+    const therapist = await Therapist.create({
       name,
       email,
       password,
       phone,
       gender,
+      language,
       specialization,
       experience,
       qualification,
     });
 
     // ========= Create a therapist token ============
-    const token = signToken(newTherapist._id);
+    const token = signToken(therapist._id);
 
     // ========= Create a jwt token ===========
     res.cookie("jwt", token, {
@@ -85,34 +90,28 @@ export const therapistSignup = async (req, res) => {
       secure: process.env.NODE_ENV === "production",
     });
 
-    // ======= Return user data without the password ===========
-    const therapistWithoutPassword = { ...newTherapist.toObject() };
-    delete therapistWithoutPassword.password;
-
     // ============= Send Success Message ===========
     res.status(201).json({
       success: true,
-      therapist: therapistWithoutPassword,
+      therapist: {
+        _id: therapist._id,
+        name: therapist.name,
+        image: therapist.image,
+        rating: therapist.rating,
+        reviewCount: therapist.reviewCount,
+      },
     });
   } catch (err) {
-    if (err.code === 11000) {
-      if (err.keyPattern && err.keyPattern.phone) {
-        return res.status(400).json({
-          success: false,
-          message:
-            "Phone number already exists. Please use a different phone number.",
-        });
-      }
-
-      if (err.keyPattern && err.keyPattern.email) {
-        return res.status(400).json({
-          success: false,
-          message:
-            "Email already exists. Please use a different email address.",
-        });
-      }
-    }
     console.log(`Error in therapist signup controller: ${err}`);
+    if (err.name === "MongoServerError" && err.code === 11000) {
+      const field = Object.keys(err.keyPattern)[0];
+      return res.status(400).json({
+        success: false,
+        message: `${
+          field === "email" ? "Email" : "Phone number"
+        } is already registered`,
+      });
+    }
     res.status(500).json({ success: false, message: "Internal Server Error" });
   }
 };
@@ -149,13 +148,15 @@ export const therapistLogin = async (req, res) => {
       secure: process.env.NODE_ENV === "production",
     });
 
-    // ======= Return user data without the password ===========
-    const therapistWithoutPassword = { ...therapist.toObject() };
-    delete therapistWithoutPassword.password;
-
     res.status(200).json({
       success: true,
-      therapist: therapistWithoutPassword,
+      therapist: {
+        _id: therapist._id,
+        name: therapist.name,
+        image: therapist.image,
+        rating: therapist.rating,
+        reviewCount: therapist.reviewCount,
+      },
     });
   } catch (err) {
     console.log(`Error in therapist login controller: ${err}`);

@@ -1,15 +1,7 @@
 import { JSX, useEffect, useRef } from "react";
 import { IoMdClose } from "react-icons/io";
 import { useMatchStore } from "../../../store/useMatchStore";
-
-interface RequestingUser {
-  _id: string;
-  name: string;
-  gender: string;
-  image: string;
-  problemText: string;
-  requestId: string;
-}
+import { RequestingUser } from "../../../types/match.types";
 
 interface Props {
   user: RequestingUser;

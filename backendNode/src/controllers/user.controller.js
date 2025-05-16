@@ -7,6 +7,38 @@ import Therapist from "../models/therapist.model.js";
 import User from "../models/user.model.js";
 import axios from "axios";
 import { validate } from "email-validator";
+import Preference from "../models/userPreferences.model.js";
+
+export const updateDetails = async (req, res) => {
+  try {
+    const user = await User.findById(req.user._id);
+
+    if (!user) {
+      return res.status(404).json({
+        success: false,
+        message: "User not found",
+      });
+    }
+
+    return res.status(200).json({
+      success: true,
+      user: {
+        image: user.image,
+        name: user.name,
+        email: user.email,
+        phone: user.phone,
+        birthDate: user.birthDate,
+        gender: user.gender,
+      },
+    });
+  } catch (error) {
+    console.log(`Error in update user details: ${error}`);
+    res.status(500).json({
+      success: false,
+      message: "Internal Server Error",
+    });
+  }
+};
 
 export const updateProfile = async (req, res) => {
   try {
@@ -60,10 +92,27 @@ export const updateProfile = async (req, res) => {
     }
 
     // ============== Check if the phone-number is 10 digits ============
-    if (updatedData.phone.length < 10 || updatedData.phone.length > 10) {
+    if (updatedData.phone.length !== 10 || !/^\d+$/.test(updatedData.phone)) {
       return res.status(400).json({
         success: false,
         message: "Phone number should be 10 digits",
+      });
+    }
+
+    // ============== Validate Date of Birth (DOB) =================
+    const dob = new Date(updatedData.birthDate); // Parse the birthDate string into a Date object
+    const today = new Date();
+    const age = today.getFullYear() - dob.getFullYear(); // Calculate age based on the year difference
+
+    // Adjust age if the user hasn't had their birthday yet this year
+    const hasHadBirthdayThisYear =
+      today.getMonth() > dob.getMonth() ||
+      (today.getMonth() === dob.getMonth() && today.getDate() >= dob.getDate());
+
+    if (age < 10 || (age === 10 && !hasHadBirthdayThisYear)) {
+      return res.status(400).json({
+        success: false,
+        message: "Age must be at least 10 years old",
       });
     }
 
@@ -74,16 +123,29 @@ export const updateProfile = async (req, res) => {
       { new: true }
     );
 
-    // ======= Return user data without the password ===========
-    const userWithoutPassword = { ...updatedUser.toObject() };
-    delete userWithoutPassword.password;
-
     res.status(200).json({
       success: true,
-      user: userWithoutPassword,
+      user: {
+        _id: updatedUser._id,
+        name: updatedUser.name,
+        age: updatedUser.age,
+        gender: updatedUser.gender,
+        image: updatedUser.image,
+        problemText: updatedUser.problemText,
+        problems: updatedUser.problems,
+      },
     });
   } catch (err) {
     console.log(`Error in update user profile: ${err}`);
+    if (err.name === "MongoServerError" && err.code === 11000) {
+      const field = Object.keys(err.keyPattern)[0];
+      return res.status(400).json({
+        success: false,
+        message: `${
+          field === "email" ? "Email" : "Phone number"
+        } is already registered`,
+      });
+    }
     res.status(500).json({
       success: false,
       message: "Internal Server Error",
@@ -91,19 +153,45 @@ export const updateProfile = async (req, res) => {
   }
 };
 
+export const getPreference = async (req, res) => {
+  try {
+    const preference = await Preference.findOne({ user: req.user._id });
+
+    if (!preference) {
+      return res.status(404).json({
+        success: false,
+        message: "No preference found",
+      });
+    }
+
+    res.status(200).json({
+      success: true,
+      preference,
+    });
+  } catch (error) {
+    console.log(`Error in getPreference of user: ${error}`);
+    res.status(500).json({
+      status: false,
+      message: "Internal Server Error",
+    });
+  }
+};
+
 export const problem = async (req, res) => {
-  const { problem } = req.body;
+  const { problemText, preferredGender, preferredLanguage } = req.body;
+
+  console.log(problemText, preferredGender, preferredLanguage);
 
   // ====== If no problem, return false ============
-  if (!problem) {
+  if (!problemText) {
     return res.status(400).json({
       success: false,
-      message: "Problem text is required.",
+      message: "All Fields are required.",
     });
   }
 
   // ======= Trim the text from any line breaks at the end ============
-  const problemTrimmed = problem.replace(/\n+$/, "");
+  const problemTrimmed = problemText.replace(/\n+$/, "");
 
   // ======= Counting the number of words ============
   const wordCount = problemTrimmed
@@ -132,22 +220,26 @@ export const problem = async (req, res) => {
       .filter((problem) => problem.score > 0.1) // Keep only scores > 0.1
       .map(({ problem, score }) => ({ problem, score })); // Map to the desired format
 
-    // ======= update the user's problem text and problems ============
-    const updatedUser = await User.findByIdAndUpdate(
-      req.user._id,
-      {
-        $set: { problemText: problemTrimmed, problems: filteredProblems },
-      },
-      { new: true }
-    );
+    const preferenceData = {
+      user: req.user._id,
+      problemText: problemTrimmed,
+      predictedProblems: filteredProblems,
+      preferredGender: preferredGender || "Any",
+      preferredLanguage: preferredLanguage || "English",
+    };
 
-    // ======= Return user data without the password ===========
-    const userWithoutPassword = { ...updatedUser.toObject() };
-    delete userWithoutPassword.password;
+    console.log(preferenceData);
+
+    // ======= update the user's problem text and problems ============
+    const updatedPreference = await Preference.findOneAndUpdate(
+      { user: req.user._id },
+      { ...preferenceData },
+      { new: true, upsert: true }
+    );
 
     res.status(200).json({
       success: true,
-      problems: userWithoutPassword,
+      preference: preferenceData,
     });
   } catch (error) {
     console.log(`Error in problem of user: ${error}`);
@@ -294,6 +386,7 @@ function extractPublicIdFromUrl(url) {
 
   return null; // If no match is found, return null
 }
+
 export async function removeTherapist(req, res) {
   const { therapistId } = req.params;
 

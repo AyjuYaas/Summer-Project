@@ -111,9 +111,10 @@ export default function App(): React.ReactElement {
       )}
       <Suspense
         fallback={
-          <div className="min-h-screen flex flex-col gap-2 justify-center items-center z-40 w-full">
+          <div className="min-h-screen flex flex-col gap-2 justify-center items-center absolute z-40 w-full">
             <ReactLoading type="spin" color="#303b36" />
-            <h1 className="text-xl text-[#303b36] font-extrabold">
+            <h1 className="text-xl text-[
+            #303b36] font-extrabold">
               Loading...
             </h1>
           </div>

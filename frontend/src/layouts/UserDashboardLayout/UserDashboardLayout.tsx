@@ -4,29 +4,6 @@ import PredictedProblem from "./PredictedProblem";
 import { Link } from "react-router-dom";
 import WelcomeUser from "./WelcomeUser";
 
-interface Problems {
-  problem: string;
-  score: number;
-}
-
-interface User {
-  _id: string;
-  name: string;
-  email: string;
-  password: string;
-  phone: string;
-  age: number;
-  gender: string;
-  image: string;
-  imagePublicId: string;
-  problemText: string;
-  problems: Problems[];
-  selected_therapists: string[];
-  createdAt: string;
-  updatedAt: string;
-  __v?: number;
-}
-
 const UserDashboardLayout = () => {
   const { authUser } = useAuthStore();
 
@@ -48,10 +25,7 @@ const UserDashboardLayout = () => {
       <div className="flex flex-col lg:flex-row justify-between gap-5 pb-10">
         <Connections />
 
-        <PredictedProblem
-          problems={(authUser as unknown as User).problems}
-          problemText={(authUser as unknown as User).problemText}
-        />
+        <PredictedProblem />
       </div>
     </div>
   );

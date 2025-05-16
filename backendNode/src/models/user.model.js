@@ -23,10 +23,9 @@ const userSchema = new mongoose.Schema(
       required: true,
       unique: true,
     },
-    age: {
-      type: Number,
+    birthDate: {
+      type: Date,
       required: true,
-      min: 10,
     },
     gender: {
       type: String,
@@ -42,8 +41,6 @@ const userSchema = new mongoose.Schema(
       type: String,
       default: "",
     },
-    problemText: { type: String, default: "" },
-    problems: { type: mongoose.Schema.Types.Array, default: [] },
   },
   { timestamps: true }
 );
@@ -61,6 +58,19 @@ userSchema.pre("save", async function (next) {
 userSchema.methods.matchPassword = async function (enteredPassword) {
   return await bcrypt.compare(enteredPassword, this.password);
 };
+
+userSchema.virtual("age").get(function () {
+  const birthDate = new Date(this.birthDate);
+  const today = new Date();
+
+  let age = today.getFullYear() - birthDate.getFullYear();
+  const m = today.getMonth() - birthDate.getMonth();
+  if (m < 0 || (m === 0 && today.getDate() < birthDate.getDate())) {
+    age--;
+  }
+
+  return age;
+});
 
 const User = mongoose.model("User", userSchema);
 

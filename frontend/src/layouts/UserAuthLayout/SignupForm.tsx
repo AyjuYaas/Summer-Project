@@ -1,23 +1,15 @@
 import React, { JSX, useState } from "react";
 import { useAuthStore } from "../../store/useAuthStore";
 import genderData from "../TherapistAuthLayout/data/gender-data";
-
-interface FormDataInterface {
-  name: string;
-  email: string;
-  password: string;
-  phone: string;
-  age: string;
-  gender: string;
-}
+import { signupParamsUser } from "../../types/user.types";
 
 const SignupForm = (): JSX.Element => {
-  const [formData, setFormData] = useState<FormDataInterface>({
+  const [formData, setFormData] = useState<signupParamsUser>({
     name: "",
     email: "",
     password: "",
     phone: "",
-    age: "",
+    birthDate: "mm/dd/yyyy",
     gender: "",
   });
 
@@ -128,20 +120,26 @@ const SignupForm = (): JSX.Element => {
       {/* ========== Age ========= */}
       <div>
         <label
-          htmlFor="age"
+          htmlFor="birthDate"
           className="block text-md font-medium text-highlight ml-0.5"
         >
-          Age
+          Date of Birth (AD)
         </label>
       </div>
       <div className="mb-5">
         <input
-          type="text"
-          name="age"
-          id="age"
-          value={formData.age}
-          onChange={handleChange}
-          placeholder="Enter your Age"
+          type="date"
+          name="birthDate"
+          id="birthDate"
+          value={
+            formData.birthDate instanceof Date
+              ? formData.birthDate.toISOString().split("T")[0]
+              : formData.birthDate
+          }
+          onChange={(e) => {
+            const date = new Date(e.target.value);
+            setFormData({ ...formData, birthDate: date });
+          }}
           required
           className="block w-full px-3 py-4 border border-button-border rounded-lg focus:outline-1"
         />

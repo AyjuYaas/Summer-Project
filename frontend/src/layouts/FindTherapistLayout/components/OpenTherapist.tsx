@@ -6,20 +6,10 @@ import Masonry from "react-masonry-css";
 import TherapistDetails from "./TherapistDetails";
 import { FaChevronCircleDown } from "react-icons/fa";
 import { FaRegFrownOpen } from "react-icons/fa";
+import { matchedTherapists } from "../../../types/match.types";
 
-interface Therapist {
-  _id: string;
-  name: string;
-  image: string;
-  specialization: string[];
-  experience: number;
-  qualification: string[];
-  gender: string;
-  rating: number;
-  reviewCount: number;
-}
 interface Props {
-  therapist: Therapist;
+  therapist: matchedTherapists;
   onClose: () => void;
 }
 
@@ -104,6 +94,7 @@ const OpenTherapist = ({ therapist, onClose }: Props): JSX.Element => {
             </div>
           </div>
 
+          {/* Reviews */}
           <div className="bg-cbg-three rounded-2xl text-main-text gap-2 max-w-400 shadow-2xl">
             <div className="flex justify-start px-10 pt-10 pb-5 md:px-15">
               <h1 className="flex flex-col text-3xl sm:text-4xl lg:text-5xl items-start w-full">

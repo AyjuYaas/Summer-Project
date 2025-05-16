@@ -1,33 +1,29 @@
-import { JSX } from "react";
+import { JSX, useEffect, useState } from "react";
 import Recommendation from "./components/Recommendation";
 import OtherTherapist from "./components/OtherTherapist";
-import UpdateProblem from "./components/UpdateProblem";
-import { useAuthStore } from "../../store/useAuthStore";
-
-interface User {
-  _id: string;
-  name: string;
-  email: string;
-  password: string;
-  phone: string;
-  age: number;
-  gender: string;
-  image: string;
-  imagePublicId: string;
-  problemText: string;
-  // problems: Problems[];
-  selected_therapists: string[];
-  createdAt: string;
-  updatedAt: string;
-  __v?: number;
-}
+import { useUserStore } from "../../store/useUserStore";
+import ProblemBar from "../UserDashboardLayout/components/ProblemBar";
 
 const FindTherapistLayout = (): JSX.Element => {
-  const { authUser } = useAuthStore();
+  const { preference, getPreference } = useUserStore();
+  const [isOpen, setIsOpen] = useState<boolean>(false);
+
+  const toggleProblemBar = () => {
+    if (!isOpen) {
+      document.body.style.overflowY = "hidden";
+    } else {
+      document.body.style.overflowY = "visible";
+    }
+    setIsOpen((prev) => !prev);
+  };
+
+  useEffect(() => {
+    getPreference();
+  }, [getPreference]);
 
   return (
     <>
-      {!(authUser as unknown as User).problemText ? (
+      {!preference ? (
         <div className="flex min-h-[calc(100vh-6rem)] justify-center items-center text-xl text-main-text">
           Update your Problem field to Start Finding Therapist.
         </div>
@@ -37,7 +33,19 @@ const FindTherapistLayout = (): JSX.Element => {
           <OtherTherapist />
         </div>
       )}
-      <UpdateProblem />
+      {isOpen ? (
+        <ProblemBar
+          preference={preference}
+          toggleProblemBar={toggleProblemBar}
+        />
+      ) : (
+        <button
+          onClick={toggleProblemBar}
+          className="bg-[#83699d] hover:bg-[#894971] p-4 font-semibold text-white rounded-2xl cursor-pointer duration-100 text-xl absolute bottom-5 right-5"
+        >
+          Edit Your Problem & Preference
+        </button>
+      )}
     </>
   );
 };
