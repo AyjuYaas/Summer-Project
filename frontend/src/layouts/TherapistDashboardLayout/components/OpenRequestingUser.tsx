@@ -1,11 +1,19 @@
-import { JSX, useEffect, useRef } from "react";
+import { JSX, useEffect, useRef, useState } from "react";
 import { IoMdClose } from "react-icons/io";
 import { useMatchStore } from "../../../store/useMatchStore";
 import { RequestingUser } from "../../../types/match.types";
+import { axiosInstance } from "../../../lib/Axios";
 
 interface Props {
   user: RequestingUser;
   onClose: () => void;
+}
+
+interface UserPreference {
+  preferredGender: string;
+  preferredLanguage: string;
+  problemText: string;
+  predictedProblems: string[];
 }
 
 const OpenRequestingUser = ({ user, onClose }: Props): JSX.Element => {
@@ -16,6 +24,28 @@ const OpenRequestingUser = ({ user, onClose }: Props): JSX.Element => {
 
     onClose();
   };
+
+  const [userPreference, setUserPreference] = useState<UserPreference>({
+    preferredGender: "",
+    preferredLanguage: "",
+    problemText: "",
+    predictedProblems: [],
+  });
+
+  useEffect(() => {
+    const getUserPreference = async () => {
+      try {
+        const res = await axiosInstance.get(
+          `/matches/user-preference/${user._id}`
+        );
+        setUserPreference(res.data.preference);
+      } catch (error) {
+        console.error("Error fetching user preference:", error);
+      }
+    };
+
+    getUserPreference();
+  }, [user]);
 
   const menuRef = useRef<HTMLDivElement | null>(null);
 
@@ -50,7 +80,8 @@ const OpenRequestingUser = ({ user, onClose }: Props): JSX.Element => {
 
             {/* Name */}
             <span className="text-center text-highlight">
-              {user.name} sent you a request
+              <span className="text-[#894971]">{user.name}</span> sent you a
+              request
             </span>
 
             {/* Gender */}
@@ -60,11 +91,33 @@ const OpenRequestingUser = ({ user, onClose }: Props): JSX.Element => {
             </div>
           </div>
 
+          <div className="self-start px-3">
+            <div className="text-2xl">
+              <h1>User Preferences</h1>
+            </div>
+
+            <div>
+              <h1 className="text-highlight">
+                Preferred Language:{" "}
+                <span className="font-medium text-main-text">
+                  {userPreference.preferredLanguage}
+                </span>
+              </h1>
+
+              <h1 className="text-highlight">
+                Preferred Gender:{" "}
+                <span className="font-medium text-main-text">
+                  {userPreference.preferredGender}
+                </span>
+              </h1>
+            </div>
+          </div>
+
           {/* Problem Statement */}
           <div className="flex flex-col p-3 max-w-180 w-auto">
-            <span className="text-highlight">Their Problem Description</span>{" "}
+            <span className="text-2xl">Their Problem Description</span>{" "}
             <span className="font-medium bg-white p-2 rounded-xl min-h-20 w-full  h-50 overflow-y-auto">
-              {user.problemText}
+              {userPreference.problemText}
             </span>
           </div>
         </div>
@@ -83,13 +136,13 @@ const OpenRequestingUser = ({ user, onClose }: Props): JSX.Element => {
             Reject
           </button>
         </div>
+        <button
+          className="absolute top-5 right-4 bg-main-text text-white size-8 text-2xl flex justify-center items-center rounded-full cursor-pointer hover:bg-red-700 duration-75"
+          onClick={onClose}
+        >
+          <IoMdClose />
+        </button>
       </div>
-      <button
-        className="absolute top-4 right-4 bg-main-text text-white size-8 text-2xl flex justify-center items-center rounded-full cursor-pointer hover:bg-red-700 duration-75"
-        onClick={onClose}
-      >
-        <IoMdClose />
-      </button>
     </div>
   );
 };

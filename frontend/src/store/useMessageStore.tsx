@@ -311,6 +311,7 @@ export const useMessageStore = create<MessageState>((set) => ({
     }
   },
 
-  resetMessages: () => set({ messages: [] }), // Reset the messages state
-  resetDocuments: () => set({ documents: [] }), // Reset the messages state
+  resetMessages: () => set({ messages: [], hasMore: true, cursor: "" }), // Reset the messages state
+  resetDocuments: () =>
+    set({ documents: [], hasMoreDocument: true, cursorDocument: "" }), // Reset the messages state
 }));

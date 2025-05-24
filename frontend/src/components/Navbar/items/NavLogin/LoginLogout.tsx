@@ -21,7 +21,13 @@ const LoginLogout = (): JSX.Element => {
       {authUser ? (
         <div className="logout-menu">
           <Link
-            to={authType === "user" ? "/user/home" : "/therapist/home"}
+            to={
+              authType === "user"
+                ? "/user/home"
+                : authType === "therapist"
+                ? "/therapist/home"
+                : "/admin/home"
+            }
             className="profile-pic-div"
           >
             <img
@@ -35,7 +41,9 @@ const LoginLogout = (): JSX.Element => {
               to={
                 authType === "user"
                   ? "/user/update-profile"
-                  : "/therapist/update-profile"
+                  : authType === "therapist"
+                  ? "/therapist/update-profile"
+                  : "/admin/update-profile"
               }
               className={`btn filled-btn `}
               aria-label="profile settings"

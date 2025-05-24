@@ -5,11 +5,15 @@ import NoMatches from "./components/NoMatches";
 import IndividualMessage from "./components/IndividualMessage";
 
 const Connections = (): JSX.Element => {
-  const { matches, getMatches, loading } = useMatchStore();
+  const { matches, getMatches, loading, resetMatches } = useMatchStore();
 
   useEffect(() => {
     getMatches();
-  }, [getMatches]);
+
+    return () => {
+      resetMatches();
+    };
+  }, [getMatches, resetMatches]);
 
   return (
     <div className="bg-cbg-four rounded-2xl p-10 flex flex-col h-max shadow-xl hover:shadow-2xl flex-2/3">

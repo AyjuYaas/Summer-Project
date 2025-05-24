@@ -35,7 +35,8 @@ import { useAuthStore } from "./store/useAuthStore";
 import { Toaster } from "react-hot-toast";
 import { useMatchStore } from "./store/useMatchStore";
 import { useMessageStore } from "./store/useMessageStore";
-import Test from "./pages/Test";
+import AdminAuth from "./pages/AdminAuth";
+import UpdateAdminProfile from "./pages/UpdateAdminProfile";
 
 export default function App(): React.ReactElement {
   const { checkAuth, authUser, authType, checkingAuth } = useAuthStore();
@@ -113,8 +114,10 @@ export default function App(): React.ReactElement {
         fallback={
           <div className="min-h-screen flex flex-col gap-2 justify-center items-center absolute z-40 w-full">
             <ReactLoading type="spin" color="#303b36" />
-            <h1 className="text-xl text-[
-            #303b36] font-extrabold">
+            <h1
+              className="text-xl text-[
+            #303b36] font-extrabold"
+            >
               Loading...
             </h1>
           </div>
@@ -219,6 +222,48 @@ export default function App(): React.ReactElement {
             }
           />
 
+          {/* Admin Routes */}
+          <Route
+            path="/admin"
+            element={
+              !authUser ? (
+                <Navigate to="/admin/login" />
+              ) : authUser && authType === "admin" ? (
+                <Navigate to="/admin/home" />
+              ) : (
+                <Navigate to="/" />
+              )
+            }
+          />
+          <Route
+            path="/admin/login"
+            element={
+              !authUser ? (
+                <AdminAuth />
+              ) : authUser && authType === "admin" ? (
+                <Navigate to="/admin/home" />
+              ) : (
+                <Navigate to="/" />
+              )
+            }
+          />
+          <Route
+            path="/admin/home"
+            element={
+              authUser && authType === "admin" ? <Admin /> : <Navigate to="/" />
+            }
+          />
+          <Route
+            path="/admin/update-profile"
+            element={
+              authUser && authType === "admin" ? (
+                <UpdateAdminProfile />
+              ) : (
+                <Navigate to="/" />
+              )
+            }
+          />
+
           {/* Chat and Call */}
           <Route
             path="/chat/:id"
@@ -230,8 +275,6 @@ export default function App(): React.ReactElement {
           />
 
           {/* Admin and Test */}
-          <Route path="/admin" element={<Admin />} />
-          <Route path="/test" element={<Test />} />
 
           {/* Catch-all */}
           <Route path="*" element={<NotFound />} />

@@ -6,12 +6,14 @@ import {
   User,
 } from "../types/user.types";
 import {
+  pendingTherapist,
   signupParamsTherapist,
   Therapist,
   updateParamsTherapist,
 } from "../types/therapist.types";
 import { Match, matchedTherapists, Pending, Review } from "./match.types";
 import { Document, Message } from "./chat.types";
+import { Admin } from "./admin.types";
 
 export interface UserStore {
   loading: boolean;
@@ -26,15 +28,22 @@ export interface UserStore {
     params: updateParamsUser | updateParamsTherapist,
     type: string
   ) => void;
+
   getPreference: () => void;
+  resetPreference: () => void;
+
   updateProblem: (preference: PreferenceForm) => Promise<boolean>;
+
   removeTherapist: (id: string) => void;
+
   reviewTherapist: (id: string, rating: number, reviewText: string) => void;
+
   getExistingReview: (id: string) => void;
+  resetExistingReview: () => void;
 }
 
 export interface AuthState {
-  authUser: User | Therapist | null;
+  authUser: User | Therapist | Admin | null;
   authType: string;
   checkingAuth: boolean;
   loading: boolean;
@@ -43,6 +52,7 @@ export interface AuthState {
   loginUser: (credentials: { email: string; password: string }) => void;
   signupTherapist: (params: signupParamsTherapist) => void;
   loginTherapist: (credentials: { email: string; password: string }) => void;
+  loginAdmin: (credentials: { email: string; password: string }) => void;
   logout: () => void;
   checkAuth: () => void;
 }
@@ -65,13 +75,24 @@ export interface MatchState {
   hasMore: boolean;
 
   getMatches: () => void;
+  resetMatches: () => void;
+
   getRecommendations: () => void;
+  resetRecommendations: () => void;
+
   getTherapists: (page: number) => void;
+  resetTherapists: () => void;
+
   selectTherapist: (therapistId: string) => void;
+
   getPendingRequest: () => void;
+  resetPendingRequest: () => void;
+
   respondRequest: (userId: string, response: string) => void;
   deleteRequest: (id: string) => void;
+
   getReviews: (id: string) => void;
+  resetReviews: () => void;
 
   listenToNewRequest: () => void;
   stopListeningToRequest: () => void;
@@ -123,4 +144,27 @@ export interface MessageState {
 
   resetMessages: () => void;
   resetDocuments: () => void;
+}
+
+export interface NavState {
+  therapists: matchedTherapists[];
+  loading: boolean;
+  getTherapists: () => void;
+  resetTherapists: () => void;
+}
+
+export interface AdminState {
+  loadingPendingTherapists: boolean;
+  loading: boolean;
+  pendingTherapists: pendingTherapist[];
+
+  getPendingTherapists: () => void;
+  respondTherapist: (_id: string, status: string) => Promise<boolean>;
+  updateProfile: (updateData: {
+    name: string;
+    email: string;
+    newPassword: string;
+    oldPassword: string;
+  }) => void;
+  resetPendingTherapists: () => void;
 }

@@ -62,7 +62,7 @@ const ProblemBar = ({ preference, toggleProblemBar }: Props): JSX.Element => {
         className="relative w-200 min-h-100 h-auto bg-cbg-two px-8 py-10 rounded-4xl"
         ref={menuRef}
       >
-        <div className="flex flex-col text-xl md:text-3xl">
+        <div className="flex flex-col text-xl sm:text-3xl md:text-5xl">
           <span>Enter</span>
           <span className="font-fancy tracking-wider">
             Your Problem & Preference

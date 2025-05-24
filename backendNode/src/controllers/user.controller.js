@@ -180,8 +180,6 @@ export const getPreference = async (req, res) => {
 export const problem = async (req, res) => {
   const { problemText, preferredGender, preferredLanguage } = req.body;
 
-  console.log(problemText, preferredGender, preferredLanguage);
-
   // ====== If no problem, return false ============
   if (!problemText) {
     return res.status(400).json({

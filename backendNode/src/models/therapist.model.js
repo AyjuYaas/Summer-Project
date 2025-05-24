@@ -80,6 +80,11 @@ const therapistSchema = new mongoose.Schema(
       type: Number,
       default: 0,
     },
+    validationStatus: {
+      type: String,
+      enum: ["pending", "approved", "rejected"],
+      default: "pending",
+    },
   },
   { timestamps: true }
 );

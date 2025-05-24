@@ -20,13 +20,18 @@ const OpenTherapist = ({ therapist, onClose }: Props): JSX.Element => {
     reviews,
     getReviews,
     loadingReview,
+    resetReviews,
   } = useMatchStore();
 
   const masonryRef = useRef<HTMLDivElement | null>(null);
 
   useEffect(() => {
     getReviews(therapist._id);
-  }, [getReviews, therapist._id]);
+
+    return () => {
+      resetReviews();
+    };
+  }, [getReviews, therapist._id, resetReviews]);
 
   useEffect(() => {
     const handlePopState = () => {

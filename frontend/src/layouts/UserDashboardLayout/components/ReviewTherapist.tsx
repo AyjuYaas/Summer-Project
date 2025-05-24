@@ -1,6 +1,5 @@
 import { Rating } from "primereact/rating";
 import { JSX, useEffect, useRef, useState } from "react";
-// import { useUserStore } from "../../../store/useUserStore";
 import { RatingPassThroughOptions } from "primereact/rating";
 import { useUserStore } from "../../../store/useUserStore";
 
@@ -25,7 +24,8 @@ const ReviewTherapist = ({
   id,
   name,
 }: Props): JSX.Element => {
-  const { existingReview, getExistingReview } = useUserStore();
+  const { existingReview, getExistingReview, resetExistingReview } =
+    useUserStore();
 
   const [formData, setFormData] = useState<FormData>({
     rating: existingReview?.rating || 0,
@@ -34,7 +34,11 @@ const ReviewTherapist = ({
 
   useEffect(() => {
     getExistingReview(id);
-  }, [getExistingReview, id]);
+
+    return () => {
+      resetExistingReview();
+    };
+  }, [getExistingReview, id, resetExistingReview]);
 
   // Update formData when existingReview changes
   useEffect(() => {

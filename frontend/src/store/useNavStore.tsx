@@ -1,23 +1,9 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import { create } from "zustand";
 import { axiosInstance } from "../lib/Axios";
+import { NavState } from "../types/store.types";
 
-interface Therapist {
-  name: string;
-  image: string;
-  experience: number;
-  rating: number;
-  specialization: string[];
-  reviewCount: number;
-}
-
-interface StoreInterface {
-  therapists: Therapist[];
-  loading: boolean;
-  getTherapists: () => void;
-}
-
-export const useNavStore = create<StoreInterface>((set) => ({
+export const useNavStore = create<NavState>((set) => ({
   therapists: [],
   loading: false,
   getTherapists: async () => {
@@ -31,4 +17,6 @@ export const useNavStore = create<StoreInterface>((set) => ({
       set({ loading: false });
     }
   },
+
+  resetTherapists: () => set({ therapists: [] }),
 }));

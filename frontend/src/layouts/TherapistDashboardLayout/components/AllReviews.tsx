@@ -11,13 +11,17 @@ interface Props {
 }
 
 const AllReviews = ({ id, onClose }: Props): JSX.Element => {
-  const { reviews, getReviews, loadingReview } = useMatchStore();
+  const { reviews, getReviews, loadingReview, resetReviews } = useMatchStore();
 
   const masonryRef = useRef<HTMLDivElement | null>(null);
 
   useEffect(() => {
     getReviews(id);
-  }, [getReviews, id]);
+
+    return () => {
+      resetReviews();
+    };
+  }, [getReviews, id, resetReviews]);
 
   const menuRef = useRef<HTMLDivElement | null>(null);
 
@@ -39,15 +43,15 @@ const AllReviews = ({ id, onClose }: Props): JSX.Element => {
     reviews.length < 4
       ? {
           default: reviews.length,
-          1500: reviews.length,
-          900: 2,
-          600: 1,
+          1300: reviews.length,
+          1160: 2,
+          800: 1,
         }
       : {
           default: 4,
-          1500: 3,
-          900: 2,
-          600: 1,
+          1300: 3,
+          1160: 2,
+          800: 1,
         };
 
   return (

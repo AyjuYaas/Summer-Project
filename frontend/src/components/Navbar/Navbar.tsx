@@ -55,7 +55,9 @@ const Navbar = memo(function Navbar({
             ? "/"
             : authType === "user"
             ? "/user/home"
-            : "/therapist/home"
+            : authType === "therapist"
+            ? "/therapist/home"
+            : "/admin/home"
         }
         className="nav-logo"
         onClick={openNavbar ? toggleNavbar : () => setOpenNavbar(false)}

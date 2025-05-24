@@ -12,13 +12,25 @@ interface DeleteRequest {
 }
 
 const Connections = (): JSX.Element => {
-  const { matches, getMatches, loading, getPendingRequest, request } =
-    useMatchStore();
+  const {
+    matches,
+    getMatches,
+    resetMatches,
+    loading,
+    getPendingRequest,
+    request,
+    resetPendingRequest,
+  } = useMatchStore();
 
   useEffect(() => {
     getMatches();
     getPendingRequest();
-  }, [getMatches, getPendingRequest]);
+
+    return () => {
+      resetMatches();
+      resetPendingRequest();
+    };
+  }, [getMatches, getPendingRequest, resetMatches, resetPendingRequest]);
 
   const [deleteRequest, setDeleteRequest] = useState<DeleteRequest | null>(
     null
@@ -47,7 +59,7 @@ const Connections = (): JSX.Element => {
                 request.map((req, index: number) => (
                   <div
                     key={index}
-                    className="flex justify-between mb-5 rounded-xl relative"
+                    className="flex justify-between mb-5 rounded-xl relative border-2 border-gray-300 bg-white shadow-md hover:shadow-lg transition duration-300 ease-in-out"
                   >
                     <div className="flex gap-3 items-center cursor-not-allowed opacity-70 py-2 pl-2 w-full bg-gray-300 text-gray-500">
                       <img
@@ -61,7 +73,7 @@ const Connections = (): JSX.Element => {
                     </div>
                     <div>
                       <button
-                        className="rounded-r-2xl bg-red-900 right-0 top-0 my-auto h-full p-2 hover:bg-red-800 cursor-pointer text-white-text"
+                        className="rounded-r-xl bg-red-700 right-0 top-0 my-auto h-full p-2 hover:bg-red-800 cursor-pointer text-white-text"
                         onClick={() =>
                           setDeleteRequest({
                             id: req._id,

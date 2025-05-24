@@ -49,6 +49,9 @@ export const useUserStore = create<UserStore>((set) => ({
       set({ loadingPreference: false });
     }
   },
+  resetPreference: () => {
+    set({ preference: null });
+  },
 
   updateProblem: async (preference) => {
     try {
@@ -145,4 +148,5 @@ export const useUserStore = create<UserStore>((set) => ({
       }
     }
   },
+  resetExistingReview: () => set({ existingReview: null }),
 }));

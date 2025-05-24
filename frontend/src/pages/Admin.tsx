@@ -1,9 +1,6 @@
 import { JSX } from "react";
+import AdminDashboardLayout from "../layouts/Admin/AdminDashboardLayout";
 
 export default function Admin(): JSX.Element {
-  return (
-    <div>
-      <h1>This is Admin Panel</h1>
-    </div>
-  );
+  return <AdminDashboardLayout />;
 }

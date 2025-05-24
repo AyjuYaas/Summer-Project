@@ -6,6 +6,10 @@ import {
   therapistSignup,
 } from "../controllers/therapistAuth.controller.js";
 import { protectRoute } from "../middleware/auth.middle.js";
+import {
+  adminLogin,
+  adminSignup,
+} from "../controllers/adminAuth.controller.js";
 
 const router = express.Router();
 
@@ -14,6 +18,9 @@ router.post("/user/login", userLogin);
 
 router.post("/therapist/signup", therapistSignup);
 router.post("/therapist/login", therapistLogin);
+
+router.post("/admin/signup", adminSignup);
+router.post("/admin/login", adminLogin);
 
 // When the user checks if they are authenticated or not -
 // The middleware protectRoute is called -

@@ -99,6 +99,7 @@ export const therapistSignup = async (req, res) => {
         image: therapist.image,
         rating: therapist.rating,
         reviewCount: therapist.reviewCount,
+        validationStatus: therapist.validationStatus,
       },
     });
   } catch (err) {
@@ -156,6 +157,7 @@ export const therapistLogin = async (req, res) => {
         image: therapist.image,
         rating: therapist.rating,
         reviewCount: therapist.reviewCount,
+        validationStatus: therapist.validationStatus,
       },
     });
   } catch (err) {

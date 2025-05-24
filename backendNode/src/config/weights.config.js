@@ -30,4 +30,5 @@ export const scoringWeights = {
   genderMatch: 1,
   experiencePerYear: 0.5,
   ratingMultiplier: 1,
+  predictedProblemMatch: 2,
 };

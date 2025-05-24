@@ -8,66 +8,73 @@ import {
   qualificationWeights,
   scoringWeights,
 } from "../config/weights.config.js";
+import { buildTherapistAggregation } from "../utils/therapistAggregator.js";
 
 export async function getTherapist(req, res) {
   try {
-    const { page } = req.query; // Default to page 1 if no page is provided
-    const limit = 3; // Number of therapists per page
-    const skip = (page - 1) * limit; // Calculate the number of documents to skip
+    const { page = 1, specialization, gender, language } = req.query;
+    const limit = 10;
+    const skip = (page - 1) * limit;
 
-    if (req.role === "user") {
-      const requestedTherapist = await Match.find({
-        user: req.user._id,
-        status: { $in: ["Pending", "Accept"] },
-      }).select("therapist");
-
-      // Get the Requested Therapist Ids
-      const matchedTherapistIds = requestedTherapist.map(
-        (match) => match.therapist
-      );
-
-      // Get the therapist with pagination and sorting by experience and rating
-      const unmatchedTherapists = await Therapist.find({
-        $and: [{ _id: { $nin: matchedTherapistIds } }, { availability: true }], // Those that are not selected by the user and those who are available
-      })
-        .select(
-          "_id name image specialization experience qualification gender rating reviewCount language totalMatches"
-        )
-        .skip(skip) // Skip the documents based on the page number
-        .limit(limit) // Limit the number of documents per page
-        .sort({ experience: -1, rating: -1 }); // Sort by experience (descending) and by rating (descending)
-
-      // Sort reviews by rating (highest first)
-      unmatchedTherapists.forEach((therapist) => {
-        if (therapist.reviews) {
-          therapist.reviews.sort((a, b) => b.rating - a.rating); // Sort reviews by rating in descending order
-        }
-      });
-
-      // Get the total count of therapists matching the filter
-      const totalTherapists = await Therapist.countDocuments({
-        $and: [{ _id: { $nin: matchedTherapistIds } }, { availability: true }],
-      });
-
-      // Calculate the total number of pages
-      const totalPages = Math.ceil(totalTherapists / limit);
-
-      // Determine if there are more therapists for the next page
-      const hasMore = page < totalPages;
-
-      return res.status(200).json({
-        success: true,
-        therapists: unmatchedTherapists,
-        hasMore,
-      });
-    } else {
+    if (req.role !== "user") {
       return res.status(400).json({
         success: false,
         message: "Not Authorized",
       });
     }
+
+    // Get already requested therapist IDs
+    const requestedTherapist = await Match.find({
+      user: req.user._id,
+      status: { $in: ["Pending", "Accept"] },
+    }).select("therapist");
+
+    const matchedTherapistIds = requestedTherapist.map(
+      (match) => match.therapist
+    );
+
+    // Base filters
+    const filters = {
+      _id: { $nin: matchedTherapistIds },
+      availability: true,
+      validationStatus: "approved",
+    };
+
+    // Apply specialization filter (supports comma-separated values)
+    if (specialization) {
+      const specializationArray = specialization.split(",");
+      filters.specialization = { $in: specializationArray };
+    }
+
+    // Apply gender filter
+    if (gender) {
+      filters.gender = gender;
+    }
+
+    // Apply language filter (single value for now)
+    if (language) {
+      filters.languages = language;
+    }
+
+    const therapists = await Therapist.find(filters)
+      .select(
+        "_id name image specialization experience qualification gender rating reviewCount languages totalMatches"
+      )
+      .skip(skip)
+      .limit(limit)
+      .sort({ experience: -1, rating: -1 });
+
+    const totalTherapists = await Therapist.countDocuments(filters);
+    const totalPages = Math.ceil(totalTherapists / limit);
+    const hasMore = page < totalPages;
+
+    return res.status(200).json({
+      success: true,
+      therapists,
+      hasMore,
+    });
   } catch (error) {
-    console.log(`Error in Get Therapist: ${error}`);
+    console.error("Error in Get Therapist:", error);
     res.status(500).json({
       success: false,
       message: "Internal Server Error",
@@ -81,56 +88,48 @@ export const getRecommendation = async (req, res) => {
     const preference = await Preference.findOne({ user: userId });
 
     if (!preference) {
-      return res.status(404).json({
-        success: false,
-        message: "Preference not found.",
-      });
+      return res
+        .status(404)
+        .json({ success: false, message: "Preference not found." });
     }
+
+    const requestedTherapist = await Match.find({
+      user: userId,
+      status: { $in: ["Pending", "Accept"] },
+    }).select("therapist");
+
+    const matchedTherapistIds = requestedTherapist.map(
+      (match) => match.therapist
+    );
 
     const { preferredGender, preferredLanguage, predictedProblems } =
       preference;
-
-    // Extract only the problem names for MongoDB query
     const predictedProblemList = predictedProblems.map(
       ({ problem }) => problem
     );
 
-    const allTherapists = await Therapist.find({
-      availability: true,
-      specialization: { $in: predictedProblemList },
+    // Aggregation query
+    const aggregationPipeline = buildTherapistAggregation({
+      matchedTherapistIds,
+      preferredLanguage,
+      preferredGender,
+      predictedProblemList,
+      scoringWeights,
     });
 
-    const recommendations = allTherapists.map((therapist) => {
-      let score = 0;
+    const therapistResults = await Therapist.aggregate(aggregationPipeline);
 
-      // Language match
-      if (therapist.languages.includes(preferredLanguage)) {
-        score += scoringWeights.languageMatch;
-      }
+    // Optionally: add qualification weight in Node.js
+    const recommendations = therapistResults.map((therapist) => {
+      let score = therapist.totalScore;
 
-      // Gender match
-      if (preferredGender !== "Any" && therapist.gender === preferredGender) {
-        score += scoringWeights.genderMatch;
-      }
-
-      // Rating boost
-      score += therapist.rating * scoringWeights.ratingMultiplier;
-
-      // Qualification boost
-      therapist.qualification.forEach((q) => {
+      therapist.qualification?.forEach((q) => {
         score += qualificationWeights[q] || 0;
       });
-
-      // Experience bonus
-      const experienceBoost =
-        Math.log1p(therapist.experience) * scoringWeights.experiencePerYear;
-
-      score += experienceBoost;
 
       return { therapist, score };
     });
 
-    // Sort and take top 5
     const sortedRecommendations = recommendations
       .sort((a, b) => b.score - a.score)
       .slice(0, 5)
@@ -146,13 +145,10 @@ export const getRecommendation = async (req, res) => {
         reviewCount: therapist.reviewCount,
         totalMatches: therapist.totalMatches,
         languages: therapist.languages,
-        score: parseFloat(score.toFixed(2)), // Optional
+        score: parseFloat(score.toFixed(2)),
       }));
 
-    res.status(200).json({
-      success: true,
-      therapists: sortedRecommendations,
-    });
+    res.status(200).json({ success: true, therapists: sortedRecommendations });
   } catch (error) {
     console.error("Error in recommendation system:", error);
     res.status(500).json({ success: false, message: "Internal Server Error" });
@@ -259,7 +255,7 @@ export async function getPendingRequest(req, res) {
       $or: [{ user: req.user._id }, { therapist: req.user._id }],
       status: "Pending",
     })
-      .populate("user", "_id name gender image problemText")
+      .populate("user", "_id name gender image")
       .populate("therapist", "_id, name image");
 
     res.status(200).json({
@@ -270,6 +266,35 @@ export async function getPendingRequest(req, res) {
     res.status(500).json({
       success: false,
       message: "Internal Server Error",
+    });
+  }
+}
+
+export async function getUserPreference(req, res) {
+  try {
+    const { userId } = req.params;
+    const preference = await Preference.findOne({ user: userId });
+    if (!preference) {
+      return res.status(404).json({
+        success: false,
+        message: "Preference not found.",
+      });
+    }
+
+    res.status(200).json({
+      success: true,
+      preference: {
+        preferredGender: preference.preferredGender,
+        preferredLanguage: preference.preferredLanguage,
+        problemText: preference.problemText,
+        predictedProblems: preference.predictedProblems,
+      },
+    });
+  } catch (error) {
+    console.error("Error fetching user preference:", error);
+    res.status(500).json({
+      success: false,
+      message: "Server error while fetching user preference.",
     });
   }
 }
@@ -333,5 +358,11 @@ export async function getReviews(req, res) {
       success: true,
       reviews: reviews,
     });
-  } catch (error) {}
+  } catch (error) {
+    console.log("Error in get Reviews in match controller: ", error);
+    res.status(500).json({
+      success: false,
+      message: "Internal Server Error",
+    });
+  }
 }

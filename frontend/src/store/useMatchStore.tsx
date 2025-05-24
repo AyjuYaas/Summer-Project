@@ -7,6 +7,8 @@ import { MatchState } from "../types/store.types";
 
 export const useMatchStore = create<MatchState>((set) => ({
   matches: [],
+  recommendations: [],
+  therapists: [],
   request: [],
   reviews: [],
 
@@ -17,9 +19,6 @@ export const useMatchStore = create<MatchState>((set) => ({
   loadingPending: false,
   loadingRemoveRequest: false,
   loadingReview: false,
-
-  recommendations: [],
-  therapists: [],
   hasMore: true,
 
   getMatches: async () => {
@@ -46,6 +45,7 @@ export const useMatchStore = create<MatchState>((set) => ({
       set({ loading: false });
     }
   },
+  resetMatches: () => set({ matches: [] }),
 
   getRecommendations: async () => {
     try {
@@ -67,6 +67,7 @@ export const useMatchStore = create<MatchState>((set) => ({
       set({ loadingRecommendations: false });
     }
   },
+  resetRecommendations: () => set({ recommendations: [] }),
 
   getTherapists: async (page) => {
     try {
@@ -97,6 +98,7 @@ export const useMatchStore = create<MatchState>((set) => ({
       set({ loadingTherapists: false });
     }
   },
+  resetTherapists: () => set({ therapists: [], hasMore: true }),
 
   selectTherapist: async (therapistId) => {
     try {
@@ -143,6 +145,7 @@ export const useMatchStore = create<MatchState>((set) => ({
       set({ loading: false });
     }
   },
+  resetPendingRequest: () => set({ request: [] }),
 
   respondRequest: async (requestId, response) => {
     try {
@@ -211,6 +214,7 @@ export const useMatchStore = create<MatchState>((set) => ({
       set({ loadingReview: false });
     }
   },
+  resetReviews: () => set({ reviews: [] }),
 
   // Listen to new Request by Therapist
   listenToNewRequest: () => {

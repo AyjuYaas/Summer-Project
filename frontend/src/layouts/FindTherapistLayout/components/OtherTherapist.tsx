@@ -31,6 +31,13 @@ const OtherTherapist = (): JSX.Element => {
 
   useEffect(() => {
     if (selectedTherapist) {
+      // Push a new history state
+      window.history.pushState({ therapistOpen: true }, "", "");
+    }
+  }, [selectedTherapist]);
+
+  useEffect(() => {
+    if (selectedTherapist) {
       document.body.style.overflowY = "hidden";
     } else {
       document.body.style.overflowY = "visible";

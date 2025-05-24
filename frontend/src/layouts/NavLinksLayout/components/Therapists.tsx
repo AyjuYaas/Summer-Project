@@ -4,11 +4,15 @@ import { useNavStore } from "../../../store/useNavStore";
 import ReactLoading from "react-loading";
 
 const Therapists = (): JSX.Element => {
-  const { loading, therapists, getTherapists } = useNavStore();
+  const { loading, therapists, getTherapists, resetTherapists } = useNavStore();
 
   useEffect(() => {
     getTherapists();
-  }, [getTherapists]);
+
+    return () => {
+      resetTherapists();
+    };
+  }, [getTherapists, resetTherapists]);
 
   return (
     <div className="relative bg-cbg-three rounded-[40px] sm:rounded-[80px] text-main-text shadow-2xl gap-2 min-w-70 pr-10 md:pr-15 max-w-300">

@@ -12,6 +12,7 @@ import userRoutes from "./routes/user.route.js"; // done
 import therapistRoutes from "./routes/therapist.route.js";
 import matchRoutes from "./routes/match.route.js";
 import messageRoutes from "./routes/message.route.js";
+import adminRoutes from "./routes/admin.route.js";
 import { allTherapist } from "./routes/allTherapist.route.js";
 
 // lib imports
@@ -39,6 +40,7 @@ app.use("/api/users", userRoutes);
 app.use("/api/therapists", therapistRoutes);
 app.use("/api/matches", matchRoutes);
 app.use("/api/messages", messageRoutes);
+app.use("/api/admin", adminRoutes);
 app.get("/api/all-therapist", allTherapist);
 
 const PORT = process.env.PORT;

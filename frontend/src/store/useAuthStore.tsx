@@ -116,6 +116,30 @@ export const useAuthStore = create<AuthState>((set) => ({
     }
   },
 
+  loginAdmin: async (credentials) => {
+    try {
+      set({ loading: true });
+      const response = await axiosInstance.post(
+        "auth/admin/login",
+        credentials
+      );
+      set({ authUser: response.data.user, authType: "admin" });
+      toast.success("Logged in successfully");
+    } catch (error: any) {
+      if (error.response) {
+        const errorMessage =
+          error.response.data.message || "Something went wrong.";
+        toast.error(errorMessage);
+      } else if (error.request) {
+        toast.error("Network error. Please check your internet connection.");
+      } else {
+        toast.error("Something went wrong. Please try again.");
+      }
+    } finally {
+      set({ loading: false });
+    }
+  },
+
   logout: async () => {
     try {
       const response = await axiosInstance.post("auth/logout");

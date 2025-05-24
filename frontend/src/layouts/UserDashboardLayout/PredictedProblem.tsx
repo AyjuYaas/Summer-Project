@@ -7,7 +7,8 @@ import { IoMdAlert } from "react-icons/io";
 
 const PredictedProblem = (): JSX.Element => {
   const [isOpen, setIsOpen] = useState<boolean>(false);
-  const { preference, getPreference, loadingPreference } = useUserStore();
+  const { preference, getPreference, loadingPreference, resetPreference } =
+    useUserStore();
 
   const toggleProblemBar = () => {
     if (!isOpen) {
@@ -20,7 +21,11 @@ const PredictedProblem = (): JSX.Element => {
 
   useEffect(() => {
     getPreference();
-  }, [getPreference]);
+
+    return () => {
+      resetPreference();
+    };
+  }, [getPreference, resetPreference]);
 
   return (
     <div className="bg-cbg-one rounded-2xl p-10 flex flex-col gap-5 flex-2/3 h-max shadow-xl hover:shadow-2xl">

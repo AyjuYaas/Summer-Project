@@ -11,6 +11,7 @@ const PendingRequests = (): JSX.Element => {
     request,
     getPendingRequest,
     loadingPending: loading,
+    resetPendingRequest,
   } = useMatchStore();
 
   const [selectedUser, setSelectedUser] = useState<RequestingUser | null>(null);
@@ -21,7 +22,11 @@ const PendingRequests = (): JSX.Element => {
 
   useEffect(() => {
     getPendingRequest();
-  }, [getPendingRequest]);
+
+    return () => {
+      resetPendingRequest();
+    };
+  }, [getPendingRequest, resetPendingRequest]);
 
   return (
     <div className="bg-cbg-three rounded-2xl p-10 flex flex-col h-max shadow-xl hover:shadow-2xl flex-1/3">

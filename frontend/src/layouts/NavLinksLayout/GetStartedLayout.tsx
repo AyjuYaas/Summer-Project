@@ -61,7 +61,7 @@ const GetStartedLayout = (): JSX.Element => {
         <FaArrowDown className="size-10 text-highlight" />
 
         {/* Step 2 */}
-        <div className={`${componentDiv} bg-cbg-t`}>
+        <div className={`${componentDiv} bg-cbg-two`}>
           <div className={`${nonImage}`}>
             <div className={`${headerDiv}`}>
               <span>Step 2:</span>
@@ -100,7 +100,7 @@ const GetStartedLayout = (): JSX.Element => {
         <FaArrowDown className="size-10 text-highlight" />
 
         {/* Step 4 */}
-        <div className={`${componentDiv} bg-cbg-one`}>
+        <div className={`${componentDiv} bg-cbg-two`}>
           <div className={`${nonImage}`}>
             <div className={`${headerDiv}`}>
               <span>Step 4:</span>
