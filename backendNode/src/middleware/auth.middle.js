@@ -2,6 +2,7 @@ import jwt from "jsonwebtoken";
 import User from "../models/user.model.js";
 import Therapist from "../models/therapist.model.js";
 import Admin from "../models/admin.model.js";
+import therapistRatingandMatch from "../utils/therapistRatingandMatch.js";
 
 export const protectRoute = async (req, res, next) => {
   try {
@@ -46,12 +47,13 @@ export const protectRoute = async (req, res, next) => {
     } else if (decode.role === "therapist") {
       currentUser = await Therapist.findById(decode.id);
       // Send the user to the requesting function
+      const stats = await therapistRatingandMatch(decode.id);
       req.user = {
         _id: currentUser._id,
         name: currentUser.name,
         image: currentUser.image,
-        rating: currentUser.rating,
-        reviewCount: currentUser.reviewCount,
+        rating: stats.rating,
+        reviewCount: stats.reviewCount,
         validationStatus: currentUser.validationStatus,
       };
       req.role = decode.role;
@@ -169,13 +171,14 @@ export const isTherapist = async (req, res, next) => {
     // Finally, if neither, then token is valid, thus find the user
     if (decode.role === "therapist") {
       currentUser = await Therapist.findById(decode.id);
+      const stats = await therapistRatingandMatch(decode.id);
       // Send the user to the requesting function
       req.user = {
         _id: currentUser._id,
         name: currentUser.name,
         image: currentUser.image,
-        rating: currentUser.rating,
-        reviewCount: currentUser.reviewCount,
+        rating: stats.rating,
+        reviewCount: stats.reviewCount,
       };
       req.role = decode.role;
     } else {

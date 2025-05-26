@@ -6,23 +6,26 @@ import { JSX, useEffect, useRef, useState } from "react";
 import { useMessageStore } from "../../../store/useMessageStore";
 import { useParams } from "react-router-dom";
 import PreviewImage from "./PreviewImage";
+import { useInfiniteScroll } from "./useInfiniteScroll"; // adjust path if needed
 
 const Messages = (): JSX.Element => {
   const { getMessages, messages, loading, hasMore, sent } = useMessageStore();
   const [loadMore, setLoadMore] = useState<number>(1);
   const { id } = useParams<{ id?: string }>();
   const messagesContainerRef = useRef<HTMLDivElement | null>(null);
+  const topSentinelRef = useRef<HTMLDivElement | null>(null);
+  const hasInitialScrolled = useRef(false);
   const [openImage, setOpenImage] = useState<string>("");
   const [showScrollButton, setShowScrollButton] = useState<boolean>(false);
 
-  // Fetch messages on mount and when loadMore changes
+  // Load messages on mount and when loadMore changes
   useEffect(() => {
     if (id && hasMore) {
       getMessages(id, useMessageStore.getState().cursor);
     }
   }, [getMessages, hasMore, id, loadMore]);
 
-  // Smooth scroll to the bottom
+  // Scroll to bottom (initial or when sent)
   const scrollToBottom = (smooth: boolean = true) => {
     if (messagesContainerRef.current) {
       messagesContainerRef.current.scrollTo({
@@ -32,50 +35,64 @@ const Messages = (): JSX.Element => {
     }
   };
 
-  // Scroll to bottom on initial load and message sent
+  // On first load only
   useEffect(() => {
-    if (loadMore === 1) scrollToBottom(false);
-    if (!showScrollButton) scrollToBottom(true);
-  }, [loadMore, messages, showScrollButton]);
+    if (!hasInitialScrolled.current && messages.length > 0) {
+      scrollToBottom(false);
+      hasInitialScrolled.current = true;
+    }
+  }, [messages]);
 
+  // Auto-scroll to bottom only if already near bottom
   useEffect(() => {
-    scrollToBottom(true); // Smooth scroll on message sent
+    if (!showScrollButton) {
+      scrollToBottom(true);
+    }
+  }, [messages, showScrollButton]);
+
+  // Scroll on new sent message
+  useEffect(() => {
+    scrollToBottom(true);
   }, [sent]);
 
-  // Handle scroll events
+  // Scroll listener to toggle scroll-to-bottom button
   const handleScroll = () => {
     if (messagesContainerRef.current) {
       const container = messagesContainerRef.current;
-
-      // Show scroll button when not at the bottom
       setShowScrollButton(
         container.scrollHeight - container.scrollTop >
           container.clientHeight + 100
       );
-
-      // Load more messages when scrolled to the top
-      if (container.scrollTop === 0 && hasMore && !loading) {
-        const previousScrollHeight = container.scrollHeight;
-        setLoadMore((prev) => prev + 1);
-
-        // Preserve scroll position after fetching
-        const observer = new MutationObserver(() => {
-          const newScrollHeight = container.scrollHeight;
-          container.scrollTop = newScrollHeight - previousScrollHeight;
-          observer.disconnect();
-        });
-        observer.observe(container, { childList: true, subtree: true });
-      }
     }
   };
 
+  // Infinite scroll for older messages
+  useInfiniteScroll(topSentinelRef, () => {
+    if (hasMore && !loading) {
+      const container = messagesContainerRef.current;
+      const previousScrollHeight = container?.scrollHeight || 0;
+      setLoadMore((prev) => prev + 1);
+
+      // Maintain scroll position after new data loads
+      const observer = new MutationObserver(() => {
+        if (container) {
+          const newScrollHeight = container.scrollHeight;
+          container.scrollTop = newScrollHeight - previousScrollHeight;
+        }
+        observer.disconnect();
+      });
+      if (container) {
+        observer.observe(container, { childList: true, subtree: true });
+      }
+    }
+  });
+
   return (
     <div
-      className="h-full min-h-40 flex flex-col overflow-y-auto scrollbar pb-2"
+      className="h-full min-h-40 flex flex-col overflow-y-auto scrollbar pb-2 relative"
       ref={messagesContainerRef}
       onScroll={handleScroll}
     >
-      {/* Loading Spinner on Initial Load */}
       {loading && loadMore === 1 ? (
         <div className="self-center my-auto flex flex-col gap-2 items-center justify-center">
           <ReactLoading type="spin" color="#303b36" />
@@ -87,8 +104,10 @@ const Messages = (): JSX.Element => {
           <span>No messages yet. Start a conversation!</span>
         </div>
       ) : (
-        <div className="flex flex-col gap-2">
-          {/* Message List */}
+        <div className="flex flex-col gap-2 relative">
+          {/* Top Sentinel for infinite scroll */}
+          <div ref={topSentinelRef}></div>
+
           {messages.map((message, index: number) => (
             <div
               key={index}
@@ -96,7 +115,6 @@ const Messages = (): JSX.Element => {
                 message.receiver === id ? "items-end" : "items-start"
               }`}
             >
-              {/* Image Message */}
               {message.image && (
                 <img
                   src={message.image}
@@ -107,8 +125,6 @@ const Messages = (): JSX.Element => {
                   onClick={() => setOpenImage(message.image || "")}
                 />
               )}
-
-              {/* Text Message */}
               {message.text && (
                 <span
                   className={`p-3 rounded-xl w-max max-w-50 sm:max-w-80 md:max-w-100 lg:max-w-120 ${
@@ -120,19 +136,17 @@ const Messages = (): JSX.Element => {
                   {message.text}
                 </span>
               )}
-
-              {/* Message Timestamp */}
               <span className="text-[0.7rem] px-1">
                 {format(new Date(message.createdAt), "MMM d, yyyy h:mm a")}
               </span>
             </div>
           ))}
-          {/* Scroll to Bottom Button */}
 
+          {/* Scroll to Bottom Button */}
           {showScrollButton && (
             <button
               onClick={() => scrollToBottom(true)}
-              className="absolute bottom-15 left-1/2 transform -translate-1/2 p-2 bg-[#2f4858] text-white rounded-full shadow-lg hover:bg-[#1c2f3b] transition duration-300 z-10 cursor-pointer"
+              className="absolute bottom-15 left-1/2 transform -translate-x-1/2 p-2 bg-[#2f4858] text-white rounded-full shadow-lg hover:bg-[#1c2f3b] transition duration-300 z-10 cursor-pointer"
             >
               <FaAngleDoubleDown size={19} />
             </button>
@@ -140,7 +154,6 @@ const Messages = (): JSX.Element => {
         </div>
       )}
 
-      {/* Image Preview Modal */}
       {openImage && (
         <PreviewImage src={openImage} onClose={() => setOpenImage("")} />
       )}

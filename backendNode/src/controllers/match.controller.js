@@ -9,6 +9,7 @@ import {
   scoringWeights,
 } from "../config/weights.config.js";
 import { buildTherapistAggregation } from "../utils/therapistAggregator.js";
+import therapistRatingandMatch from "../utils/therapistRatingandMatch.js";
 
 export async function getTherapist(req, res) {
   try {
@@ -58,11 +59,33 @@ export async function getTherapist(req, res) {
 
     const therapists = await Therapist.find(filters)
       .select(
-        "_id name image specialization experience qualification gender rating reviewCount languages totalMatches"
+        "_id name image specialization experience qualification gender languages"
       )
       .skip(skip)
       .limit(limit)
-      .sort({ experience: -1, rating: -1 });
+      .sort({ experience: -1 })
+      .lean();
+
+    const therapistsWithStats = await Promise.all(
+      therapists.map(async (therapist) => {
+        const stats = await therapistRatingandMatch(therapist._id); // Reuse your utility function
+        return {
+          _id: therapist._id,
+          name: therapist.name,
+          image: therapist.image,
+          specialization: therapist.specialization,
+          experience: therapist.experience,
+          qualification: therapist.qualification,
+          gender: therapist.gender,
+          languages: therapist.languages,
+          rating: stats.rating,
+          reviewCount: stats.reviewCount,
+          totalMatches: stats.totalMatches,
+        };
+      })
+    );
+
+    therapistsWithStats.sort((a, b) => b.rating - a.rating);
 
     const totalTherapists = await Therapist.countDocuments(filters);
     const totalPages = Math.ceil(totalTherapists / limit);
@@ -70,7 +93,7 @@ export async function getTherapist(req, res) {
 
     return res.status(200).json({
       success: true,
-      therapists,
+      therapists: therapistsWithStats,
       hasMore,
     });
   } catch (error) {
@@ -85,73 +108,64 @@ export async function getTherapist(req, res) {
 export const getRecommendation = async (req, res) => {
   try {
     const userId = req.user._id;
-    const preference = await Preference.findOne({ user: userId });
 
+    const preference = await Preference.findOne({ user: userId });
     if (!preference) {
-      return res
-        .status(404)
-        .json({ success: false, message: "Preference not found." });
+      return res.status(404).json({
+        success: false,
+        message: "Preference not found.",
+      });
     }
 
-    const requestedTherapist = await Match.find({
+    const requestedTherapists = await Match.find({
       user: userId,
       status: { $in: ["Pending", "Accept"] },
     }).select("therapist");
 
-    const matchedTherapistIds = requestedTherapist.map(
+    const matchedTherapistIds = requestedTherapists.map(
       (match) => match.therapist
     );
 
     const { preferredGender, preferredLanguage, predictedProblems } =
       preference;
-    const predictedProblemList = predictedProblems.map(
-      ({ problem }) => problem
-    );
+    const predictedProblemList = predictedProblems.map((p) => p.problem);
 
-    // Aggregation query
     const aggregationPipeline = buildTherapistAggregation({
       matchedTherapistIds,
       preferredLanguage,
       preferredGender,
       predictedProblemList,
       scoringWeights,
+      qualificationWeights,
     });
 
-    const therapistResults = await Therapist.aggregate(aggregationPipeline);
+    const therapists = await Therapist.aggregate(aggregationPipeline);
 
-    // Optionally: add qualification weight in Node.js
-    const recommendations = therapistResults.map((therapist) => {
-      let score = therapist.totalScore;
+    const formatted = therapists.map((t) => ({
+      _id: t._id,
+      name: t.name,
+      image: t.image,
+      specialization: t.specialization,
+      experience: t.experience,
+      qualification: t.qualification,
+      gender: t.gender,
+      languages: t.languages,
+      score: parseFloat(t.totalScore.toFixed(2)),
+      rating: parseFloat((t.avgRating || 0).toFixed(1)),
+      totalMatches: t.totalMatches,
+      reviewCount: t.ratingCount || 0,
+    }));
 
-      therapist.qualification?.forEach((q) => {
-        score += qualificationWeights[q] || 0;
-      });
-
-      return { therapist, score };
+    return res.status(200).json({
+      success: true,
+      therapists: formatted,
     });
-
-    const sortedRecommendations = recommendations
-      .sort((a, b) => b.score - a.score)
-      .slice(0, 5)
-      .map(({ therapist, score }) => ({
-        _id: therapist._id,
-        name: therapist.name,
-        image: therapist.image,
-        specialization: therapist.specialization,
-        experience: therapist.experience,
-        qualification: therapist.qualification,
-        gender: therapist.gender,
-        rating: therapist.rating,
-        reviewCount: therapist.reviewCount,
-        totalMatches: therapist.totalMatches,
-        languages: therapist.languages,
-        score: parseFloat(score.toFixed(2)),
-      }));
-
-    res.status(200).json({ success: true, therapists: sortedRecommendations });
   } catch (error) {
     console.error("Error in recommendation system:", error);
-    res.status(500).json({ success: false, message: "Internal Server Error" });
+    res.status(500).json({
+      success: false,
+      message: "Internal server error",
+    });
   }
 };
 

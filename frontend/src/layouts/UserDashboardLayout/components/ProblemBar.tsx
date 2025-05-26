@@ -59,10 +59,10 @@ const ProblemBar = ({ preference, toggleProblemBar }: Props): JSX.Element => {
   return (
     <div className="fixed z-100 top-0 bottom-0 left-0 right-0 h-screen w-full backdrop-blur-xs flex justify-center items-center">
       <div
-        className="relative w-200 min-h-100 h-auto bg-cbg-two px-8 py-10 rounded-4xl"
+        className="relative w-200 min-h-screen md:min-h-100 h-auto bg-cbg-two px-8 py-10 rounded-4xl"
         ref={menuRef}
       >
-        <div className="flex flex-col text-xl sm:text-3xl md:text-5xl">
+        <div className="flex flex-col text-xl md:text-3xl md:text-5xl">
           <span>Enter</span>
           <span className="font-fancy tracking-wider">
             Your Problem & Preference
@@ -70,12 +70,14 @@ const ProblemBar = ({ preference, toggleProblemBar }: Props): JSX.Element => {
         </div>
         <form onSubmit={handleSubmit} className="flex flex-col gap-2 mt-5">
           <div className="flex flex-col mb-5">
-            <label className="text-xl mb-1 font-bold">Preferred Language</label>
+            <label className="text-base md:text-xl mb-1 font-bold">
+              Preferred Language
+            </label>
             <select
               name="preferredLanguage"
               value={formData.preferredLanguage}
               onChange={handleFormData}
-              className="bg-white rounded-xl p-3 text-xl"
+              className="bg-white rounded-xl p-2 md:p-3 text-base md:text-xl"
             >
               <option value="">Select a language</option>
               {languages.map((lang, index) => (
@@ -87,14 +89,14 @@ const ProblemBar = ({ preference, toggleProblemBar }: Props): JSX.Element => {
           </div>
 
           <div className="flex flex-col mb-5">
-            <label className="text-xl mb-1 font-bold">
+            <label className="text-base md:text-xl mb-1 font-bold">
               Preferred Therapist Gender
             </label>
             <select
               name="preferredGender"
               value={formData.preferredGender}
               onChange={handleFormData}
-              className="bg-white rounded-xl p-3 text-xl"
+              className="bg-white rounded-xl p-2 md:p-3 text-base md:text-xl"
             >
               <option value="">Select the preferred Gender</option>
               <option value="Male">Male</option>
@@ -105,7 +107,7 @@ const ProblemBar = ({ preference, toggleProblemBar }: Props): JSX.Element => {
           </div>
 
           <div className="flex flex-col mb-5">
-            <label className="text-xl mb-1 font-bold">
+            <label className="text-base md:text-xl mb-1 font-bold">
               Describe your Problem
             </label>
             <textarea
@@ -116,7 +118,7 @@ const ProblemBar = ({ preference, toggleProblemBar }: Props): JSX.Element => {
               value={formData.problemText}
               onChange={handleFormData}
               placeholder="Enter the problem you're experiencing in detail"
-              className="bg-white rounded-xl p-5 text-xl"
+              className="bg-white rounded-xl p-3 md:p-5 text-base md:text-xl"
             ></textarea>
             <div>
               <span className="text-base">

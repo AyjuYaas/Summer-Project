@@ -66,20 +66,6 @@ const therapistSchema = new mongoose.Schema(
       type: Boolean,
       default: true,
     },
-    rating: {
-      type: Number,
-      min: 0,
-      max: 5,
-      default: 0,
-    },
-    reviewCount: {
-      type: Number,
-      default: 0,
-    },
-    totalMatches: {
-      type: Number,
-      default: 0,
-    },
     validationStatus: {
       type: String,
       enum: ["pending", "approved", "rejected"],

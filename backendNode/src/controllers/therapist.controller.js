@@ -90,7 +90,7 @@ export async function updateTherapist(req, res) {
     }
 
     // ============== Check if the phone-number is 10 digits ============
-    if (updatedData.phone.length < 10 || updatedData.phone.length > 10) {
+    if (updatedData.phone.length !== 10 || !/^\d+$/.test(updatedData.phone)) {
       return res.status(400).json({
         success: false,
         message: "Phone number should be 10 digits",
@@ -103,14 +103,16 @@ export async function updateTherapist(req, res) {
       { new: true }
     );
 
+    const stats = await therapistRatingandMatch(req.user._id);
+
     res.status(200).json({
       success: true,
       user: {
         _id: updatedTherapist._id,
         name: updatedTherapist.name,
         image: updatedTherapist.image,
-        rating: updatedTherapist.rating,
-        reviewCount: updatedTherapist.reviewCount,
+        rating: stats.rating,
+        reviewCount: stats.reviewCount,
       },
     });
   } catch (error) {

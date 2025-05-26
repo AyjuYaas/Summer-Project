@@ -7,7 +7,15 @@ export const buildTherapistAggregation = ({
   preferredGender,
   predictedProblemList,
   scoringWeights,
+  qualificationWeights,
 }) => {
+  const qualificationBranches = Object.entries(qualificationWeights).map(
+    ([qual, weight]) => ({
+      case: { $eq: ["$$qual", qual] },
+      then: weight,
+    })
+  );
+
   return [
     {
       $match: {
@@ -17,8 +25,34 @@ export const buildTherapistAggregation = ({
       },
     },
     {
+      $lookup: {
+        from: "reviews",
+        localField: "_id",
+        foreignField: "therapist",
+        as: "reviewData",
+      },
+    },
+    {
+      $lookup: {
+        from: "matches",
+        let: { therapistId: "$_id" },
+        pipeline: [
+          {
+            $match: {
+              $expr: {
+                $and: [
+                  { $eq: ["$therapist", "$$therapistId"] },
+                  { $eq: ["$status", "Accept"] },
+                ],
+              },
+            },
+          },
+        ],
+        as: "matchData",
+      },
+    },
+    {
       $addFields: {
-        // Match score for language
         languageMatch: {
           $cond: [
             { $in: [preferredLanguage, "$languages"] },
@@ -26,8 +60,6 @@ export const buildTherapistAggregation = ({
             0,
           ],
         },
-
-        // Match score for gender
         genderMatch: {
           $cond: [
             { $eq: [preferredGender, "Any"] },
@@ -41,21 +73,12 @@ export const buildTherapistAggregation = ({
             },
           ],
         },
-
-        // Score for rating
-        ratingScore: {
-          $multiply: ["$rating", scoringWeights.ratingMultiplier],
-        },
-
-        // Score for experience
         experienceScore: {
           $multiply: [
             { $ln: { $add: ["$experience", 1] } },
             scoringWeights.experiencePerYear,
           ],
         },
-
-        // Score for specialization match (at least one matching problem)
         specializationMatch: {
           $cond: [
             {
@@ -68,9 +91,42 @@ export const buildTherapistAggregation = ({
                 0,
               ],
             },
-            scoringWeights.specializationMatch || 2, // You can customize the weight
+            scoringWeights.predictedProblemMatch,
             0,
           ],
+        },
+        avgRating: {
+          $ifNull: [{ $avg: "$reviewData.rating" }, 0],
+        },
+        ratingCount: {
+          $size: "$reviewData",
+        },
+        totalMatches: {
+          $size: "$matchData",
+        },
+        qualificationScore: {
+          $sum: {
+            $map: {
+              input: "$qualification",
+              as: "qual",
+              in: {
+                $switch: {
+                  branches: qualificationBranches,
+                  default: 0,
+                },
+              },
+            },
+          },
+        },
+      },
+    },
+    {
+      $addFields: {
+        ratingScore: {
+          $multiply: ["$avgRating", scoringWeights.ratingMultiplier || 1],
+        },
+        matchScore: {
+          $multiply: ["$totalMatches", scoringWeights.matchMultiplier || 0.3],
         },
       },
     },
@@ -80,18 +136,16 @@ export const buildTherapistAggregation = ({
           $add: [
             "$languageMatch",
             "$genderMatch",
-            "$ratingScore",
             "$experienceScore",
             "$specializationMatch",
+            "$qualificationScore",
+            "$ratingScore",
+            "$matchScore",
           ],
         },
       },
     },
-    {
-      $sort: { totalScore: -1 },
-    },
-    {
-      $limit: 10, // Top 10, or change to any number
-    },
+    { $sort: { totalScore: -1 } },
+    { $limit: 10 },
   ];
 };

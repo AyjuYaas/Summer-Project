@@ -52,7 +52,7 @@ const PredictedProblem = (): JSX.Element => {
           ) : (
             <>
               <span>Here's what the AI thinks based on your input:</span>
-              <div className="flex flex-col gap-2 text-lg">
+              <div className="flex flex-col gap-2 text-base md:text-lg">
                 {preference?.predictedProblems.map(
                   ({ problem, score }, index: number) => (
                     <span
@@ -84,7 +84,7 @@ const PredictedProblem = (): JSX.Element => {
         ) : (
           <button
             onClick={toggleProblemBar}
-            className="bg-[#83699d] hover:bg-[#894971] p-4 font-semibold text-white rounded-2xl cursor-pointer duration-100 text-xl"
+            className="bg-[#83699d] hover:bg-[#894971] p-4 font-semibold text-white rounded-2xl cursor-pointer duration-100 text:lg md:text-xl"
           >
             Edit Your Problem & Preference
           </button>

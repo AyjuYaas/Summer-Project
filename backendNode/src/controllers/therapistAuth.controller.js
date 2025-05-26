@@ -2,6 +2,7 @@ import Therapist from "../models/therapist.model.js";
 import jwt from "jsonwebtoken";
 import validator from "email-validator";
 import validatePassword from "../middleware/password.middle.js";
+import therapistRatingandMatch from "../utils/therapistRatingandMatch.js";
 
 // Create a new token based on id
 const signToken = (id) => {
@@ -97,8 +98,8 @@ export const therapistSignup = async (req, res) => {
         _id: therapist._id,
         name: therapist.name,
         image: therapist.image,
-        rating: therapist.rating,
-        reviewCount: therapist.reviewCount,
+        rating: 0,
+        reviewCount: 0,
         validationStatus: therapist.validationStatus,
       },
     });
@@ -149,14 +150,16 @@ export const therapistLogin = async (req, res) => {
       secure: process.env.NODE_ENV === "production",
     });
 
+    const stats = await therapistRatingandMatch(therapist._id);
+
     res.status(200).json({
       success: true,
       therapist: {
         _id: therapist._id,
         name: therapist.name,
         image: therapist.image,
-        rating: therapist.rating,
-        reviewCount: therapist.reviewCount,
+        rating: stats.rating,
+        reviewCount: stats.reviewCount,
         validationStatus: therapist.validationStatus,
       },
     });
