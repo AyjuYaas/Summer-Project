@@ -108,49 +108,53 @@ const Messages = (): JSX.Element => {
           {/* Top Sentinel for infinite scroll */}
           <div ref={topSentinelRef}></div>
 
-          {messages.map((message, index: number) => (
-            <div
-              key={index}
-              className={`flex flex-col px-4 ${
-                message.receiver === id ? "items-end" : "items-start"
-              }`}
-            >
-              {message.image && (
-                <img
-                  src={message.image}
-                  alt="Message"
-                  className={`size-30 rounded-lg border-2 border-[#45646d] mb-1 cursor-pointer object-contain w-max bg-white ${
-                    message.receiver === id ? "self-end" : "self-start"
-                  }`}
-                  onClick={() => setOpenImage(message.image || "")}
-                />
-              )}
-              {message.text && (
-                <span
-                  className={`p-3 rounded-xl w-max max-w-50 sm:max-w-80 md:max-w-100 lg:max-w-120 ${
-                    message.receiver === id
-                      ? "bg-[#2f4858] text-white"
-                      : "bg-[#618182] text-white"
-                  }`}
-                >
-                  {message.text}
+          <div className="relative flex flex-col gap-2">
+            {messages.map((message, index: number) => (
+              <div
+                key={index}
+                className={`flex flex-col px-4 ${
+                  message.receiver === id ? "items-end" : "items-start"
+                }`}
+              >
+                {message.image && (
+                  <img
+                    src={message.image}
+                    alt="Message"
+                    className={`size-30 rounded-lg border-2 border-[#45646d] mb-1 cursor-pointer object-contain w-max bg-white ${
+                      message.receiver === id ? "self-end" : "self-start"
+                    }`}
+                    onClick={() => setOpenImage(message.image || "")}
+                  />
+                )}
+                {message.text && (
+                  <span
+                    className={`p-3 rounded-xl w-max max-w-50 sm:max-w-80 md:max-w-100 lg:max-w-120 ${
+                      message.receiver === id
+                        ? "bg-[#2f4858] text-white"
+                        : "bg-[#618182] text-white"
+                    }`}
+                  >
+                    {message.text}
+                  </span>
+                )}
+                <span className="text-[0.7rem] px-1">
+                  {format(new Date(message.createdAt), "MMM d, yyyy h:mm a")}
                 </span>
-              )}
-              <span className="text-[0.7rem] px-1">
-                {format(new Date(message.createdAt), "MMM d, yyyy h:mm a")}
-              </span>
-            </div>
-          ))}
+              </div>
+            ))}
 
-          {/* Scroll to Bottom Button */}
-          {showScrollButton && (
-            <button
-              onClick={() => scrollToBottom(true)}
-              className="absolute bottom-15 left-1/2 transform -translate-x-1/2 p-2 bg-[#2f4858] text-white rounded-full shadow-lg hover:bg-[#1c2f3b] transition duration-300 z-10 cursor-pointer"
-            >
-              <FaAngleDoubleDown size={19} />
-            </button>
-          )}
+            {/* Scroll to Bottom Button */}
+            {/* ← Sticky Scroll-to-Bottom Button */}
+            {showScrollButton && (
+              <button
+                onClick={() => scrollToBottom(true)}
+                className="sticky bottom-4 self-center p-2 bg-[#2f4858] text-white rounded-full shadow-md hover:bg-[#1c2f3b] transition duration-300 z-10 cursor-pointer"
+                aria-label="Scroll to bottom"
+              >
+                <FaAngleDoubleDown className="size-5" />
+              </button>
+            )}
+          </div>
         </div>
       )}
 
