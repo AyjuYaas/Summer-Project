@@ -208,14 +208,14 @@ const TherapistUpdateForm = (): JSX.Element => {
           if (!formData.languages?.includes(value)) {
             setFormData((prev) => ({
               ...prev,
-              language: [...(prev.languages || []), value],
+              languages: [...(prev.languages || []), value],
             }));
           }
         }}
         onRemoveLanguage={(index) => {
           setFormData((prev) => ({
             ...prev,
-            language: prev.languages?.filter((_, i) => i !== index) || [],
+            languages: prev.languages?.filter((_, i) => i !== index) || [],
           }));
         }}
       />

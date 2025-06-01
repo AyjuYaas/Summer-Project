@@ -274,8 +274,6 @@ export default function App(): React.ReactElement {
             element={authUser ? <VideoCall /> : <Navigate to="/user/login" />}
           />
 
-          {/* Admin and Test */}
-
           {/* Catch-all */}
           <Route path="*" element={<NotFound />} />
         </Routes>

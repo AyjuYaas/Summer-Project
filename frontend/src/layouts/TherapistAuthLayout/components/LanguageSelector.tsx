@@ -1,4 +1,4 @@
-import { FC } from "react";
+import { FC, useState } from "react";
 import { IoMdClose } from "react-icons/io";
 import languages from "../data/language.data";
 
@@ -13,6 +13,18 @@ const LanguageSelector: FC<LanguageSelectorProps> = ({
   onAddLanguage,
   onRemoveLanguage,
 }) => {
+  // control the dropdown’s current value
+  const [dropdownValue, setDropdownValue] = useState("");
+
+  const handleChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
+    const lang = e.target.value;
+    if (lang && !selectedLanguages.includes(lang)) {
+      onAddLanguage(lang);
+    }
+    // reset back to placeholder
+    setDropdownValue("");
+  };
+
   return (
     <div className="mb-5 text-md">
       <div className="mb-2">
@@ -21,17 +33,17 @@ const LanguageSelector: FC<LanguageSelectorProps> = ({
         </label>
       </div>
 
-      {/* Selected languages chips */}
+      {/* Selected language bubbles */}
       <div className="flex flex-wrap gap-2 mb-2">
-        {selectedLanguages.map((language, index) => (
+        {selectedLanguages.map((language, idx) => (
           <div
-            key={`${language}-${index}`}
+            key={`${language}-${idx}`}
             className="bg-[#2f4858] text-white px-3 py-1 rounded-md flex items-center text-sm"
           >
             {language}
             <button
               type="button"
-              onClick={() => onRemoveLanguage(index)}
+              onClick={() => onRemoveLanguage(idx)}
               className="ml-2 text-xs bg-red-600 rounded-full p-1 cursor-pointer hover:bg-red-700 duration-100"
               aria-label={`Remove ${language}`}
             >
@@ -41,21 +53,15 @@ const LanguageSelector: FC<LanguageSelectorProps> = ({
         ))}
       </div>
 
-      {/* Language dropdown */}
+      {/* Dropdown for adding more */}
       <div className="relative">
         <select
-          onChange={(e) => {
-            const language = e.target.value;
-            if (language && !selectedLanguages.includes(language)) {
-              onAddLanguage(language);
-            }
-            e.target.value = "";
-          }}
+          value={dropdownValue}
+          onChange={handleChange}
+          disabled={selectedLanguages.length >= 5}
           className="block w-full px-3 py-3 border border-button-border rounded-md focus:outline-1 appearance-none text-gray-500"
-          defaultValue=""
-          disabled={selectedLanguages.length >= 5} // Optional limit
         >
-          <option value="" disabled className="text-sm bg-cbg-five">
+          <option value="" disabled>
             {selectedLanguages.length > 0
               ? "Add another language..."
               : "Select languages you can speak..."}
@@ -63,17 +69,14 @@ const LanguageSelector: FC<LanguageSelectorProps> = ({
 
           {languages
             .filter((lang) => !selectedLanguages.includes(lang))
-            .map((language) => (
-              <option
-                value={language}
-                key={language}
-                className="text-sm bg-cbg-five text-black"
-              >
-                {language}
+            .map((lang) => (
+              <option key={lang} value={lang}>
+                {lang}
               </option>
             ))}
         </select>
 
+        {/* dropdown arrow */}
         <div className="pointer-events-none absolute inset-y-0 right-0 flex items-center px-2 text-gray-700">
           <svg
             className="fill-current h-4 w-4"

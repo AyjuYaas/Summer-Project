@@ -55,7 +55,7 @@ const MessageInput = (): JSX.Element => {
             <img
               src={imagePreview}
               alt="Preview"
-              className="w-20 h-20 object-cover rounded-lg border border-zinc-700"
+              className="w-20 h-20 object-cover rounded-lg border border-zinc-700 bg-white"
             />
             <button
               onClick={removeImage}

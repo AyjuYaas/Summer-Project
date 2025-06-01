@@ -4,6 +4,8 @@ import { validate } from "email-validator";
 import User from "../models/user.model.js";
 import { getConnectedUsers, getIo } from "../socket/socket.server.js";
 import Match from "../models/match.model.js";
+import therapistRatingandMatch from "../utils/therapistRatingandMatch.js";
+import validatePassword from "../middleware/password.middle.js";
 
 export async function updateDetails(req, res) {
   try {
@@ -25,7 +27,7 @@ export async function updateDetails(req, res) {
         email: therapist.email,
         phone: therapist.phone,
         gender: therapist.gender,
-        language: therapist.language,
+        languages: therapist.languages,
         specialization: therapist.specialization,
         experience: therapist.experience,
         qualification: therapist.qualification,
@@ -42,8 +44,29 @@ export async function updateDetails(req, res) {
 
 export async function updateTherapist(req, res) {
   try {
-    const { image, ...otherFields } = req.body;
+    const { image, newPassword, ...otherFields } = req.body;
     const updatedData = otherFields;
+
+    const therapist = await Therapist.findById(req.user._id);
+
+    if (newPassword) {
+      if (therapist.matchPassword(newPassword)) {
+        return res.status(400).json({
+          success: false,
+          message: "New Password Same as Old Password",
+        });
+      }
+
+      const passwordValidation = validatePassword(newPassword);
+      if (!passwordValidation.isValid) {
+        return res.status(400).json({
+          success: false,
+          message: passwordValidation.errors.join(", "),
+        });
+      }
+
+      updatedData.newPassword = newPassword;
+    }
 
     // Uploading image to cloudinary
     if (image) {
