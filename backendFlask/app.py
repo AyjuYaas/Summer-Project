@@ -3,6 +3,7 @@ from tensorflow.keras.models import load_model # type: ignore
 import re
 import numpy as np
 import pickle
+import os
 
 # Initialize Flask app
 app = Flask(__name__)
@@ -67,4 +68,5 @@ def predict():
 
 # Run the Flask app
 if __name__ == "__main__":
-    app.run(host="0.0.0.0", port=5002)
+    port = int(os.environ.get("PORT", 5000))
+    app.run(host="0.0.0.0", port=port)
