@@ -19,7 +19,7 @@ export const therapistSignup = async (req, res) => {
     password,
     phone,
     gender,
-    language,
+    languages: language,
     specialization,
     experience,
     qualification,
@@ -38,11 +38,12 @@ export const therapistSignup = async (req, res) => {
       !experience ||
       !qualification
     ) {
-      res.status(400).json({
+      return res.status(400).json({
         success: false,
         message: "All fields are required",
       });
     }
+
     // ============== Email Validation ============
     if (!validator.validate(email)) {
       return res.status(400).json({

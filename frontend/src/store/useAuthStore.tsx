@@ -68,6 +68,7 @@ export const useAuthStore = create<AuthState>((set) => ({
 
   signupTherapist: async (signupData) => {
     try {
+      console.log(signupData);
       set({ loading: true });
       const response = await axiosInstance.post(
         "/auth/therapist/signup",
